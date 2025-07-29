@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(yarn lint)",
+      "Bash(npm run lint)",
+      "Bash(cd:*)",
+      "Bash(npm install:*)",
+      "Bash(npx eslint:*)",
+      "Bash(node:*)",
+      "Bash(timeout 5s npx eslint --no-eslintrc --parser @typescript-eslint/parser src/hooks/use-update.ts)",
+      "Bash(timeout 20s npm run lint)",
+      "Bash(mv:*)",
+      "Bash(timeout 30s npm run build)",
+      "Bash(npx tsc:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(mkdir:*)",
+      "Bash(cd:*)"
+    ],
+    "deny": []
+  }
+}
