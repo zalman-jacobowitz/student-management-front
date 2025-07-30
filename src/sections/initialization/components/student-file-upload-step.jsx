@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Upload } from 'src/components/upload';
 import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
 import { readFile } from 'src/utils/files/read-file';
-import useInitializationStore from '../initialization-state';
+import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
 

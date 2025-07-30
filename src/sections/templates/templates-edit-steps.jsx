@@ -116,7 +116,7 @@ function useTemplateDefinition({ template }) {
     } catch (error) {
       console.error('Error saving template:', error);
     }
-  }, [template, updateTemplate]);
+  }, [updateTemplate]);
 
   return {
     onSubmit

@@ -17,7 +17,7 @@ import {
 import { Iconify } from "src/components/iconify";
 import { columnsTypes } from "src/utils/uinqe_usege/columnsTypes";
 import { ColumnVisibilityDialog } from "../../infoColumns/column-edit-steps";
-import useInitializationStore from "../initialization-state";
+import useInitializationStore from "../initialization-state.ts";
 
 // ----------------------------------------------------------------------
 
@@ -300,7 +300,7 @@ export function InitializationColumnsView() {
           column={selectedColumn}
           infoColumns={formattedColumns}
           selectOptions={[]} // TODO: Add select options if needed
-          isInitializationMode={true} // מצב איתחול
+          isInitializationMode // מצב איתחול
           onComplete={(updatedColumn) => {
             // Update the initialization state with changes
             handleColumnUpdate(updatedColumn);

@@ -2,7 +2,7 @@ import { Avatar, Chip } from '@mui/material';
 
 import { Field } from 'src/components/hook-form';
 
-import { description } from '../functions';
+import { description } from '../functions.ts';
 
 export function SelectStudents({ infoStudents, infoColumns, ...other }) {
   const studentLabel = (student) => description(infoColumns, student).primary;

@@ -6,12 +6,12 @@ import { useRouter } from 'src/routes/hooks';
 import { Iconify } from 'src/components/iconify';
 import { StepsProvider } from 'src/components/steps-form';
 
+import useInitializationStore from './initialization-state.ts';
 import { CompletionStep } from './components/completion-step';
-import { InitializationColumnsView } from './components/initialization-columns-view';
+import { ColumnSelectionStep } from './components/column-selection-step';
 import { StudentFileUploadStep } from './components/student-file-upload-step';
 import { TemplateDefinitionStep } from './components/template-definition-step';
-import { ColumnSelectionStep } from './components/column-selection-step';
-import useInitializationStore from './initialization-state';
+import { InitializationColumnsView } from './components/initialization-columns-view';
 
 // ----------------------------------------------------------------------
 
@@ -45,8 +45,7 @@ const ColumnSelectionSchema = z.object({
   familyColumn: z.string().min(1, "יש לבחור עמודת משפחה"),
   accessibleColumn: z.string().min(1, "יש לבחור עמודה נגישה"),
   filterColumns: z.array(z.string()).max(2, "ניתן לבחור עד 2 עמודות לפילטרים נגישים").min(1, "יש לבחור לפחות עמודה אחת"),
-  duplicateCo
-  lumns: z.array(z.string()).min(1, "יש לבחור לפחות עמודה אחת למציאת כפילויות"),
+  duplicateColumns: z.array(z.string()).min(1, "יש לבחור לפחות עמודה אחת למציאת כפילויות"),
 }).optional();
 
 // Combined wizard schema

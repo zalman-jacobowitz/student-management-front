@@ -1,1 +1,1 @@
-export { SummaryViewWrapper as default } from 'src/sections/summary/summary-list-view';
+export { SummaryViewWrapper as default } from 'src/sections/summary/summary-list-view.tsx';

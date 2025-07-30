@@ -431,7 +431,7 @@ export function useUserPermissionsForm(existingUser = null) {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [mutate]);
 
   return {
     onSubmit

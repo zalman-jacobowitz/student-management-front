@@ -46,7 +46,7 @@ function useDayDefinition({ day }) {
     } catch (error) {
       console.error('Error saving day:', error);
     }
-  }, [day, updateDay]);
+  }, [updateDay]);
 
   return {
     onSubmit

@@ -104,7 +104,7 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
   // Initialize the global state with the config
   useEffect(() => {
     initialize(config)
-  }, [config.headingTitle, initialize])
+  }, [config, initialize])
 
   const renderHeader = isHeader && <Header importData={importData.onTrue} />
   const renderToolbar = isToolbar && <FullTableToolbar />

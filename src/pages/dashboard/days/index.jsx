@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
-import { DaysCalendarViewWrapper } from 'src/sections/days/days-calendar-view';
+import { DaysCalendarViewWrapper } from 'src/sections/days/days-calendar-view.tsx';
 
 // import { DaysViewWrapper } from 'src/sections/days/days-list-view.tsx';
 

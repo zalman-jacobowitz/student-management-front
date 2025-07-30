@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 import { apiDataStudentsEvent } from "src/actions/data_students_event";
+import { apiExceptions } from "src/actions/exceptions";
 
 import { formValues } from "../functions";
 import useInsertStore from "../insert-state";
-import { apiExceptions } from "src/actions/exceptions";
 
 interface UseLoadCurrentDataProps {
   tamplateData?: any[];

@@ -2,7 +2,7 @@ import { Box, Typography, Stack, Alert, Chip, Divider } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 
 import { Iconify } from 'src/components/iconify';
-import useInitializationStore from '../initialization-state';
+import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
 

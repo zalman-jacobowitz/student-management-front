@@ -1,4 +1,3 @@
-import useTableConfig from "../table-state";
 import { InfoColumn, TableConfig } from "../types";
 
 type HeadLabel = {
@@ -7,11 +6,7 @@ type HeadLabel = {
     width?: number;
 }
 
-export function getHeadLabels() : HeadLabel[] {
-    const {
-        specialRow,
-        tableColumns
-      }  = useTableConfig()
+export function getHeadLabels(specialRow: string[], tableColumns: InfoColumn[]) : HeadLabel[] {
 
     const avatarRow = specialRow.includes('avatar') && {name: 'name', label: 'שם', width: 88 }
     

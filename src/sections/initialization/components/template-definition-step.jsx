@@ -122,7 +122,7 @@ export function TemplateDefinitionStep() {
         {watchedTemplate?.template_name && fields.length > 0 && (
           <Box sx={{ p: 2, bgcolor: 'success.lighter', borderRadius: 1 }}>
             <Typography variant="body2" color="success.dark">
-              התבנית "{watchedTemplate.template_name}" מכילה {fields.length} אירועים
+              התבנית &quot;{watchedTemplate.template_name}&quot; מכילה {fields.length} אירועים
             </Typography>
           </Box>
         )}

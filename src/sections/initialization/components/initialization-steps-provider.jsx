@@ -31,18 +31,15 @@ function StepsHandler({ steps, defaultValues, WizardSchema, onSubmit, watch, wat
     }
   }, [watchValues, watch, methods]);
   
-  const submit = useCallback(
-    handleSubmit(async (data) => {
-      console.log('INITIALIZATION SUBMIT: ', data);
-      const result = await onSubmit(data);
-      if (result) {
-        handleNext();
-        reset();
-      }
-      return result;
-    }),
-    [handleSubmit, onSubmit, handleNext, reset]
-  );
+  const submit = handleSubmit(async (data) => {
+    console.log('INITIALIZATION SUBMIT: ', data);
+    const result = await onSubmit(data);
+    if (result) {
+      handleNext();
+      reset();
+    }
+    return result;
+  });
 
   return {
     activeStep,

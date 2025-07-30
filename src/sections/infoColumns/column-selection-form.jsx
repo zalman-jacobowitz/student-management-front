@@ -52,7 +52,7 @@ function useColumnSelection({ infoColumns }) {
       
       // Create updated columns array based on user selections
       const updatedColumns = infoColumns.map(column => {
-        let updatedColumn = { ...column };
+        const updatedColumn = { ...column };
         
         // Reset group_name and filters for all columns first
         updatedColumn.group_name = "";
@@ -120,7 +120,7 @@ function useColumnSelection({ infoColumns }) {
       console.error('Error saving column selection:', error);
       toast.error('שגיאה בשמירת בחירת העמודות');
     }
-  }, [infoColumns, updateInfoColumns, queryClient]);
+  }, [infoColumns, updateInfoColumns]);
 
   return {
     onSubmit

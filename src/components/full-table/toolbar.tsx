@@ -35,7 +35,7 @@ const ApplyFilter = () => (
   </LoadingButton>
 );
 
-export function FullTableToolbar({}: FullTableToolbarProps){
+export function FullTableToolbar(): React.JSX.Element {
   
   const {
     listActionsMap,

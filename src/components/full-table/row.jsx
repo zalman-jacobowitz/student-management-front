@@ -16,8 +16,8 @@ import { CellAction } from "src/components/regular-table/regular-cell-action";
 import { CellCheckbox } from "src/components/regular-table/regular-cell-checkbox";
 import { RegularRowProvider } from "src/components/regular-table/regular-row-provider";
 
-import { description } from "src/sections/insert/functions";
-import useTableConfig from "./table-state";
+import { description } from "src/sections/insert/functions.ts";
+import useTableConfig from "./table-state.ts";
 
 
 

@@ -65,12 +65,13 @@ export const createInitialUser = async ({ userId, email, firstName, lastName, co
   adminUserBlank.user = userData;
   alert(JSON.stringify(adminUserBlank))
   /*
-  const res = await apiFetch('all', {
-    table_name: 'users',
-    mode: 'insert',
-    data: [userData]
-  });
-  
-  return res?.data ??*/
+   * const res = await apiFetch('all', {
+   *   table_name: 'users',
+   *   mode: 'insert',
+   *   data: [userData]
+   * });
+   * 
+   * return res?.data ??
+   */
   return null;
 };

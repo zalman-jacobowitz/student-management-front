@@ -9,13 +9,13 @@ import { apiUsers } from "src/actions/users";
 
 import { LoadingScreen } from "src/components/loading-screen";
 import { ConfirmDialog } from "src/components/custom-dialog";
-import { FullTableWrapper } from "src/components/full-table/view.tsx";
+import { FullTableWrapper } from "src/components/full-table/view";
 
 import { USERS_COLUMNS } from "src/utils/uinqe_usege/users-columns";
+import { TableConfig } from "src/components/full-table/types";
 
 import { UserPermissionsForm } from "./user-permissions-form";
 import { UsersRowDetails } from "./users-details";
-import { TableConfig } from "src/components/full-table/types";
 
 
 const LINKS = [

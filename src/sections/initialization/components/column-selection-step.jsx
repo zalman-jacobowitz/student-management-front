@@ -1,10 +1,10 @@
 import { Box, Typography, Stack, MenuItem } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 import { Field } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
-import useInitializationStore from '../initialization-state';
+import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
 
@@ -14,25 +14,25 @@ export function ColumnSelectionStep() {
   const watchedValues = watch('columnSelection');
 
   // Handler functions for updating column properties
-  const handleNameColumnChange = (columnName) => {
+  const handleNameColumnChange = useCallback((columnName) => {
     if (columnName) {
       updateColumnProperty(columnName, 'group_name', 'primary');
     }
-  };
+  }, [updateColumnProperty]);
 
-  const handleFamilyColumnChange = (columnName) => {
+  const handleFamilyColumnChange = useCallback((columnName) => {
     if (columnName) {
       updateColumnProperty(columnName, 'group_name', 'primary');
     }
-  };
+  }, [updateColumnProperty]);
 
-  const handleAccessibleColumnChange = (columnName) => {
+  const handleAccessibleColumnChange = useCallback((columnName) => {
     if (columnName) {
       updateColumnProperty(columnName, 'group_name', 'secondary');
     }
-  };
+  }, [updateColumnProperty]);
 
-  const handleFilterColumnsChange = (selectedColumns) => {
+  const handleFilterColumnsChange = useCallback((selectedColumns) => {
     // Reset all columns filters property first
     columnsList?.forEach(column => {
       updateColumnProperty(column, 'filters', '');
@@ -44,9 +44,9 @@ export function ColumnSelectionStep() {
         updateColumnProperty(column, 'filters', 'extra');
       });
     }
-  };
+  }, [columnsList, updateColumnProperty]);
 
-  const handleDuplicateColumnsChange = (selectedColumns) => {
+  const handleDuplicateColumnsChange = useCallback((selectedColumns) => {
     // Reset filters for all columns that aren't filter columns
     const currentFilterColumns = watchedValues?.filterColumns || [];
     columnsList?.forEach(column => {
@@ -62,34 +62,34 @@ export function ColumnSelectionStep() {
         updateColumnProperty(column, 'filters', 'unique');
       });
     }
-  };
+  }, [columnsList, updateColumnProperty, watchedValues?.filterColumns]);
 
   // Watch for changes and update column properties
   useEffect(() => {
     if (watchedValues?.nameColumn) {
       handleNameColumnChange(watchedValues.nameColumn);
     }
-  }, [watchedValues?.nameColumn]);
+  }, [watchedValues?.nameColumn, handleNameColumnChange]);
 
   useEffect(() => {
     if (watchedValues?.familyColumn) {
       handleFamilyColumnChange(watchedValues.familyColumn);
     }
-  }, [watchedValues?.familyColumn]);
+  }, [watchedValues?.familyColumn, handleFamilyColumnChange]);
 
   useEffect(() => {
     if (watchedValues?.accessibleColumn) {
       handleAccessibleColumnChange(watchedValues.accessibleColumn);
     }
-  }, [watchedValues?.accessibleColumn]);
+  }, [watchedValues?.accessibleColumn, handleAccessibleColumnChange]);
 
   useEffect(() => {
     handleFilterColumnsChange(watchedValues?.filterColumns);
-  }, [watchedValues?.filterColumns]);
+  }, [watchedValues?.filterColumns, handleFilterColumnsChange]);
 
   useEffect(() => {
     handleDuplicateColumnsChange(watchedValues?.duplicateColumns);
-  }, [watchedValues?.duplicateColumns]);
+  }, [watchedValues?.duplicateColumns, handleDuplicateColumnsChange]);
 
   return (
     <Box sx={{ p: 3 }}>

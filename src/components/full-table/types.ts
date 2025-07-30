@@ -27,12 +27,12 @@ export interface TableConfig {
   EditComponent: React.ComponentType<{
     open: boolean;
     onClose: () => void;
-    column: Row | {};
+    column: Row | Record<string, never>;
   }>;
   DetailsComponent?: React.ComponentType<{
     open: boolean;
     onClose: () => void;
-    column: Row | {};
+    column: Row | Record<string, never>;
   }>;
   styleTable: 'default' | 'striped' | 'bordered' | 'transparent' | 'background.paper';
   pagination?: boolean;

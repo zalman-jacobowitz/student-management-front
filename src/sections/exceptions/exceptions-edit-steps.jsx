@@ -10,10 +10,10 @@ import { z } from "zod";
 import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
 import { exceptionsUpdate } from "src/actions/exceptions";
-import { apiInfoStudents } from "src/actions/info_students";
+import { apiInfoStudents } from "src/actions/info_students.ts";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { uuidv4 } from "src/utils/uuidv4";
-import { description } from "../insert/functions";
+import { description } from "../insert/functions.ts";
 
 function StudentsSelectionStep() {
   const { control, watch, setValue } = useFormContext();
@@ -104,7 +104,7 @@ function useExceptionDefinition({ exception }) {
     } catch (error) {
       console.error('Error saving exception:', error);
     }
-  }, [exception, updateException]);
+  }, [updateException]);
 
   return {
     onSubmit

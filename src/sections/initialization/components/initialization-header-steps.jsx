@@ -1,7 +1,9 @@
-import { Step, StepLabel, Stepper as MuiStepper, Box, Button, Fab } from '@mui/material';
+
 import LoadingButton from '@mui/lab/LoadingButton';
-import { keyframes } from '@mui/system';
+import { Step, StepLabel, Stepper as MuiStepper, Box, Button, Fab, keyframes } from '@mui/material';
+
 import { Iconify } from 'src/components/iconify';
+
 import { InitializationCustomConnector, InitializationCustomStepIcon } from './initialization-step-styles';
 
 export function InitializationStepper({ steps, activeStep }) {

@@ -22,10 +22,11 @@ export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onC
 
 
 
+    const watchValue = methods.watch(watchName);
+    
     useEffect(() => {
-
       watch(methods.getValues());
-    }, [methods.watch(watchName)]);
+    }, [watchValue, watch, methods]);
     
     const {alertHelper, component} = steps[activeStep];
     const submit = handleSubmit(async (data)=> {

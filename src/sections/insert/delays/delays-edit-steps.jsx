@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 
 import { uuidv4 } from "src/utils/uuidv4";
-import { calculateAttendance } from "src/utils/functions-times.jsx";
+import { calculateAttendance } from "src/utils/functions-times";
 
 import { delaysUpdate } from "src/actions/delays";
 import { apiInfoStudents } from "src/actions/info_students.ts";
@@ -36,7 +36,7 @@ function delayDataServerFormat(data) {
 
   const listDelays = []
 
-  students.map(student => {
+  students.forEach(student => {
     const { attendancePercentage, latenessMinutes } = calculateAttendance(
       eventDetails.event_start,
       eventDetails.event_end,
