@@ -6,7 +6,7 @@ import { SupabaseSignInView } from 'src/auth/view/supabase';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Sign in | Supabase - ${CONFIG.appName}` };
+const metadata = { title: `כניסה | ${CONFIG.appName}` };
 
 export default function Page() {
   return (

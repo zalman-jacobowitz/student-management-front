@@ -28,6 +28,7 @@ import { SignUpTerms } from '../../components/sign-up-terms';
 export const SignUpSchema = zod.object({
   firstName: zod.string().min(1, { message: 'שם פרטי נדרש!' }),
   lastName: zod.string().min(1, { message: 'שם משפחה נדרש!' }),
+  org: zod.string(),
   email: zod
     .string()
     .min(1, { message: 'דוא"ל נדרש!' })
@@ -36,7 +37,6 @@ export const SignUpSchema = zod.object({
     .string()
     .min(1, { message: 'סיסמה נדרשת!' })
     .min(6, { message: 'הסיסמה חייבת להכיל לפחות 6 תווים!' }),
-  country: zod.string().min(1, { message: 'מדינה נדרשת!' }),
 });
 
 // ----------------------------------------------------------------------
@@ -53,7 +53,7 @@ export function SupabaseSignUpView() {
     lastName: '',
     email: '',
     password: '',
-    country: '',
+    org: ''
   };
 
   const methods = useForm({
@@ -73,7 +73,8 @@ export function SupabaseSignUpView() {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        country: data.country,
+        org: data.org,
+        client: data.email.toLocaleLowerCase()
       });
 
       router.push(paths.auth.supabase.verify);
@@ -89,11 +90,8 @@ export function SupabaseSignUpView() {
         <Field.Text name="firstName" label="שם פרטי" InputLabelProps={{ shrink: true }} />
         <Field.Text name="lastName" label="שם משפחה" InputLabelProps={{ shrink: true }} />
       </Box>
-
+      <Field.Text name="org" label="שם מוסד" InputLabelProps={{ shrink: true }} />
       <Field.Text name="email" label="כתובת דוא״ל" InputLabelProps={{ shrink: true }} />
-
-      <Field.CountrySelect name="country" label="מדינה" InputLabelProps={{ shrink: true }} />
-
       <Field.Text
         name="password"
         label="סיסמה"

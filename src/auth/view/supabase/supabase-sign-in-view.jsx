@@ -19,6 +19,9 @@ import { Form, Field } from 'src/components/hook-form';
 import { useAuthContext } from '../../hooks';
 import { FormHead } from '../../components/form-head';
 import { signInWithPassword } from '../../context/supabase';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
+import { Link } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -83,7 +86,7 @@ export function SupabaseSignInView() {
       <Field.Text name="email" label="כתובת מייל" InputLabelProps={{ shrink: true }} />
 
       <Box gap={1.5} display="flex" flexDirection="column">
-        {/*
+
         <Link
           component={RouterLink}
           href={paths.auth.supabase.resetPassword}
@@ -93,7 +96,7 @@ export function SupabaseSignInView() {
         >
           שכחת את הסיסמה?
         </Link>
-        */}
+
         <Field.Text
           name="password"
           label="סיסמה"
@@ -130,8 +133,14 @@ export function SupabaseSignInView() {
     <>
       <FormHead
         title="כנס לחשבון שלך"
-        description='הזן את המייל והסיסמה שלך כדי להיכנס'
-        
+        description={
+          <>
+            {`אין לך עדיין חשבון? `}
+            <Link component={RouterLink} href={paths.auth.supabase.signUp} variant="subtitle2">
+              התחל עכשיו
+            </Link>
+          </>
+        }
         sx={{ textAlign: { xs: 'center', md: 'left' } }}
       />
 
@@ -144,6 +153,7 @@ export function SupabaseSignInView() {
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm}
       </Form>
+      
     </>
   );
 }
