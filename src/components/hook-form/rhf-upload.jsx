@@ -70,12 +70,44 @@ export function RHFUpload({ name, multiple, helperText, ...other }) {
         };
 
         const onDrop = (acceptedFiles) => {
-          const value = multiple ? [...field.value, ...acceptedFiles] : acceptedFiles[0];
+          const current = Array.isArray(field.value) ? field.value : [];
 
-          setValue(name, value, { shouldValidate: true });
+          if (multiple) {
+            // Remove duplicates by name
+            const existingNames = new Set(current.map((file) => file.name));
+            const uniqueNewFiles = acceptedFiles.filter((file) => !existingNames.has(file.name));
+
+            const value = [...current, ...uniqueNewFiles];
+            setValue(name, value, { shouldValidate: true });
+          } else {
+            // For single uploads, just override
+            setValue(name, acceptedFiles[0], { shouldValidate: true });
+          }
         };
 
-        return <Upload {...uploadProps} value={field.value} onDrop={onDrop} {...other} />;
+        const onRemove = (fileToRemove) => {
+          if (!multiple) {
+            setValue(name, null, { shouldValidate: true });
+          } else {
+            const updated = (field.value || []).filter((file) => file.name !== fileToRemove.name);
+            setValue(name, updated, { shouldValidate: true });
+          }
+        };
+
+        const onRemoveAll = () => {
+          setValue(name, multiple ? [] : null, { shouldValidate: true });
+        };
+
+        return (
+          <Upload
+            {...uploadProps}
+            value={field.value}
+            onDrop={onDrop}
+            onRemove={onRemove}
+            onRemoveAll={onRemoveAll}
+            {...other}
+          />
+        );
       }}
     />
   );

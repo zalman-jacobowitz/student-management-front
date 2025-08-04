@@ -44,6 +44,7 @@ export const paths = {
     days: `${ROOTS.DASHBOARD}/ימים`,
     exceptions: `${ROOTS.DASHBOARD}/אישורים`,
     summary: `${ROOTS.DASHBOARD}/סיכום`,
+    uploadScanDocs: `${ROOTS.DASHBOARD}/העלאת-דוחות-רישום`,
     
   },
 };
