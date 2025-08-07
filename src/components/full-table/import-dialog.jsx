@@ -186,13 +186,12 @@ export function FullTableImportDialog({ open, onClose, oldData=[] }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-
-          <StepsProvider
-            steps={steps}
-            defaultValues={defaultValues}
-            WizardSchema={WizardSchema}
-            onSubmit={onSubmit}
-          /> 
+        <StepsProvider
+          steps={steps}
+          defaultValues={defaultValues}
+          WizardSchema={WizardSchema}
+          onSubmit={onSubmit}
+        /> 
     </Dialog>
   );
 }

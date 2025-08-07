@@ -1,16 +1,21 @@
-import { Box, Typography, Button, Link } from '@mui/material';
-import { useFormContext } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useFormContext } from 'react-hook-form';
+
+import { Box, Typography, Button, Link } from '@mui/material';
+
+import { readFile } from 'src/utils/files/read-file';
+import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
 
 import { Upload } from 'src/components/upload';
-import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
-import { readFile } from 'src/utils/files/read-file';
+
 import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
 
-export function StudentFileUploadStep() {
+
+function useStudentFileUpload(){
   const { setValue, watch } = useFormContext();
+  
   const watchedFile = watch('studentFile.file');
 
   const { updateInitializationData, columnsList } = useInitializationStore();
@@ -59,6 +64,26 @@ export function StudentFileUploadStep() {
       downloadTemplateCSV();
     }
   };
+
+  return {
+    handleDownloadTemplate,
+    watchedFile,
+    handleRemoveFile,
+    handleFileUpload
+  }
+}
+
+
+export function StudentFileUploadStep() {
+  
+  const {
+  
+    handleDownloadTemplate,
+    watchedFile,
+    handleRemoveFile,
+    handleFileUpload
+  
+  } = useStudentFileUpload()
 
   return (
     <Box sx={{ p: 3 }}>

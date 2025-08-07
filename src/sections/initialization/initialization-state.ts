@@ -67,7 +67,6 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
     // Auto-generate formatted columns after data update
     get().generateFormattedColumns();
   },
-
   // ה. Generate formatted columns from columnsList
   generateFormattedColumns: () => {
     const { columnsList } = get();
@@ -102,7 +101,20 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
 
     set({ formattedColumns: updatedColumns });
   },
+  updateColumnsDetails: (formData) => {
 
+    const { updateColumnProperty } = get();
+    updateColumnProperty(formData.nameColumn, "group_name", "primary");
+    updateColumnProperty(formData.familyColumn, "group_name", "primary");
+    updateColumnProperty(formData.accessibleColumn, "group_name", "secondary");
+    formData.filterColumns.forEach((column: string) => {
+      updateColumnProperty(column, "filters", "true");
+    });
+    formData.duplicateColumns.forEach((column: string) => {
+      updateColumnProperty(column, "required", "true");
+    });
+    return get().formattedColumns;
+  },
   // Reset all state to initial values
   resetState: () => {
     set({

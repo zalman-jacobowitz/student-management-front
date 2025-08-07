@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+
 import { 
   Box, 
-  Typography, 
   Stack, 
   Button, 
-  IconButton,
-  Alert 
+  Typography,
+  IconButton 
 } from '@mui/material';
 
 import { Iconify } from 'src/components/iconify';
@@ -15,8 +15,10 @@ import { Scrollbar } from 'src/components/scrollbar';
 
 // ----------------------------------------------------------------------
 
-export function TemplateDefinitionStep() {
+function useTamplatesStep(){
+  
   const { control, watch } = useFormContext();
+  
   const watchedTemplate = watch('templateData');
 
   const { fields, append, remove } = useFieldArray({
@@ -36,20 +38,29 @@ export function TemplateDefinitionStep() {
     remove(index);
   };
 
+  return { 
+    fields,
+    handleRemoveEvent,
+    handleAddEvent,
+    watchedTemplate
+   }
+}
+
+
+export function TemplateDefinitionStep() {
+  
+  const {
+    
+    fields,
+    handleRemoveEvent,
+    handleAddEvent,
+    watchedTemplate
+
+  } = useTamplatesStep()
+
   return (
     <Box sx={{ p: 0 }}>
       <Stack spacing={3}>
-        {/*
-        <Field.Text
-          name="templateData.template_name"
-          label="שם התבנית"
-          placeholder="לדוגמה: יום לימודים רגיל"
-          variant="filled"
-          fullWidth
-        />
-        */}
-        
-
         <Box>
           <Scrollbar sx={{ maxHeight: 400 }}>
             <Stack spacing={2}>

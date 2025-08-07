@@ -14,7 +14,7 @@ export function apiInfoStudents() {
     queryKey: ['info_students'],
     queryFn: async () => {
       const res =  await apiFetch('all', postData);
-
+      console.log('apiInfoStudents', res);
       return res?.data ?? null;
     },
   });
