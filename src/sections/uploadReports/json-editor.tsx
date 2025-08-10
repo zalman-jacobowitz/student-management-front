@@ -6,15 +6,36 @@ interface JsonEditorComponentProps {
     json: any;
   }[];
   onDataChange: (data: any) => void;
-  onUpload: () => void;
+}
+
+async function uploadData(dataToSend: any) {
+  try {
+    const response = await fetch('http://localhost:8080/upload_scan_reports', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSend),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Success:', result);
+    // Handle success, maybe show a message to the user
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle errors, maybe show an error message
+  }
 }
 
 const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
   initialParsedData,
   onDataChange,
-  onUpload,
 }) => {
-  const [editedData, setEditedData] = useState([]);
+  const [editedData, setEditedData] = useState<any>([]);
   const debounceTimerRef = useRef(null); // Ref to store the debounce timer
 
   useEffect(() => {
@@ -92,6 +113,10 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
     );
   };
 
+  const onUpload = () => {
+    uploadData(editedData[0]?.json?.tables);
+  };
+
   return (
     <div
       style={{
@@ -114,7 +139,6 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
           width: '100%',
           maxWidth: '64rem',
           border: '1px solid #e2e8f0',
-          direction: 'rtl',
         }}
       >
         <h1
@@ -211,16 +235,6 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
                         position: 'relative',
                       }}
                     >
-                      <h4
-                        style={{
-                          fontSize: '1.125rem' /* text-lg */,
-                          fontWeight: '700' /* font-bold */,
-                          color: '#166534' /* text-green-800 */,
-                          marginBottom: '0.75rem' /* mb-3 */,
-                        }}
-                      >
-                        Table {table.table_id || tableIndex + 1}
-                      </h4>
                       <button
                         type="button"
                         onClick={() => handleRemoveTable(fileIndex, tableIndex)}

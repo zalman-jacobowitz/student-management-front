@@ -254,11 +254,7 @@ function UploadReports() {
         )}
 
         {parsedData?.length ? (
-          <JsonEditorComponent
-            initialParsedData={parsedData}
-            onDataChange={undefined}
-            onUpload={undefined}
-          />
+          <JsonEditorComponent initialParsedData={parsedData} onDataChange={undefined} />
         ) : null}
         {error && (
           <Typography variant="body2" color="error">
