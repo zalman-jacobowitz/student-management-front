@@ -176,8 +176,8 @@ export function InitializationWizard() {
           templates: formatTemplates(data.templateData.events)
         }
       console.log('Formatted Tables:', formattedTables);
-
-      const promise = mutate.mutateAsync({data: formattedTables, mode: 'update'});
+      /*
+      const promise =   mutate.mutateAsync({data: formattedTables, mode: 'update'});
 
       toast.promise(promise, {
           loading: 'מחיקה...',
@@ -186,7 +186,9 @@ export function InitializationWizard() {
         });
   
         await promise;
-  
+
+      */
+
       // setTimeout(() => {
       //  router.push('/ניהול/רשימה');
       // }, 2000);
