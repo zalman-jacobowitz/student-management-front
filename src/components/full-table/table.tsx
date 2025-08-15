@@ -44,10 +44,11 @@ function FullTableProvider({ children, deleteData, table }: FullTableProviderPro
     styleTable,
     removeAction,
     rowId,
-    tableColumns
+    tableColumns,
+    specialRow
   } = useTableConfig()
 
-  
+  const headLabels = getHeadLabels(specialRow, tableColumns)
   return (
     <Box sx={{ position: 'relative' }}>
       <TableSelectedHeader
@@ -57,7 +58,7 @@ function FullTableProvider({ children, deleteData, table }: FullTableProviderPro
         id={rowId}
       />
       <Scrollbar>
-        <RegularTable headLabels={tableColumns} tableData={tableData} table={table} themeTable={styleTable} id={rowId}>
+        <RegularTable headLabels={headLabels} tableData={tableData} table={table} themeTable={styleTable} id={rowId}>
           {children}
         </RegularTable>
       </Scrollbar>

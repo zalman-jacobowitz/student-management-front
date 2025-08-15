@@ -30,6 +30,7 @@ const LINKS = [
 function StudentMainViewDynamic() {
   // המידע על העמודות
   const infoColumns = useInfoColumns('info_students')
+  console.table(infoColumns.newData)
   // קריאה לנתונים של התלמידים עצמם
   const infoStudents = useSuspenseQuery(apiInfoStudents());
   // יבוא האפשרות לנווט בין דפים לצורך מעבר למסך העמודות

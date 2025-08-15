@@ -79,16 +79,16 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
 
       // שמירה על כל השדות הקיימים ועדכון רק השדות שנערכו
       const columnNewDetails = {
-        "client": column.client,
-        "filters": column.filters, // שמירה על הערך הקיים
-        "group_name": column.group_name, // שמירה על הערך הקיים
-        "hidden": data.hidden ? '1' : '', // עדכון לפי הטופס
-        "label": column.label, // שמירה על הערך הקיים
-        "name": data.name, // עדכון לפי הטופס
-        "required": column.required, // שמירה על הערך הקיים
+        "client": column.client || 0,
+        "filters": column.filters || 0, // שמירה על הערך הקיים
+        "group_name": column.group_name || 0, // שמירה על הערך הקיים
+        "hidden": data.hidden ? 1 : 0, // עדכון לפי הטופס
+        "label": column.label || '', // שמירה על הערך הקיים
+        "name": data.name || '', // עדכון לפי הטופס
+        "required": column.required || 0, // שמירה על הערך הקיים
         "sorting": String(column.sorting),
         "table_name": "info_students",
-        "type": data.type, // עדכון לפי הטופס
+        "type": data.type || 0, // עדכון לפי הטופס
         "options": data.options || []
       }
       
