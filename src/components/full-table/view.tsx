@@ -124,6 +124,7 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
     onClose={importData.onFalse}
     open={importData.value}
     oldData={tableData}
+    infoColumns={tableColumns}
   />
   )
   // דיאלוג ההוספה או עריכה של רשומה
