@@ -33,7 +33,7 @@ import { Form } from 'src/components/hook-form';
 
 import { useSteps } from 'src/hooks/use-stepper';
 import { transformKeys } from 'src/utils/pandas/trans-keys';
-import { findDuplicates } from 'src/utils/pandas/find-duplicates';
+import { findDuplicates, findInternalDuplicates } from 'src/utils/pandas/find-duplicates';
 
 import { generateUniqueIds } from 'src/utils/function-edit';
 
@@ -91,14 +91,28 @@ const requiredCheck = (data, columns) => {
   return errors;
 }
 
-const duplicatesCheck = (data, oldData) => {
-  if (!oldData.length) return [];
-  const dup = findDuplicates({
-    table1: oldData,
-    table2: data,
-    columns: columnsDetails.filter(e=>e.unique).map(e=>e.name)
-  });
-  return dup;
+
+const duplicatesCheck = (data, oldData, columns) => {
+  const uniqueColumns = columns.filter(e => e.uniqe).map(e => e.name);
+
+  const result = {
+    internalDuplicates: [],
+    betweenTables: []
+  };
+  
+  // בדיקת כפילות פנימיות בטבלה החדשה
+  result.internalDuplicates = findInternalDuplicates(data, uniqueColumns);
+  
+  // בדיקת כפילות בין הטבלאות
+  if (oldData.length) {
+    result.betweenTables = findDuplicates({
+      table1: oldData,
+      table2: data,
+      columns: uniqueColumns
+    });
+  }
+  
+  return result;
 }
 
 const processData = (withColumns) => withColumns.map(row => {
@@ -112,9 +126,10 @@ function validateData(data, oldData, userEmail, infoColumns){
   const withColumns = columnsMap(data);
   // בדיקת שגיאות - כגון סוגי שדות והאם נדרש
   const errors = requiredCheck(withColumns, infoColumns);
-  const dup = duplicatesCheck(withColumns, oldData);
+  const dup = duplicatesCheck(withColumns, oldData, infoColumns);
   
-  dup.forEach((row, index) => errors.push(`שגיאה ${index + 1}: ${row.שם} ${row.משפחה} כבר קיים במערכת`));
+  dup.betweenTables.forEach((row, index) => errors.push(`שגיאה ${index + 1}: ${row.שם} ${row.משפחה} כבר קיים במערכת`));
+  errors.push(...dup.internalDuplicates);
 
   const processedData = processData(withColumns);
   const finalData = generateUniqueIds(processedData, userEmail);
