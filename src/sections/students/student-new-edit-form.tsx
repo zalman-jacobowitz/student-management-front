@@ -11,6 +11,7 @@ import { infoStudentsUpdate } from "src/actions/info_students";
 import { Form } from "src/components/hook-form";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import { FromElement } from "src/components/hook-form/dynamic-form/elements";
+import { uuidv4 } from "src/utils/uuidv4";
 
 
 
@@ -20,7 +21,9 @@ type StudentsNewEditFromProps = {
 }
 
 export function StudentsNewEditFrom({ columns }: StudentsNewEditFromProps){
-  
+
+  const columnsWithoutDefaults = columns.filter(col => !['client', 'student_id'].includes(col.name));
+
   return (
     <Box
       rowGap={3}
@@ -29,7 +32,7 @@ export function StudentsNewEditFrom({ columns }: StudentsNewEditFromProps){
       pt={2}
       gridTemplateColumns={{ xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' }}
     >
-      {columns.map((col, index) =>
+      {columnsWithoutDefaults.map((col, index) =>
         <Box key={col.name || index} display="flex" flexDirection="column">
           <FromElement info={col} />
         </Box>
@@ -55,9 +58,11 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
 
   const method = useForm({
     mode: 'all',
-    defaultValues: student,
-  });
-  
+    defaultValues: student.student_id? student: columns.reduce((acc, col) => {
+      acc[col.name] = '';
+      return acc;
+  }, {})})
+
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -67,8 +72,12 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
   const mutate = useMutation(infoStudentsUpdate({queryClient}))
   
   const onSubmit = handleSubmit(async (data) => {
-    try {
 
+    if (!student.student_id){
+      data.student_id = uuidv4()
+    }
+
+    try {
       const promise = mutate.mutateAsync({data: [data], mode: 'update'})
 
       toast.promise(promise, {

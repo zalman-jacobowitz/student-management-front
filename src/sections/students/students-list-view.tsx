@@ -30,7 +30,7 @@ const LINKS = [
 function StudentMainViewDynamic() {
   // המידע על העמודות
   const infoColumns = useInfoColumns('info_students')
-  console.table(infoColumns.newData)
+
   // קריאה לנתונים של התלמידים עצמם
   const infoStudents = useSuspenseQuery(apiInfoStudents());
   // יבוא האפשרות לנווט בין דפים לצורך מעבר למסך העמודות
@@ -79,8 +79,7 @@ function StudentMainViewDynamic() {
       }
     }
   ], [router])
-  // הנתונים על המשתמש - לא ברור למה
-  const userDetails = useUserDetails()
+
   // הקונפיגורציה נדרשת לטבלה על תלמידים
   const configStudents: TableConfig = useMemo(() => ({
     // רשימת הלינקים המופיעה תחת הכותרת
@@ -115,7 +114,7 @@ function StudentMainViewDynamic() {
       // והאם מדובר במצב עריכה או הוספה
       return (
         <StudentsNewEditFormDialog
-          getColumns={infoColumns.newData}
+          columns={infoColumns.newData}
           student={column}
           open={open}
           onClose={onClose}
@@ -131,14 +130,8 @@ function StudentMainViewDynamic() {
     pagination: true,
     // כפתור הוספה של רשומה
     addButton: true,
-    // ערכים ברירת מחדל לטופס: לא נצרך
-    defaultValues: {
-      student_id: uuidv4(),
-      user_id: userDetails?.userDetails?.email || '',
-      client: 'kg_gdola',
-    }
     // רשימה של התלויות לטבלה הזו
-  }), [infoColumns.newData, infoStudents.data, submitDelete, userDetails, listActionsMap])
+  }), [infoColumns.newData, infoStudents.data, submitDelete, listActionsMap])
   
   // קומפוננטת הטבלה עצמה
   return (<FullTableWrapper config={configStudents} /> )

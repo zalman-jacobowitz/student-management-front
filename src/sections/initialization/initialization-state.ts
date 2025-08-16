@@ -108,7 +108,7 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
     updateColumnProperty(formData.familyColumn, "group_name", "primary");
     updateColumnProperty(formData.accessibleColumn, "group_name", "secondary");
     formData.filterColumns.forEach((column: string) => {
-      updateColumnProperty(column, "filters", "true");
+      updateColumnProperty(column, "filters", "extra");
     });
     formData.duplicateColumns.forEach((column: string) => {
       updateColumnProperty(column, "required", "true");

@@ -86,7 +86,7 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
         "label": column.label || '', // שמירה על הערך הקיים
         "name": data.name || '', // עדכון לפי הטופס
         "required": column.required || 0, // שמירה על הערך הקיים
-        "sorting": String(column.sorting),
+        "sorting": column.sorting || 0,
         "table_name": "info_students",
         "type": data.type || 0, // עדכון לפי הטופס
         "options": data.options || []
@@ -154,8 +154,8 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
     description: '',
     type: column.type,
     options: column.options,
-    hidden: column.hidden === '',
-    required: column.required === '',
+    hidden: Number(column.hidden),
+    required: Number(column.required),
     disabled: false,
     group: column.filters,
     priority: column.group_name,

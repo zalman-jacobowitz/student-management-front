@@ -27,7 +27,7 @@ const LINKS = [
 
 function UserMainDynamicView() {
   const infoUsers = useSuspenseQuery(apiUsers());
-  console.log('infoUsers', infoUsers.data);
+
     const tableColumnsConfig: TableConfig = {
       // Flattened heading properties
       headingLinks: LINKS,

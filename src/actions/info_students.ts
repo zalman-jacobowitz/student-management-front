@@ -35,30 +35,17 @@ type MutationFnProps = {
 export const infoStudentsUpdate = ({queryClient}: InfoStudentsUpdateProps) => ({
   mutationKey: ['info_students'],
   mutationFn: async ({ data, mode='update'}) => {
-    const newData = mode === 'delete' ? data : [] 
-    if (mode === 'update') {
-      data.forEach(item => {
-        const {student_id} = item
-        Object.keys(item).forEach(key => {
-          if (key === 'student_id') return;
-          newData.push({
-            student_id,
-            group_name: key,
-            value: item[key]
-          })
-        })
-      })
-    }
+    console.log('infoStudentsUpdate', data, mode);
     const res = await apiFetch('all', {
       table_name: 'info_students',
       mode,
-      data: newData,
+      data,
       });
       return res?.data ?? null;
     
   },
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['info_students'] });
+    queryClient.cancelQueries({ queryKey: ['info_students'] });
   },
 })
 

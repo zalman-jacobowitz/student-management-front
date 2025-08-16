@@ -20,7 +20,7 @@ export function SelectElement({ info }) {
   );
 }
 function HebrewDat({info}){
-  console.log('info: ', info)
+
   return <Field.HebrewDatePicker
             name={info.name}
             label={info.label}
@@ -42,7 +42,7 @@ export function FromElement({ info }) {
   const MainElement = Element[info.type] || Field.Text;
   
   // הוספת helperText מהולידציה רק אם לא קיים
-  console.log('info: ', info)
+
   const enhancedInfo = {
     ...info,
     helperText: info.helperText || ''
