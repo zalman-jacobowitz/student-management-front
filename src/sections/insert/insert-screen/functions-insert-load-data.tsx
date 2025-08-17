@@ -23,27 +23,22 @@ function toServer(data){
 
 
 export function useLoadCurrentData(reset: (values: any) => void, tamplateData: any[] = []) {
-    
-    const range = {start: '2025-07-18'}
-
     const setCurrentData = useInsertStore(state => state.setCurrentData);
     const queryClient = useQueryClient();
     const crnt = useSuspenseQuery(apiDataStudentsEvent(toServer(tamplateData), queryClient))
-    const exc = useSuspenseQuery(apiExceptions(range))
+    // const exc = useSuspenseQuery(apiExceptions(range))
 
 
     useEffect(() => {
       
       if (crnt.data && tamplateData.length) {
 
-                  console.log(crnt.data)
+        console.log(crnt.data)
         if (crnt.data.length) {
-
           const newData = tamplateData.map((item) => {
             const updatedItem = crnt.data.find((i: any) => i.student_id === item.student_id);
-            const exceptionItem = exc.data.find((i: any) => i.student_id === item.student_id);
-            console.log('exceptionItem', exceptionItem)
-            return { ...item, ...updatedItem , ...exceptionItem};
+            // const exceptionItem = exc.data.find((i: any) => i.student_id === item.student_id);
+            return { ...item, ...updatedItem};
             
           })
           console.table(newData)
