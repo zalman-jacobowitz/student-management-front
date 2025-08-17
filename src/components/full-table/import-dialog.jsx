@@ -45,6 +45,7 @@ import { columnsDetails } from 'src/utils/uinqe_usege/columnsValid';
 import { InitImportFile, InitColumnNames, CompleteStep } from './import-stpes/steps';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from '../custom-dialog';
+import { uuidv4 } from 'src/utils/uuidv4';
 
 
 
@@ -115,9 +116,9 @@ const duplicatesCheck = (data, oldData, columns) => {
   return result;
 }
 
-const processData = (withColumns) => withColumns.map(row => {
+const processData = (withColumns, infoColumns) => withColumns.map(row => {
   const filtered = {};
-  columnsDetails.forEach(col => { filtered[col.name] = row[col.name]; });
+  infoColumns.forEach(col => { filtered[col.name] = row[col.name]; });
   return filtered;
 });
 
@@ -131,10 +132,16 @@ function validateData(data, oldData, userEmail, infoColumns){
   dup.betweenTables.forEach((row, index) => errors.push(`שגיאה ${index + 1}: ${row.שם} ${row.משפחה} כבר קיים במערכת`));
   errors.push(...dup.internalDuplicates);
 
-  const processedData = processData(withColumns);
-  const finalData = generateUniqueIds(processedData, userEmail);
+  // מכיל רק את העמודות של המערכת
+  const filteredData = processData(withColumns, infoColumns);
+  
+  // הוספת מזהים ייחודיים לכל שורה
+  const validData = filteredData.map((record) => ({
+      ...record,
+      student_id: uuidv4()
+  }));
 
-  return {errors, validData: finalData};
+  return {errors, validData};
 }
 
 // ------------------------------------------------------------
@@ -158,8 +165,9 @@ function useImportData(oldData, infoColumns){
         errorsDialog.onTrue();
         console.log('listErrors:', errors)
         console.log('errorsDialog:', errorsDialog.value)
+        return true
       }
-      return true
+      
       if (!validData) return false;
       const promise = mutate.mutateAsync({data: validData, mode : 'update'});
       

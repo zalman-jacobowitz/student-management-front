@@ -15,16 +15,20 @@ import useInitializationStore from '../initialization-state.ts';
 
 function useStudentFileUpload(){
   const { setValue, watch } = useFormContext();
-  
+  // מקבל את המסמך שהעולה
   const watchedFile = watch('studentFile.file');
 
+  // מייבא את הפונקציה לאיחול הנתונים שהועולו
   const { updateInitializationData, columnsList } = useInitializationStore();
   
+  // פונקציית העלאת המסמך
   const handleFileUpload = (acceptedFiles) => {
     const fileDetails = acceptedFiles[0];
     if (!fileDetails) return;
 
+    // מעדכן את הערך של הקובץ המועלה
     setValue('studentFile.file', fileDetails);
+    
     
     const reader = new FileReader();
     reader.readAsArrayBuffer(fileDetails);
@@ -44,8 +48,9 @@ function useStudentFileUpload(){
         
         toast.success(`נטענו ${data.length} תלמידים עם ${columns.length} עמודות`);
       } else {
-        toast.error(result.message || 'שגיאה בקריאת הקובץ');
+        toast.error('שגיאה בקריאת הקובץ');
       }
+
     };
 
     reader.onerror = () => {
@@ -85,8 +90,8 @@ export function StudentFileUploadStep() {
   
   } = useStudentFileUpload()
 
-  return (
-    <Box sx={{ p: 3 }}>
+
+  const renderTemplatesDownload = (
       <Box sx={{ mb: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           הורד תבנית קובץ:
@@ -108,7 +113,11 @@ export function StudentFileUploadStep() {
           </Button>
         </Box>
       </Box>
+  )
 
+  return (
+    <Box sx={{ p: 3 }}>
+      {renderTemplatesDownload}
       <Upload
         multiple={false}
         files={watchedFile ? [watchedFile] : []}

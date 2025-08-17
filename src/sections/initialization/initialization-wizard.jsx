@@ -71,25 +71,6 @@ function formatStudents(table){
   return with_ids;
 }
 
-/*
-  const newData = [];
-      with_ids.forEach(item => {
-        const {student_id} = item
-        Object.keys(item).forEach(key => {
-          if (key === 'student_id') return;
-          newData.push({
-            student_id,
-            group_name: key,
-            value: item[key]
-          })
-        })
-      })
-  
-  return newData
-  
-}
-*/
-
 function formatTemplates(table){
 
   const template_id = uuidv4();
@@ -160,6 +141,7 @@ export function InitializationWizard() {
       component: <CompletionStep />,
     }
   ], []);
+
   const store = useInitializationStore()
   const queryClient = useQueryClient();
   const mutate = useMutation(initUpdate({queryClient}))

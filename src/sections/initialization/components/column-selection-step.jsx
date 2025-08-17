@@ -94,14 +94,7 @@ export function ColumnSelectionStep() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <MasterStep fields={fields} number={1} spacing={3} />      
-      {watchedValues?.nameColumn && watchedValues?.familyColumn && (
-        <Box sx={{ p: 2, bgcolor: 'success.lighter', borderRadius: 1, mt: 3 }}>
-          <Typography variant="body2" color="success.dark">
-            נבחרו עמודות: {watchedValues.nameColumn} (שם) ו-{watchedValues.familyColumn} (משפחה)
-          </Typography>
-        </Box>
-      )}
+      <MasterStep fields={fields} number={1} spacing={3} />
     </Box>
   );
 }

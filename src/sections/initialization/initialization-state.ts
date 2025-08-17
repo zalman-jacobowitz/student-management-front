@@ -12,6 +12,7 @@ interface ColumnConfig {
   required: string;
   sorting: number;
   type: string;
+  uniqe: number;
 }
 
 // Main state interface
@@ -72,12 +73,13 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
     const { columnsList } = get();
     
     const formattedColumns: ColumnConfig[] = columnsList.map((column, index) => ({
-      filters: "",
-      group_name: "",
-      hidden: false,
+      filters: 0,
+      group_name: 0,
+      hidden: 0,
       label: column,
       name: column,
-      required: "",
+      required: 0,
+      uniqe: 0,
       sorting: index,
       type: "text",
     }));
@@ -111,7 +113,7 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
       updateColumnProperty(column, "filters", "extra");
     });
     formData.duplicateColumns.forEach((column: string) => {
-      updateColumnProperty(column, "required", "true");
+      updateColumnProperty(column, "uniqe", "1");
     });
     return get().formattedColumns;
   },
