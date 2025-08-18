@@ -1,3 +1,5 @@
+import { InfoStudent } from "src/serverTypes";
+
 /**
  * 
  * @param infoStudents 
@@ -23,7 +25,7 @@ export function description(getColumns: any[], row: any): { primary: string; sec
     }
 }
 
-export const getDesc = (student: any, desc: string[]): string => desc.map(e => student[e]).join(' ')
+export const getDesc = (student: InfoStudent, desc: string[]): string => desc.map(e => student[e]).join(' ')
 
 export function descriptionColumns(getColumns: any[]): { primary: string[]; secondary: string[] } {
   const primary = getColumns.filter(e => e.group_name === 'primary').map(e => e.name)

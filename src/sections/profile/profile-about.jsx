@@ -85,10 +85,8 @@ export function AboutSection({ info, value }) {
 }
 
 
-export function ProfileAbout() {
+export function ProfileAbout({studentInfo }) {
 
-  const studentInfo = useInsertStore(state => state.studentInfo);
-  
   return (
       <Card>
           <CardHeader title="אודות" />

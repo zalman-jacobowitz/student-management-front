@@ -123,7 +123,7 @@ export function ProfileViewScreen({ studentData , studentInfo={}, studentsInfo, 
 }
 -*/
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, Suspense } from "react";
 
 import { Tab, Card, Tabs, Container, tabsClasses } from "@mui/material";
 
@@ -133,6 +133,10 @@ import { useSettingsContext } from "src/components/settings";
 import { ProfileCover } from "./profile-cover";
 import { ProfileDataMain } from "./profile-main";
 import useInsertStore from "../insert/insert-state.ts";
+import { LoadingScreen } from "src/components/loading-screen/loading-screen.tsx";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { apiInfoStudents } from "src/actions/info_students.ts";
+import { apiProfile } from "src/actions/profile.ts";
 
 const TABS = [
     {
@@ -152,7 +156,7 @@ function ProfileTabs({ currentTab, handleChangeTab }) {
     return (
         <Tabs
             value={currentTab}
-            onChange={handleChangeTab}
+            onChange={(evnt, tab) => handleChangeTab(tab)}
             sx={{
                 width: 1,
                 bottom: 0,
@@ -175,10 +179,10 @@ function ProfileTabs({ currentTab, handleChangeTab }) {
     );
 }
 
-export function ProfileTabsContant({tab}) {
+export function ProfileTabsContant({tab, studentInfo, dataStudents}) {
     switch (tab) {
         case 'נוכחות':
-            return <ProfileDataMain />;
+            return <ProfileDataMain studentInfo={studentInfo} dataStudents={dataStudents} />;
         case 'ציונים':
             return <>ציונים</>;
         default:
@@ -186,11 +190,19 @@ export function ProfileTabsContant({tab}) {
     }
 }
 
-export function ProfileViewScreen() {
-    const settings = useSettingsContext();
-    const [currentTab, setCurrentTab] = useState('נוכחות');
-    const studentInfo = useInsertStore(state => state.studentInfo);
+export function ProfileViewScreen({studentId}) {
 
+    const infoStudents = useSuspenseQuery(apiInfoStudents());
+    const dataStudents = useSuspenseQuery(apiProfile(studentId));
+
+    const studentInfo = infoStudents.data.find(e => e.student_id === studentId) || {};
+    console.log({studentInfo});
+    const studentData = dataStudents.data || [];
+
+    const settings = useSettingsContext();
+
+    const [currentTab, setCurrentTab] = useState('נוכחות');
+    
     const handleChangeTab = useCallback((event, newValue) => {
         setCurrentTab(newValue);
     }, []);
@@ -198,17 +210,15 @@ export function ProfileViewScreen() {
     return (
         <Container maxWidth={settings.themeStretch ? false : 'lg'}>
             <Card sx={{ mb: 3, height: 290 }}>
-                <ProfileCover sec={studentInfo.כתובת_מגורים}
-                    name={`${studentInfo.שם} ${studentInfo.משפחה}`}
-                    avatarUrl=''
-                    coverUrl=''
-                />
+                <ProfileCover studentInfo={studentInfo} />
                 <ProfileTabs
                     currentTab={currentTab}
-                    handleChangeTab={handleChangeTab}
+                    handleChangeTab={setCurrentTab}
                 />
             </Card>
-            <ProfileTabsContant tab={currentTab} />
+            <ProfileTabsContant tab={currentTab} studentInfo={studentInfo} dataStudents={dataStudents}/>
         </Container>
     );
 }
+
+

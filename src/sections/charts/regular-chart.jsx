@@ -14,7 +14,7 @@ function useRegularChart(config) {
   const isMultiple = config.groupBy.length > 1
 
   const chartData = useGetTable('chart', {config})
-
+  alert(JSON.stringify(chartData.data))
   const x = config.groupBy[0].table === 'info_students' ? 'value': config.groupBy[0].column
 
   const y = isMultiple?config.groupBy[1].column: config.groupBy[0].column;

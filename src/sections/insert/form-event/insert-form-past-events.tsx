@@ -39,7 +39,7 @@ export function InsertFormPastEvents({students_ids, dialogPrevEvents, methods, r
             }}
           >
             <ListItemText
-              primary={option.event}
+              primary={option.event_name}
               secondary={inHebrew(option.day, true)}
             />
           </ListItemButton>

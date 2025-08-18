@@ -5,8 +5,7 @@ import useInsertStore from "../insert/insert-state.ts";
 import { RegularChart } from "../charts/regular-chart";
 
 
-export function ProfileDataMain() {
-  const studentInfo = useInsertStore(state => state.studentInfo);
+export function ProfileDataMain({ studentInfo, dataStudents }) {
 
   const config = {
     title: 'נתונים לפי ימים',
@@ -38,14 +37,16 @@ export function ProfileDataMain() {
   return (
     <Grid container spacing={3}>
       <Grid xs={12} md={4}>
-        <ProfileAbout />
+        <ProfileAbout studentInfo={studentInfo} />
       </Grid>
+      
       <Grid xs={12} md={8}>
         <RegularChart config={config} />
       </Grid>
       <Grid xs={12} md={8}>
         <RegularChart config={line} />
       </Grid>
+      
     </Grid>
   );
 }
