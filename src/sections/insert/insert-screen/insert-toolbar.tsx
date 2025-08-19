@@ -85,7 +85,7 @@ export function InsertToolbar({
     >
       <RegularButton onClick={onBack} icon="solar:arrow-right-bold" data-testid="back-button">חזור</RegularButton>
       <Button onClick={filterDrawer.onTrue}>סינון</Button>
-      <Button color="warning" variant="soft" onClick={dialogDelay.onTrue}>איחור</Button>
+      
       <CopyPasteButtons
         onCopy={onCopy}
         onPaste={onPaste}

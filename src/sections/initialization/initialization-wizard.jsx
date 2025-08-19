@@ -1,17 +1,26 @@
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { useMemo } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { Iconify } from 'src/components/iconify';
+import { uuidv4 } from 'src/utils/uuidv4.js';
+
+import { initUpdate } from 'src/actions/init.ts';
+
 import { StepsProvider } from 'src/components/steps-form';
 
-import useInitializationStore from './initialization-state.ts';
 import { CompletionStep } from './components/completion-step';
+import useInitializationStore from './initialization-state.ts';
 import { ColumnSelectionStep } from './components/column-selection-step';
 import { StudentFileUploadStep } from './components/student-file-upload-step';
 import { TemplateDefinitionStep } from './components/template-definition-step';
 import { InitializationColumnsView } from './components/initialization-columns-view';
+
+
+
+
 
 // ----------------------------------------------------------------------
 
@@ -31,8 +40,6 @@ const ImportFileSchema = z.object({
 });
 
 const TemplateSchema = z.object({
-  template_id: z.string().optional(),
-  template_name: z.string().min(1, 'שם תבנית נדרש').optional(),
   events: z.array(z.object({
     event_name: z.string().min(1, 'שם אירוע נדרש'),
     event_start: z.string(),
@@ -58,13 +65,36 @@ const InitializationWizardSchema = z.object({
 
 // ----------------------------------------------------------------------
 
+function formatStudents(table){
+  const with_ids = table.map(item => ({...item, student_id: uuidv4()}));
+  
+  return with_ids;
+}
+
+function formatTemplates(table){
+
+  const template_id = uuidv4();
+
+  const formattedTable = table.map((item) => ({
+    event_id:  uuidv4(),
+    event_name: item.event_name,
+    event_start: item.event_start,
+    event_end: item.event_end,
+    template_name: 'רגיל',
+    template_id
+  }));
+
+  return formattedTable
+}
+
+// --------------------------------------------------------------------
+
 export function InitializationWizard() {
   const router = useRouter();
 
   const defaultValues = useMemo(() => ({
     studentFile: null,
     templateData: {
-      template_name: '',
       events: []
     },
     columnSelection: {
@@ -111,23 +141,42 @@ export function InitializationWizard() {
       component: <CompletionStep />,
     }
   ], []);
+
   const store = useInitializationStore()
+  const queryClient = useQueryClient();
+  const mutate = useMutation(initUpdate({queryClient}))
+
   const handleSubmit = async (data) => {
-    alert(JSON.stringify(data))
     try {
-      console.log('Initialization data:', data);
-      console.log('useInitializationStore:', store.columnsList)
-      // Here you would typically save the data to your backend
-      // For now, we'll just simulate success
       
-      // Navigate to dashboard after successful initialization
-      setTimeout(() => {
-        router.push('/ניהול/רשימה');
-      }, 2000);
+      const newFormattedColumns = store.updateColumnsDetails(data.columnSelection);
+      const formatInfoStudents = store.columnsList
+
+      const formattedTables = {
+          info_students: formatStudents(store.studentsData),
+          info_columns: newFormattedColumns,
+          templates: formatTemplates(data.templateData.events)
+        }
+      console.log('Formatted Tables:', formattedTables);
       
-      return true;
+      const promise =   mutate.mutateAsync({data: formattedTables, mode: 'update'});
+
+      toast.promise(promise, {
+          loading: 'מאתחל את המערכת...',
+          success: 'העדכון הצליח!',
+          error: 'העדכון נכשל!',
+        });
+  
+        await promise;
+
+      // setTimeout(() => {
+      //  router.push('/ניהול/רשימה');
+      // }, 2000);
+      
+      return false;
     } catch (error) {
       console.error('Initialization failed:', error);
+      toast.error('שגיאה בשליחת הטופס');
       return false;
     }
   };

@@ -29,22 +29,25 @@ import useTableConfig from "./table-state";
 
 
 
-function useFullTableWrapper() {
+function useTableFunctions() {
 
-  const importData = useBoolean(false)
-  const quickAdd = useBoolean(false)
-  const filterDrawer = useBoolean();
+  // סטייטים לשליטה בדיאלוגים:
+  const importData = useBoolean(false) // יבוא
+  const quickAdd = useBoolean(false) // הוספה מהירה
+  const filterDrawer = useBoolean(); // מסנן
 
-  //
+  // סטייטים לסינון
   const [filters, setFilters] = useState<FilterObject>({});
 
+  // פונקציית סינון
   const handleFilter = useCallback((filterData: FilterObject) => {
     setFilters(() => ({ ...filterData }));
   }, []);
 
-  //
+  // קבלת הנתונים של הטבלה
   const { tableData } = useTableConfig()
 
+  // החלה של הפונקציונליות של הסינון על הטבלה
   const dataFiltered = tableData  // useMemo(() => newApplyFilters(data.tableData, filters, data.tableColumns), [data.tableData, filters, data.tableColumns])
 
   return {
@@ -78,7 +81,7 @@ function Header({ importData }: { importData: () => void }) {
 type FilterObject = { [key: string]: string | string[]; };
 
 export function FullTableWrapper({ config }: { config: TableConfig }) {
-
+  // יבוא האפשרויות של הטבלה
   const {
     importData,
     quickAdd,
@@ -86,8 +89,9 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
     dataFiltered,
     handleFilter,
     filters
-  } = useFullTableWrapper()
+  } = useTableFunctions()
 
+  // איתחול הקונפיגורציה בסטייט הכללי לצורך שיתוף הפרטים
   const { initialize } = useTableConfig()
 
   const {
@@ -99,25 +103,31 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
     tableColumns,
     EditComponent,
     defaultValues
+
   } = useTableConfig()
 
-  // Initialize the global state with the config
+  // מימוש פונקציית האיתחול
   useEffect(() => {
     initialize(config)
   }, [config, initialize])
 
+  // שורת כפותי עזר מעל הטבלה
   const renderHeader = isHeader && <Header importData={importData.onTrue} />
+  // סרגל הכלים של הטבלה
   const renderToolbar = isToolbar && <FullTableToolbar />
+  // הטבלה עצמה
   const renderTable = <FullTable dataFiltered={dataFiltered} />
+  // כפתור הוספה
   const renderAddBtn = addButton && <ButtonGreen onClick={quickAdd.onTrue} />
-
+  // דיאלוג הייבוא טבלה חדשה
   const renderImportDialog = (<FullTableImportDialog
     onClose={importData.onFalse}
     open={importData.value}
     oldData={tableData}
+    infoColumns={tableColumns}
   />
   )
-
+  // דיאלוג ההוספה או עריכה של רשומה
   const renderEditDialog = EditComponent && (
     <EditComponent
       open={quickAdd.value}
@@ -125,7 +135,7 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
       column={defaultValues || {}}
     />
   )
-
+  // קומפוננטת הסינון בפועל המופיעה בצד המסך
   const renderFiltersDialog = (
     <InsertFilters
       open={filterDrawer.value}
@@ -136,7 +146,7 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
       table={tableData}
     />
   )
-
+  // הצגת הטבלה על פי הקונפיגורציה
   return (
     <DashboardContent sx={{}} disablePadding={false}>
       {renderHeader}

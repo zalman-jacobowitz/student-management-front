@@ -22,7 +22,7 @@ const LINKS = [
 
 function ColumnsMainView() {
   const infoStudents = useInfoColumns('info_students')
-  console.log('infoStudents: ', infoStudents.newData)
+
     const tableColumnsConfig: TableConfig = {
     headingLinks: LINKS,
     headingTitle: 'הגדרת עמודות',

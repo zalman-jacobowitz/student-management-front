@@ -35,17 +35,20 @@ type FullTableProviderProps = {
 }
 
 
+// MUI קומפוננטת הטבלה עצמה עם שימוש בטבלה של 
 function FullTableProvider({ children, deleteData, table }: FullTableProviderProps) {
+  // ייבוא נתוני הקונפיגורציה
   const {
     tableData,
     pagination,
     styleTable,
     removeAction,
-    rowId
+    rowId,
+    tableColumns,
+    specialRow
   } = useTableConfig()
 
-  const headLabels = []
-
+  const headLabels = getHeadLabels(specialRow, tableColumns)
   return (
     <Box sx={{ position: 'relative' }}>
       <TableSelectedHeader
@@ -67,19 +70,20 @@ function FullTableProvider({ children, deleteData, table }: FullTableProviderPro
 
 
 function useFullTable(dataFiltered: Table){
+  // קבלת הפרטים על הטבלה מהקונפיגורציה:
   const {
     tableData,
     pagination,
     onDelete
   } = useTableConfig()
 
+  // סטייט למצב דיאלוג מחיקת נתוני תלמידים
   const deleteData = useBoolean(false)
-
+  // הוק להצגה של הטבלה
   const table = useTable({ defaultRowsPerPage: 6, pagination });
-
+  // כמות הרשומות פר עמוד
   const dataPage = pagination ? dataFiltered.slice(table.page * table.rowsPerPage, (table.page + 1) * table.rowsPerPage) : dataFiltered
-  
-  
+  // מימוש פונקציית המחיקה של התלמידים בפועל
   const handleDelete = useCallback(() => {
     if (onDelete) {
       onDelete(table.selected)
@@ -123,12 +127,16 @@ function RemoveActionDialog({ deleteData, handleDelete }: RemoveActionDialogProp
 
 export function FullTable({ dataFiltered }: FullTableProps) {
 
+  // קבלת הפרטים על הטבלה מהקונפיגורציה:
   const {
+    // מזהה השורה הנוכחית
     rowId,
+    // הטבלה עצמה
     tableData,
+    // האם יש כפתור מחיקה
     removeAction
   } = useTableConfig()
-
+  // קבלת הסטייטים הנדרשים לקומפוננטת הטבלה
   const {
     table,
     dataPage,
@@ -136,6 +144,7 @@ export function FullTable({ dataFiltered }: FullTableProps) {
     handleDelete
   } = useFullTable(dataFiltered)
 
+  // רשימת הקומפוננטות של כל הרשומות לדף הנוכחי
   const rows = dataPage.map((student) => (
     <FullTableRow
       key={student[rowId]}

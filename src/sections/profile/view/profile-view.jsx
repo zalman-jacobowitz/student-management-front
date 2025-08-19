@@ -43,7 +43,7 @@ export function ProfileView({ student_id }) {
 
 -*/
 
-import { useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { useGetTable } from "src/actions/table";
 
@@ -52,34 +52,58 @@ import { LoadingScreen } from "src/components/loading-screen";
 import useInsertStore from "src/sections/insert/insert-state.ts";
 
 import { ProfileViewScreen } from "../profile-screen";
+import { apiInfoStudents } from "src/actions/info_students";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Alert, Box, Chip, Stack, Typography } from "@mui/material";
 
 
 
-export function useApiProfileDetails(student_id) {
-    const table = useGetTable("data_students", [{ student_id }]);
-    return table.data
+function StudentsSelectionStep({setStudentId}) {
+  const studentsData = useSuspenseQuery(apiInfoStudents());
+  
+  const students = studentsData.data || [];
+  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  return (
+    <Stack spacing={3}>
+      <Alert severity="info">
+        <Typography variant="body2">
+          בחר את התלמידים להם יחול האישור.
+        </Typography>
+      </Alert>
+      
+      <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+        <Stack spacing={2}>
+          {students.map((student) => (
+            <Chip
+              key={student.student_id}
+              label={`${student.שם} ${student.משפחה}`}
+              onClick={() => setStudentId(student.student_id)}
+              color={selectedStudents.includes(student.student_id) ? 'primary' : 'default'}
+              variant={selectedStudents.includes(student.student_id) ? 'filled' : 'outlined'}
+              sx={{ justifyContent: 'flex-start' }}
+            />
+          ))}
+        </Stack>
+      </Box>
+    </Stack>
+  );
 }
 
-export function ProfileView({ student_id }) {
 
-  const { saveApiDataById, saveInfoById, studentInfo } = useInsertStore()
-  
-  const apiDataExists = useApiProfileDetails(student_id);
+export function ProfileViewWrapper({ student_id }) {
+  const [studentId, setStudentId] = useState(student_id);
 
-  useEffect(() => {
-    if (apiDataExists ) {
-      saveApiDataById(apiDataExists);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saveApiDataById]);
-
-
-  if (apiDataExists) {
-    if (!studentInfo.student_id){
-      saveInfoById(student_id);
-    }
-    return <ProfileViewScreen />
+  if (studentId) {
+    return <ProfileViewScreen studentId={studentId} />
   }
+  return <StudentsSelectionStep setStudentId={setStudentId} />;
 
-  return <LoadingScreen message="טוען נתונים" />;
+}
+export function ProfileView({studentId}) {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <ProfileViewWrapper studentId={studentId} />
+    </Suspense>
+  );
 }

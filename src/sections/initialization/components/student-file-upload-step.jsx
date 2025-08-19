@@ -1,25 +1,34 @@
-import { Box, Typography, Button, Link } from '@mui/material';
-import { useFormContext } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useFormContext } from 'react-hook-form';
+
+import { Box, Typography, Button, Link } from '@mui/material';
+
+import { readFile } from 'src/utils/files/read-file';
+import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
 
 import { Upload } from 'src/components/upload';
-import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
-import { readFile } from 'src/utils/files/read-file';
+
 import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
 
-export function StudentFileUploadStep() {
+
+function useStudentFileUpload(){
   const { setValue, watch } = useFormContext();
+  // מקבל את המסמך שהעולה
   const watchedFile = watch('studentFile.file');
 
+  // מייבא את הפונקציה לאיחול הנתונים שהועולו
   const { updateInitializationData, columnsList } = useInitializationStore();
   
+  // פונקציית העלאת המסמך
   const handleFileUpload = (acceptedFiles) => {
     const fileDetails = acceptedFiles[0];
     if (!fileDetails) return;
 
+    // מעדכן את הערך של הקובץ המועלה
     setValue('studentFile.file', fileDetails);
+    
     
     const reader = new FileReader();
     reader.readAsArrayBuffer(fileDetails);
@@ -39,8 +48,9 @@ export function StudentFileUploadStep() {
         
         toast.success(`נטענו ${data.length} תלמידים עם ${columns.length} עמודות`);
       } else {
-        toast.error(result.message || 'שגיאה בקריאת הקובץ');
+        toast.error('שגיאה בקריאת הקובץ');
       }
+
     };
 
     reader.onerror = () => {
@@ -60,8 +70,28 @@ export function StudentFileUploadStep() {
     }
   };
 
-  return (
-    <Box sx={{ p: 3 }}>
+  return {
+    handleDownloadTemplate,
+    watchedFile,
+    handleRemoveFile,
+    handleFileUpload
+  }
+}
+
+
+export function StudentFileUploadStep() {
+  
+  const {
+  
+    handleDownloadTemplate,
+    watchedFile,
+    handleRemoveFile,
+    handleFileUpload
+  
+  } = useStudentFileUpload()
+
+
+  const renderTemplatesDownload = (
       <Box sx={{ mb: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           הורד תבנית קובץ:
@@ -83,7 +113,11 @@ export function StudentFileUploadStep() {
           </Button>
         </Box>
       </Box>
+  )
 
+  return (
+    <Box sx={{ p: 3 }}>
+      {renderTemplatesDownload}
       <Upload
         multiple={false}
         files={watchedFile ? [watchedFile] : []}

@@ -8,8 +8,6 @@ function getStatus(dataForm){
 }
 export const generateUniqueIds = (records, userEmail) => records.map((record) => ({
     ...record,
-    client: 'kg_gdola',
-    user_id: userEmail,
     student_id: uuidv4()
   }));
   

@@ -30,7 +30,7 @@ export const infoColumnsUpdate = ({queryClient})=>({
     return res?.data ?? null;
   },
   onSuccess: (data, _variables, _ctx) => {
-    // queryClient.invalidateQueries({ queryKey: ['info_columns'] });
+    queryClient.invalidateQueries({ queryKey: ['info_columns'] });
     queryClient.cancelQueries({ queryKey: ['info_columns'] });
   },
 })

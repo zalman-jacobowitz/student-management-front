@@ -1,31 +1,29 @@
 import { toast } from "sonner";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, DialogActions, DialogContent } from "@mui/material";
 
+import { InfoColumn, InfoStudent } from "src/serverTypes";
 import { infoStudentsUpdate } from "src/actions/info_students";
 
 import { Form } from "src/components/hook-form";
 import { ConfirmDialog } from "src/components/custom-dialog";
-
 import { FromElement } from "src/components/hook-form/dynamic-form/elements";
+import { uuidv4 } from "src/utils/uuidv4";
 
-function coustomizeDisable(columns) {
-  return columns.map(col => {
-    if (col.name === 'student_id' || col.name === 'user_id' || col.name === 'client') {
-      return { ...col, disabled: true };
-    }
-    return col;
-  });
+
+
+
+type StudentsNewEditFromProps = {
+  columns: InfoColumn[]
 }
 
-export function StudentsNewEditFrom({getColumns}){
-  const columns = coustomizeDisable(getColumns || []);
+export function StudentsNewEditFrom({ columns }: StudentsNewEditFromProps){
 
-  console.log('columns: ', columns)
+  const columnsWithoutDefaults = columns.filter(col => !['client', 'student_id'].includes(col.name));
+
   return (
     <Box
       rowGap={3}
@@ -34,35 +32,52 @@ export function StudentsNewEditFrom({getColumns}){
       pt={2}
       gridTemplateColumns={{ xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' }}
     >
-      {columns.map((col, index) =>
+      {columnsWithoutDefaults.map((col, index) =>
         <Box key={col.name || index} display="flex" flexDirection="column">
           <FromElement info={col} />
-        </Box>)
+        </Box>
+        )
       }
     </Box>
   )
 }
 
-function StudentsNewEditFormDialogContent({getColumns, student, onClose, existingStudents = [] }) {
+
+
+
+type StudentsNewEditFormDialogContentProps = {
+  columns: InfoColumn[],
+  student: InfoStudent,
+  onClose: () => void,
+  existingStudents?: InfoStudent[]
+}
+
+function StudentsNewEditFormDialogContent({columns, student, onClose, existingStudents = [] }: StudentsNewEditFormDialogContentProps) {
+  
   const queryClient = useQueryClient();
 
   const method = useForm({
     mode: 'all',
-    defaultValues: student,
-  });
-  
+    defaultValues: student.student_id? student: columns.reduce((acc, col) => {
+      acc[col.name] = '';
+      return acc;
+  }, {})})
+
   const {
     handleSubmit,
     formState: { isSubmitting },
-    setError
   } = method;
   
 
   const mutate = useMutation(infoStudentsUpdate({queryClient}))
   
   const onSubmit = handleSubmit(async (data) => {
-    try {
 
+    if (!student.student_id){
+      data.student_id = uuidv4()
+    }
+
+    try {
       const promise = mutate.mutateAsync({data: [data], mode: 'update'})
 
       toast.promise(promise, {
@@ -79,36 +94,54 @@ function StudentsNewEditFormDialogContent({getColumns, student, onClose, existin
       toast.error('שגיאה בשליחת הטופס');
     }
   });
+
   
   return (
     <Form methods={method} onSubmit={onSubmit}>
     
       <DialogContent>
-        {/* הצגת שגיאות רק בעת שליחה */}
-
         <Box sx={{ overflow: 'auto' }}>
-          <StudentsNewEditFrom getColumns={getColumns} />
+          <StudentsNewEditFrom columns={columns} />
         </Box>
-
       </DialogContent>
+
       <DialogActions>
         <LoadingButton 
-          type="submit" 
-          variant="contained" 
+          type="submit"
+          variant="contained"
           loading={isSubmitting}
         >
           עדכן
         </LoadingButton>
+        
         <Button variant="outlined" color="inherit" onClick={onClose}>
           ביטול
         </Button>
       </DialogActions>
-      </Form>
+    </Form>
   )
 }
 
+type StudentsNewEditFormDialogProps = {
+  columns: InfoColumn[],
+  student: InfoStudent,
+  open: boolean,
+  onClose: () => void,
+  existingStudents?: InfoStudent[],
+  isEditing: boolean
+}
 
-export function StudentsNewEditFormDialog({getColumns, student, open, onClose, existingStudents = [], isEditing }) {
+export function StudentsNewEditFormDialog(
+  {
+    columns,
+    student,
+    open,
+    onClose,
+    existingStudents = [],
+    isEditing
+  }: StudentsNewEditFormDialogProps
+) {
+
   const title = isEditing ? 'עריכת תלמיד' : 'הוספת תלמיד חדש';
 
   return (
@@ -119,7 +152,7 @@ export function StudentsNewEditFormDialog({getColumns, student, open, onClose, e
       title={title}
       content={
         <StudentsNewEditFormDialogContent 
-          getColumns={getColumns} 
+          columns={columns} 
           student={student} 
           onClose={onClose}
           existingStudents={existingStudents}

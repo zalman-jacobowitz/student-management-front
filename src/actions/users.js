@@ -3,22 +3,6 @@ import {  queryOptions } from '@tanstack/react-query';
 import { apiFetch } from 'src/utils/manager-fetch';
 
 
-const adminUserBlank = {
-  "user": {
-      "email": "",
-      "country": "",
-      "lastName": "",
-      "firstName": "",
-      "org": ""
-    },
-    "email": "",
-    "screens": {
-      "info": true,
-      "insert": true,
-    },
-    "permissions": [],
-    "info_students": []
-}
 
 
 export function apiUsers() {
@@ -54,15 +38,7 @@ export const usersUpdate = ({queryClient})=>({
 })
 
 export const createInitialUser = async ({ userId, email, firstName, lastName, country }) => {
-  const userData = {
-    user_id: userId,
-    email,
-    firstName,
-    lastName,
-    country,
-    org: email
-  };
-  adminUserBlank.user = userData;
+
   alert(JSON.stringify(adminUserBlank))
   /*
    * const res = await apiFetch('all', {

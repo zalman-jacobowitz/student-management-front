@@ -12,6 +12,7 @@ interface ColumnConfig {
   required: string;
   sorting: number;
   type: string;
+  uniqe: number;
 }
 
 // Main state interface
@@ -67,18 +68,18 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
     // Auto-generate formatted columns after data update
     get().generateFormattedColumns();
   },
-
   // ה. Generate formatted columns from columnsList
   generateFormattedColumns: () => {
     const { columnsList } = get();
     
     const formattedColumns: ColumnConfig[] = columnsList.map((column, index) => ({
-      filters: "",
-      group_name: "",
-      hidden: false,
+      filters: 0,
+      group_name: 0,
+      hidden: 0,
       label: column,
       name: column,
-      required: "",
+      required: 0,
+      uniqe: 0,
       sorting: index,
       type: "text",
     }));
@@ -102,7 +103,20 @@ const useInitializationStore = create<InitializationState>((set, get) => ({
 
     set({ formattedColumns: updatedColumns });
   },
+  updateColumnsDetails: (formData) => {
 
+    const { updateColumnProperty } = get();
+    updateColumnProperty(formData.nameColumn, "group_name", "primary");
+    updateColumnProperty(formData.familyColumn, "group_name", "primary");
+    updateColumnProperty(formData.accessibleColumn, "group_name", "secondary");
+    formData.filterColumns.forEach((column: string) => {
+      updateColumnProperty(column, "filters", "extra");
+    });
+    formData.duplicateColumns.forEach((column: string) => {
+      updateColumnProperty(column, "uniqe", "1");
+    });
+    return get().formattedColumns;
+  },
   // Reset all state to initial values
   resetState: () => {
     set({

@@ -132,7 +132,6 @@ export function ColumnSelectionStep({ onComplete }) {
   
   // Use hook to get columns data directly
   const infoStudents = useInfoColumns('info_students');
-  console.log('infoStudents: ', infoStudents.newData);
 
   const initialValues = {
     nameColumn: "",
