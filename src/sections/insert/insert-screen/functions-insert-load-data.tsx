@@ -33,7 +33,6 @@ export function useLoadCurrentData(reset: (values: any) => void, tamplateData: a
       
       if (crnt.data && tamplateData.length) {
 
-        console.log(crnt.data)
         if (crnt.data.length) {
           const newData = tamplateData.map((item) => {
             const updatedItem = crnt.data.find((i: any) => i.student_id === item.student_id);

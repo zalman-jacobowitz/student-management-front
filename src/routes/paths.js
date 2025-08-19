@@ -38,7 +38,7 @@ export const paths = {
     insert: `${ROOTS.DASHBOARD}/הכנסת-נתונים`,
     users: `${ROOTS.DASHBOARD}/הרשאות-משתמשים`,
     infoColumns: `${ROOTS.DASHBOARD}/הגדרת-עמודות`,
-    profile: (id) => `${ROOTS.DASHBOARD}/${id}/פרופיל-אישי`,
+    profile: (id) => !id ? `${ROOTS.DASHBOARD}/פרופיל-אישי` : `${ROOTS.DASHBOARD}/${id}/פרופיל-אישי`,
     export: `${ROOTS.DASHBOARD}/ייצוא`,
     templates: `${ROOTS.DASHBOARD}/תבניות`,
     days: `${ROOTS.DASHBOARD}/ימים`,

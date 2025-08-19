@@ -42,7 +42,7 @@ const ICONS = {
 // ----------------------------------------------------------------------
 export const screenOptions = {
   insert:         { title: 'רישום',     path: paths.dashboard.insert,             icon: ICONS.order, regularIcon: 'material-symbols:edit-document' },
-  profile:        { title: 'פרופיל אישי', path: paths.dashboard.profile('1'),     icon: ICONS.user, regularIcon: 'material-symbols:person' },
+  profile:        { title: 'פרופיל אישי', path: paths.dashboard.profile(undefined),     icon: ICONS.user, regularIcon: 'material-symbols:person' },
   info:           { title: 'רשימה', path: paths.dashboard.root, icon: ICONS.user, regularIcon: 'material-symbols:group' },
   infocolumns:    { title: 'רשימת עמודות',  path: paths.dashboard.infoColumns, icon: ICONS.parameter, regularIcon: 'material-symbols:view-column' },
   users:          { title: 'משתמשים',   path: paths.dashboard.users,  icon: ICONS.user, regularIcon: 'material-symbols:group' },

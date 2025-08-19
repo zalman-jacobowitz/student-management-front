@@ -2,11 +2,11 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { apiFetch } from "src/utils/manager-fetch";
 
-
-export function apiProfile(student_id: string) {
-  const postData = { table_name: 'profile', mode: 'select', data: student_id };
+export function apiChart(config) {
+  const postData = { table_name: 'chart', mode: 'select', data: { config } };
   return queryOptions({
-    queryKey: ['profile', student_id],
+    enabled: !!config.data,
+    queryKey: ['chart', config],
     queryFn: async () => {
       const res =  await apiFetch('all', postData);
       console.log('res: ', res)

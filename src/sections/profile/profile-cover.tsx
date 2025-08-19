@@ -9,8 +9,8 @@ import { apiInfoColumns } from "src/actions/info_columns";
 import { descriptionColumns, getDesc } from "../insert/functions";
 
 
-const avatarUrl = '../../../public/assets/images/mock/avatar/avatar-4.webp'; // 'avatar-4.webp'
-const coverUrl = '../../../public/assets/images/mock/cover/cover-4.webp'// 'cover-4.webp'
+const avatarUrl = 'assets/images/mock/avatar/avatar-4.webp'; // 'avatar-4.webp'
+const coverUrl = 'assets/images/mock/cover/cover-4.webp'// 'cover-4.webp'
 
 export function ProfileCover({ studentInfo }: { studentInfo: InfoStudent }) {
   const infoColumns = useSuspenseQuery(apiInfoColumns());

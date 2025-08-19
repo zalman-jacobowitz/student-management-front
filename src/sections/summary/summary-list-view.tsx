@@ -17,7 +17,7 @@ import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
 import { toast } from "src/components/snackbar";
 import { apiInfoStudents, infoStudentsUpdate } from "src/actions/info_students";
-import { summaryUpdate } from "src/actions/chert";
+import { summaryUpdate } from "src/actions/chart";
 import { useBoolean } from "src/hooks/use-boolean";
 import { TableMainView } from "./summary-list";
 

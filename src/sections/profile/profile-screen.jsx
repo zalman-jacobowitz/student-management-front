@@ -137,6 +137,7 @@ import { LoadingScreen } from "src/components/loading-screen/loading-screen.tsx"
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { apiInfoStudents } from "src/actions/info_students.ts";
 import { apiProfile } from "src/actions/profile.ts";
+import { ProfileListView } from "./profile-list.tsx";
 
 const TABS = [
     {
@@ -184,7 +185,7 @@ export function ProfileTabsContant({tab, studentInfo, dataStudents}) {
         case 'נוכחות':
             return <ProfileDataMain studentInfo={studentInfo} dataStudents={dataStudents} />;
         case 'ציונים':
-            return <>ציונים</>;
+            return <ProfileListView currentData={dataStudents} />;
         default:
             return null;
     }
@@ -216,7 +217,7 @@ export function ProfileViewScreen({studentId}) {
                     handleChangeTab={setCurrentTab}
                 />
             </Card>
-            <ProfileTabsContant tab={currentTab} studentInfo={studentInfo} dataStudents={dataStudents}/>
+            <ProfileTabsContant tab={currentTab} studentInfo={studentInfo} dataStudents={studentData}/>
         </Container>
     );
 }
