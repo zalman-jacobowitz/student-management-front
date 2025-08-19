@@ -27,33 +27,33 @@ import { screenOptions, navData as dashboardNavData } from '../config-nav-dashbo
 // ----------------------------------------------------------------------
 
 const groups = {
-  'ניהול נוכחות': ['manager', 'insert', 'export', 'profile'],
+  'ניהול נוכחות': ['manager', 'insert', 'export', 'profile', 'scan'],
   'ניהול נתונים': ['info', 'users'],
   'ניהול זמנים': ['templates', 'calendar'],
-  'הגדרות': ['settings', 'inialize', 'userPermissions', 'initialization'],
-}
-
-
+  הגדרות: ['settings', 'inialize', 'userPermissions', 'initialization'],
+};
 
 function screensFormat(data) {
-
+  // const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
   const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
 
   const screens = []
-  Object.keys(groups).forEach((group) => {
-    const g_scrns = listScreens.filter(screen => groups[group].includes(screen)).map(screen => screenOptions[screen])
-    const scrn = {
-        subheader: group,
-        items: g_scrns,
-    }
-    if (g_scrns.length > 0) {
-      screens.push(scrn)
-    }
-  })
-  
-  return screens
-}
 
+  Object.keys(groups).forEach((group) => {
+    const g_scrns = listScreens
+      .filter((screen) => groups[group].includes(screen))
+      .map((screen) => screenOptions[screen]);
+    const scrn = {
+      subheader: group,
+      items: g_scrns,
+    };
+    if (g_scrns.length > 0) {
+      screens.push(scrn);
+    }
+  });
+
+  return screens;
+}
 
 export function DashboardLayout({ sx, children, header, data }) {
   const theme = useTheme();
@@ -66,8 +66,10 @@ export function DashboardLayout({ sx, children, header, data }) {
 
   const layoutQuery = 'lg';
 
-  const userDetails = useUserDetails()
-  const navData = userDetails.userDetails ? screensFormat(userDetails.userDetails) : data?.nav ?? dashboardNavData;
+  const userDetails = useUserDetails();
+  const navData = userDetails.userDetails
+    ? screensFormat(userDetails.userDetails)
+    : (data?.nav ?? dashboardNavData);
   const isNavMini = settings.navLayout === 'mini';
   const isNavHorizontal = settings.navLayout === 'horizontal';
   const isNavVertical = isNavMini || settings.navLayout === 'vertical';

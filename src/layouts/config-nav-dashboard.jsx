@@ -39,7 +39,7 @@ const ICONS = {
   export: icon('ic-export'),
 };
 
-// ----------------------------------------------------------------------
+
 export const screenOptions = {
   insert:         { title: 'רישום',     path: paths.dashboard.insert,             icon: ICONS.order, regularIcon: 'material-symbols:edit-document' },
   profile:        { title: 'פרופיל אישי', path: paths.dashboard.profile(undefined),     icon: ICONS.user, regularIcon: 'material-symbols:person' },
@@ -53,5 +53,4 @@ export const screenOptions = {
   initialization: { title: 'איתחול המערכת', path: paths.dashboard.initialization, icon: ICONS.parameter, regularIcon: 'material-symbols:settings' },
 }
 
-export const navData = [
-];
+export const navData = [];

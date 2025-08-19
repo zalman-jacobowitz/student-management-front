@@ -127,7 +127,7 @@
     "prop-types": "^15.8.1",
     "storybook": "^9.0.15",
     "typescript": "^5.5.4",
-    "vite": "^5.4.2",
+    "vite": "^5.4.19",
     "vite-plugin-checker": "^0.7.2",
     "vitest": "^3.2.4"
   },

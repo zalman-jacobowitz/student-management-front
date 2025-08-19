@@ -34,6 +34,8 @@ const DaysPage = lazy(() => import('src/pages/dashboard/days'));
 const ExceptionsPage = lazy(() => import('src/pages/dashboard/exceptions'));
 // summary
 const SummaryPage = lazy(() => import('src/pages/dashboard/summary'));
+// upload scanned reports
+const UploadReportsPage = lazy(() => import('src/pages/dashboard/uploadReports'));
 
 // ----------------------------------------------------------------------
 
@@ -69,6 +71,7 @@ export const dashboardRoutes = [
       { path: 'ימים', element: <DaysPage /> },
       { path: 'אישורים', element: <ExceptionsPage /> },
       { path: 'סיכום', element: <SummaryPage /> },
+      { path: 'העלאת-דוחות-רישום', element: <UploadReportsPage /> },
     ],
   },
   {
