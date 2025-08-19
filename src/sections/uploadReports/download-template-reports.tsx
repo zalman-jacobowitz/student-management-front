@@ -52,7 +52,7 @@ const DownloadTemplateReports = () => {
         <table>
           <thead>
             <tr>
-              <th colspan="2">-</th>
+              <th colspan="2">יום</th>
               ${generateEmptyCells('th')}
             </tr>
             <tr>
@@ -60,7 +60,7 @@ const DownloadTemplateReports = () => {
               ${generateEmptyCells('th')}
             </tr>
             <tr class="header-row">
-              <th>-</th>
+              <th>מזהה</th>
               <th>שם</th>
                ${generateEmptyCells('th')}
             </tr>
