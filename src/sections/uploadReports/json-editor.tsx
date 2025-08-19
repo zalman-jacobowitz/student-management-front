@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import React, { useRef, useState, useEffect } from 'react';
 
 interface JsonEditorComponentProps {
@@ -118,40 +119,10 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#f8fafc',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem' /* p-4 */,
-        fontFamily: 'sans-serif',
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: '#ffffff',
-          padding: '1.5rem 2rem',
-          borderRadius: '0.75rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          width: '100%',
-          maxWidth: '64rem',
-          border: '1px solid #e2e8f0',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '2.25rem',
-            fontWeight: '800',
-            textAlign: 'center',
-            color: '#374151',
-            marginBottom: '2rem',
-          }}
-        >
-          Review & Edit Parsed Data
-        </h1>
+    <>
+        <Typography variant="h4" component="h1" gutterBottom>
+          סיכום ועריכה
+        </Typography>
 
         {editedData.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#6b7280' }}>אין מידע להציג</p>
@@ -396,8 +367,7 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
             העלה
           </button>
         </div>
-      </div>
-    </div>
+      </>
   );
 };
 
