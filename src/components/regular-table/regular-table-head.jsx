@@ -2,7 +2,7 @@ import { TableHeadCustom } from "src/components/table";
 
 
 export function ReglarTableHeader({ table, tableData, headLabels, id }) {
-  
+  console.log({headLabels})
   return (
     <TableHeadCustom
         order={table.order}

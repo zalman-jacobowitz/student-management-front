@@ -35,9 +35,10 @@ const groups = {
 
 function screensFormat(data) {
   // const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
-  const listScreens = ['insert', 'info', 'scan'];
+  const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
 
-  const screens = [];
+  const screens = []
+
   Object.keys(groups).forEach((group) => {
     const g_scrns = listScreens
       .filter((screen) => groups[group].includes(screen))

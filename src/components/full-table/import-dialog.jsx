@@ -33,7 +33,7 @@ import { Form } from 'src/components/hook-form';
 
 import { useSteps } from 'src/hooks/use-stepper';
 import { transformKeys } from 'src/utils/pandas/trans-keys';
-import { findDuplicates } from 'src/utils/pandas/find-duplicates';
+import { findDuplicates, findInternalDuplicates } from 'src/utils/pandas/find-duplicates';
 
 import { generateUniqueIds } from 'src/utils/function-edit';
 
@@ -43,6 +43,9 @@ import { InitStepper, StepperActions } from 'src/components/steps-form/header-st
 import { StepsProvider } from 'src/components/steps-form/steps-provider';
 import { columnsDetails } from 'src/utils/uinqe_usege/columnsValid';
 import { InitImportFile, InitColumnNames, CompleteStep } from './import-stpes/steps';
+import { useBoolean } from 'src/hooks/use-boolean';
+import { ConfirmDialog } from '../custom-dialog';
+import { uuidv4 } from 'src/utils/uuidv4';
 
 
 
@@ -78,54 +81,76 @@ const columnsMap = (data) => transformKeys({
 });
 
 
-const errorsCheck = (data) => {
+const requiredCheck = (data, columns) => {
   const errors = [];
-  data.forEach((row) => {
-    columnsDetails.forEach(column => {
-      const error = column.onError(row);
+  data.forEach((row, index) => {
+    columns.forEach(column => {
+      const error = Number(column.required) && !row[column.name] ? `שדה חובה חסר: ${column.name} בשורה ${index + 1}` : null;
       if (error) errors.push(error);
     });
   });
   return errors;
 }
 
-const duplicatesCheck = (data, oldData) => {
-  if (!oldData.length) return [];
-  const dup = findDuplicates({
-    table1: oldData,
-    table2: data,
-    columns: columnsDetails.filter(e=>e.unique).map(e=>e.name)
-  });
-  return dup;
+
+const duplicatesCheck = (data, oldData, columns) => {
+  const uniqueColumns = columns.filter(e => e.uniqe).map(e => e.name);
+
+  const result = {
+    internalDuplicates: [],
+    betweenTables: []
+  };
+  
+  // בדיקת כפילות פנימיות בטבלה החדשה
+  result.internalDuplicates = findInternalDuplicates(data, uniqueColumns);
+  
+  // בדיקת כפילות בין הטבלאות
+  if (oldData.length) {
+    result.betweenTables = findDuplicates({
+      table1: oldData,
+      table2: data,
+      columns: uniqueColumns
+    });
+  }
+  
+  return result;
 }
 
-const processData = (withColumns) => withColumns.map(row => {
+const processData = (withColumns, infoColumns) => withColumns.map(row => {
   const filtered = {};
-  columnsDetails.forEach(col => { filtered[col.name] = row[col.name]; });
+  infoColumns.forEach(col => { filtered[col.name] = row[col.name]; });
   return filtered;
 });
 
-function validateData(data, oldData, userEmail){
-  const withColumns = columnsMap(data);      
-  const errors = errorsCheck(withColumns);
-  const dup = duplicatesCheck(withColumns, oldData);
+function validateData(data, oldData, userEmail, infoColumns){
+  // שינוי שמות העמודות בקובץ שיובא לשמות הנדרשים שתואמים את הטבלה הנוכחית
+  const withColumns = columnsMap(data);
+  // בדיקת שגיאות - כגון סוגי שדות והאם נדרש
+  const errors = requiredCheck(withColumns, infoColumns);
+  const dup = duplicatesCheck(withColumns, oldData, infoColumns);
   
-  dup.forEach((row, index) => errors.push(`שגיאה ${index + 1}: ${row.שם} ${row.משפחה} כבר קיים במערכת`));
+  dup.betweenTables.forEach((row, index) => errors.push(`שגיאה ${index + 1}: ${row.שם} ${row.משפחה} כבר קיים במערכת`));
+  errors.push(...dup.internalDuplicates);
 
-  if (errors.length > 0) {
-    toast.error(`נמצאו ${errors.length} שגיאות בקובץ`);
-    return null;
-  }
-  const processedData = processData(withColumns);
-  const finalData = generateUniqueIds(processedData, userEmail);
+  // מכיל רק את העמודות של המערכת
+  const filteredData = processData(withColumns, infoColumns);
+  
+  // הוספת מזהים ייחודיים לכל שורה
+  const validData = filteredData.map((record) => ({
+      ...record,
+      student_id: uuidv4()
+  }));
 
-  return finalData;
+  return {errors, validData};
 }
 
 // ------------------------------------------------------------
 
-function useImportData(oldData){
+function useImportData(oldData, infoColumns){
+  const [listErrors, setListErrors] = useState([]);
+
   const { userDetails } = useUserDetails();
+  const errorsDialog = useBoolean();
   const userEmail = userDetails?.email || 'unknown';
   const queryClient = useQueryClient();
   const mutate = useMutation(infoStudentsUpdate({queryClient}));
@@ -133,7 +158,16 @@ function useImportData(oldData){
   const onSubmit = async (data) => {
     try {
 
-      const validData = validateData(data, oldData, userEmail);
+      const { errors, validData } = validateData(data, oldData, userEmail, infoColumns);
+      console.log('errors:', errors)
+      if (errors.length > 0){
+        setListErrors(errors);
+        errorsDialog.onTrue();
+        console.log('listErrors:', errors)
+        console.log('errorsDialog:', errorsDialog.value)
+        return true
+      }
+      
       if (!validData) return false;
       const promise = mutate.mutateAsync({data: validData, mode : 'update'});
       
@@ -152,12 +186,14 @@ function useImportData(oldData){
   }
 
   return {
-    onSubmit
+    onSubmit,
+    errorsDialog,
+    listErrors
   }
 }
 
 
-export function FullTableImportDialog({ open, onClose, oldData=[] }) {
+export function FullTableImportDialog({ open, onClose, oldData=[], infoColumns=[] }) {
 
   const steps = [
     {
@@ -182,17 +218,35 @@ export function FullTableImportDialog({ open, onClose, oldData=[] }) {
     }
   ]
 
-  const { onSubmit } = useImportData(oldData);
+  const { onSubmit, errorsDialog, listErrors } = useImportData(oldData, infoColumns);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-
-          <StepsProvider
-            steps={steps}
-            defaultValues={defaultValues}
-            WizardSchema={WizardSchema}
-            onSubmit={onSubmit}
-          /> 
+        <StepsProvider
+          steps={steps}
+          defaultValues={defaultValues}
+          WizardSchema={WizardSchema}
+          onSubmit={onSubmit}
+        />  <ConfirmDialog
+        open={errorsDialog.value}
+        onClose={errorsDialog.onFalse}
+        fullWidth
+        maxWidth="sm"
+        content={
+          <>
+          <h2>שגיאות!</h2>
+          <ul>
+            {listErrors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+          </>
+        }
+        />
     </Dialog>
+   
+  
+
   );
 }
+

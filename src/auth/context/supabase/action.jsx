@@ -3,6 +3,28 @@ import { paths, PATH_AFTER_LOGIN } from 'src/routes/paths';
 import { supabase } from 'src/auth/supabase';
 import { createInitialUser } from 'src/actions/users';
 
+
+
+const adminUserBlank = (data) => {
+  const {email, country, lastName, firstName, client, org} = data
+  return {
+    client,
+    user: {
+        email,
+        country,
+        lastName,
+        firstName,
+        org
+    },
+    screens: {
+      "info": true,
+      "insert": true,
+    },
+    permissions: [],
+    info_students: []
+  }
+}
+
 /** **************************************
  * Sign in
  *************************************** */
@@ -20,16 +42,30 @@ export const signInWithPassword = async ({ email, password }) => {
 /** **************************************
  * Sign up
  *************************************** */
-export const signUp = async ({ email, password, firstName, lastName, country }) => {
+export const signUp = async (userData) => {
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    country,
+    client,
+    org
+  } = userData
+
+  const blankData = adminUserBlank(userData)
+  
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${window.location.origin}${PATH_AFTER_LOGIN}`,
-      data: { display_name: `${firstName} ${lastName}` },
+      data: {
+        ...blankData,
+        display_name: `${firstName} ${lastName}`
+      },
     },
   });
-
   if (error) {
     console.error(error);
     throw error;
@@ -37,20 +73,6 @@ export const signUp = async ({ email, password, firstName, lastName, country }) 
 
   if (!data?.user?.identities?.length) {
     throw new Error('This user already exists');
-  }
-
-  // After successful Supabase registration, send user data to server
-  try {
-    await createInitialUser({
-      userId: data.user.id,
-      email,
-      firstName,
-      lastName,
-      country,
-    });
-  } catch (serverError) {
-    console.error('Server user creation failed:', serverError);
-    throw new Error('Failed to create user in system. Please contact support.');
   }
 
   return { data, error };

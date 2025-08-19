@@ -18,6 +18,7 @@ import { ComponentContainer } from 'src/components/blanks/component-block';
 import useInsertStore from '../insert-state';
 import { get_students_ids } from '../functions';
 import { InsertFormPastEvents } from './insert-form-past-events';
+import { apiTemplates } from 'src/actions/templates';
 
 type InsertFormProps = {
   infoStudents: any[];
@@ -52,9 +53,8 @@ function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] 
     formState: { isSubmitting },
   } = methods;
    
-  const eventsToday = useQuery(apiEventsToday(watch('day')));
-
-
+  const eventsToday = useQuery(apiTemplates());
+  console.log('eventsToday: ', eventsToday.data);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const options = (eventsToday?.data || []) as any[]
