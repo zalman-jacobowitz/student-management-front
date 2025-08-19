@@ -35,6 +35,7 @@ export function CellAvatar({
           />
 
           <ListItemText
+            className="avatar-secondary"
             secondary={secondary}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
@@ -43,7 +44,7 @@ export function CellAvatar({
           }}
         >
 
-        <Typography noWrap sx={{ width: 1 }}>
+        <Typography className="avatar-primary" noWrap sx={{ width: 1 }}>
           {primary}
         </Typography>
       

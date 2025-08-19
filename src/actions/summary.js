@@ -1,14 +1,15 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions } from "@tanstack/react-query";
 
-import { apiFetch } from 'src/utils/manager-fetch';
+import { apiFetch } from "src/utils/manager-fetch";
 
-export function apiSummary() {
-  const postData = { table_name: 'summary', mode: 'select', data: [] };
+export function apiSummary(formData) {
+  const postData = { table_name: 'summary', mode: 'select', data: formData };
   return queryOptions({
-    queryKey: ['summary', 'all'],
+    queryKey: ['summary', formData],
     queryFn: async () => {
-      const res = await apiFetch('summary', postData);
+      const res =  await apiFetch('all', postData);
+      console.log('res: ', res)
       return res?.data ?? null;
-    },
+    }
   });
 }

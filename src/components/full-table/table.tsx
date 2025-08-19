@@ -50,7 +50,7 @@ function FullTableProvider({ children, deleteData, table }: FullTableProviderPro
 
   const headLabels = getHeadLabels(specialRow, tableColumns)
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative' }} >
       <TableSelectedHeader
         table={table}
         tableData={tableData}
@@ -138,10 +138,12 @@ export function FullTable({ dataFiltered }: FullTableProps) {
   } = useTableConfig()
   // קבלת הסטייטים הנדרשים לקומפוננטת הטבלה
   const {
+    
     table,
     dataPage,
     deleteData,
     handleDelete
+
   } = useFullTable(dataFiltered)
 
   // רשימת הקומפוננטות של כל הרשומות לדף הנוכחי

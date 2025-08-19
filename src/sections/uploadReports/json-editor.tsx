@@ -1,5 +1,7 @@
-import { Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import React, { useRef, useState, useEffect } from 'react';
+import { EmptyContent } from 'src/components/empty-content';
+import { UploadTableView } from './upload-table-view';
 
 interface JsonEditorComponentProps {
   initialParsedData: {
@@ -8,6 +10,8 @@ interface JsonEditorComponentProps {
   }[];
   onDataChange: (data: any) => void;
 }
+
+
 
 async function uploadData(dataToSend: any) {
   try {
@@ -118,41 +122,22 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
     uploadData(editedData[0]?.json?.tables);
   };
 
+  const notFound = editedData.length === 0;
+
   return (
     <>
         <Typography variant="h4" component="h1" gutterBottom>
           סיכום ועריכה
         </Typography>
 
-        {editedData.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#6b7280' }}>אין מידע להציג</p>
+        { notFound ? (
+          <EmptyContent title='לא נמצאו נתונים לעריכה' />
         ) : (
           editedData.map((fileItem, fileIndex) => (
-            <div
-              key={fileIndex}
-              style={{
-                marginBottom: '2.5rem',
-                padding: '1.5rem',
-                border: '1px solid #bfdbfe',
-                borderRadius: '0.5rem',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                backgroundColor: '#eff6ff',
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: '1.5rem',
-                  fontWeight: '700',
-                  color: '#1e40af',
-                  marginBottom: '1rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span>קובץ: {fileItem.fileName}</span>
-              </h2>
-
+            <Card key={fileIndex}>
+              <CardHeader title={`קובץ: ${fileItem.fileName}`} />
+              <CardContent>
+          {/*
               <div style={{ marginBottom: '1.5rem' }}>
                 <h3
                   style={{
@@ -180,166 +165,26 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
                   onChange={(e) => handleDocumentTextChange(fileIndex, e.target.value)}
                 />
               </div>
+        */}
 
               {/* Tables Section */}
               {fileItem.json.tables && fileItem.json.tables.length > 0 && (
                 <div style={{ marginBottom: '1.5rem' /* mb-6 */ }}>
-                  <h3
-                    style={{
-                      fontSize: '1.25rem' /* text-xl */,
-                      fontWeight: '600' /* font-semibold */,
-                      color: '#4b5563',
-                      marginBottom: '1rem' /* mb-4 */,
-                    }}
-                  >
-                    טבלת תלמידים:
-                  </h3>
                   {fileItem.json.tables.map((table, tableIndex) => (
-                    <div
+                    <UploadTableView
                       key={tableIndex}
-                      style={{
-                        marginBottom: '2rem' /* mb-8 */,
-                        padding: '1rem' /* p-4 */,
-                        border: '1px solid #bbf7d0' /* border border-green-200 */,
-                        borderRadius: '0.5rem',
-                        backgroundColor: '#f0fdf4' /* bg-green-50 */,
-                        position: 'relative',
-                      }}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTable(fileIndex, tableIndex)}
-                        style={{
-                          position: 'absolute',
-                          top: '1rem' /* top-4 */,
-                          right: '1rem' /* right-4 */,
-                          backgroundColor: '#ef4444' /* bg-red-500 */,
-                          color: '#ffffff' /* text-white */,
-                          padding: '0.5rem' /* p-2 */,
-                          borderRadius: '9999px' /* rounded-full */,
-                          fontSize: '0.875rem' /* text-sm */,
-                          boxShadow:
-                            '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' /* shadow-md */,
-                          border: 'none',
-                          cursor: 'pointer',
-                          transition: 'background-color 0.2s ease-in-out',
-                        }}
-                        title="Remove Table"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          style={{ height: '1rem', width: '1rem' }}
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
-
-                      <div style={{ overflowX: 'auto' }}>
-                        <table
-                          style={{
-                            minWidth: '100%',
-                            backgroundColor: '#ffffff' /* bg-white */,
-                            borderRadius: '0.5rem',
-                            boxShadow: '0 1pxa(0, 0, 0, 0.05)' /* shadow-sm */,
-                            border: '1px solid #e2e8f0',
-                          }}
-                        >
-                          <thead>
-                            <tr
-                              style={{
-                                backgroundColor: '#f8fafc' /* bg-gray-100 */,
-                                borderBottom: '1px solid #e2e8f0' /* border-b border-gray-200 */,
-                              }}
-                            >
-                              {table.headers
-                                .slice()
-                                .reverse()
-                                .map((header, colIndex) => (
-                                  <th
-                                    key={colIndex}
-                                    style={{
-                                      padding: '0.5rem 1rem' /* py-2 px-4 */,
-                                      textAlign: 'right',
-                                      fontSize: '0.875rem' /* text-sm */,
-                                      fontWeight: '600' /* font-semibold */,
-                                      color: '#4b5563' /* text-gray-600 */,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.05em' /* tracking-wider */,
-                                      borderLeft:
-                                        colIndex > 0 ? '1px solid #e2e8f0' : 'none' /* border-l */,
-                                    }}
-                                  >
-                                    {header}
-                                  </th>
-                                ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {table.rows.map((row, rowIndex) => (
-                              <tr
-                                key={rowIndex}
-                                style={{
-                                  borderBottom: '1px solid #f1f5f9' /* border-b border-gray-100 */,
-                                }}
-                              >
-                                {row
-                                  .slice()
-                                  .reverse()
-                                  .map((cell, colIndex) => (
-                                    <td
-                                      key={colIndex}
-                                      style={{
-                                        padding: '0.5rem 1rem' /* py-2 px-4 */,
-                                        textAlign: 'right',
-                                        fontSize: '0.875rem' /* text-sm */,
-                                        color: '#374151' /* text-gray-800 */,
-                                        borderLeft:
-                                          colIndex > 0
-                                            ? '1px solid #f1f5f9'
-                                            : 'none' /* border-l */,
-                                      }}
-                                    >
-                                      <input
-                                        type="text"
-                                        style={{
-                                          width: '100%',
-                                          padding: '0.25rem',
-                                          border: '1px solid #e2e8f0',
-                                          borderRadius: '0.25rem',
-                                          outline: 'none',
-                                          boxShadow: '0 0 0 1px rgba(96, 165, 250, 0)',
-                                        }}
-                                        value={cell || ''}
-                                        onChange={(e) =>
-                                          handleTableCellChange(
-                                            fileIndex,
-                                            tableIndex,
-                                            rowIndex,
-                                            colIndex,
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                    </td>
-                                  ))}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
+                      tableIndex={tableIndex}
+                      handleRemoveTable={handleRemoveTable}
+                      table={table}
+                      fileIndex={fileIndex}
+                      handleTableCellChange={handleTableCellChange}
+                    />
                   ))}
                 </div>
+
               )}
-            </div>
+              </CardContent>
+            </Card>
           ))
         )}
 

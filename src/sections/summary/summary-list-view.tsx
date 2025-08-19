@@ -20,37 +20,71 @@ import { apiInfoStudents, infoStudentsUpdate } from "src/actions/info_students";
 import { summaryUpdate } from "src/actions/chart";
 import { useBoolean } from "src/hooks/use-boolean";
 import { TableMainView } from "./summary-list";
+import { inHebrew } from "src/utils/hebrew/getter";
 
-function SummaryStepsForm({templateOptions = [] }) {
+
+//-----------------------------------------------------------------------
+
+const SUMMARY_OPTIONS = [
+  { value: 'mean', label: 'ממוצע', icon: <Iconify icon="mdi:calculator" /> },
+  { value: 'sum', label: 'סיכום' , icon:<Iconify icon="mdi:format-list-bulleted" /> },
+  { value: 'details', label: 'מפורט', icon: <Iconify icon="mdi:format-list-bulleted" /> }
+]
+
+const GROUP_BY = [
+  { value: 'day', label: 'יום', icon: <Iconify icon="mdi:calendar" /> },
+  { value: 'event_name', label: 'סדר', icon: <Iconify icon="mdi:format-list-bulleted" /> }
+]
+
+//---------------------------------------------------------------------------
+
+function rangeData(start, end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const dates = [];
+    
+    const current = new Date(startDate);
+    while (current <= endDate) {
+        dates.push(current.toISOString().split('T')[0]);
+        current.setDate(current.getDate() + 1);
+    }
+    
+    return dates;
+}
+
+function SummaryStepsForm({templateOptions = [], setFormData }) {
   const initialValues = {
-    numbers: '',
+    events: '',
     start: '',
     end: '',
-    option: 'סדר'
+    group_by: 'סדר',
+    type: 'average'
   };
 
   const WizardSchema = z.object({
-    numbers: z.string().min(1, 'יש לבחור לפחות מספר אחד').optional(),
+    events: z.array(z.string().min(1, 'יש לבחור לפחות סדר אחד')).optional(),
     start: z.string().min(1, 'תאריך התחלה נדרש').optional(),
     end: z.string().min(1, 'תאריך סיום נדרש').optional(),
-    option: z.string().min(1, 'יש לבחור אפשרות').optional(),
+    group_by: z.string().min(1, 'יש לבחור אפשרות').optional(),
+    type: z.string().min(1, 'יש לבחור סוג סיכום').optional()
   });
 
   const fields = [
-        {
-          step: 1,
-          name: "numbers",
-          label: "בחר תבנית",
-          variant: "filled",
-          InputLabelProps: { shrink: true },
-          children: templateOptions.map(
-            (template) => (
-              <MenuItem key={template.event_id} value={template.event_id}>
-                <Typography variant="body2">{template.event_name}</Typography>
-              </MenuItem>
-            )
-          ),
-          component: Field.Select
+      {
+        step: 1,
+        name: "events",
+        label: "בחר סדרים",
+        variant: "filled",
+        InputLabelProps: { shrink: true },
+        type: 'text',
+        options: templateOptions?.map((template) => ({
+          value: template.event_id,
+          label: template.event_name
+      })) || [],
+      checkbox: true,
+      multiple: true,
+      chip: true,
+      component: Field.MultiCheckbox
     },
     {
       step: 2,
@@ -72,14 +106,31 @@ function SummaryStepsForm({templateOptions = [] }) {
     },
       {
           step: 3,
-          name: "option",
+          name: "group_by",
+          label: "קיבוץ לפי",
+          variant: "filled",
+          InputLabelProps: { shrink: true },
+          children: GROUP_BY.map(
+            (option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.icon}
+                <Typography variant="body2">{option.label}</Typography>
+              </MenuItem>
+            )
+          ),
+          component: Field.Select
+    },
+    {
+          step: 3,
+          name: "type",
           label: "בחר סוג סיכום",
           variant: "filled",
           InputLabelProps: { shrink: true },
-          children: ['יום', 'סדר'].map(
+          children: SUMMARY_OPTIONS.map(
             (option) => (
-              <MenuItem key={option} value={option}>
-                <Typography variant="body2">{option}</Typography>
+              <MenuItem key={option.value} value={option.value}>
+                {option.icon}
+                <Typography variant="body2">{option.label}</Typography>
               </MenuItem>
             )
           ),
@@ -92,7 +143,7 @@ function SummaryStepsForm({templateOptions = [] }) {
       label: 'בחירת סדר',
       component: <MasterStep fields={fields} number={1} />,
       icon: "mdi:numeric",
-      name: 'numbers'
+      name: 'events'
     },
     {
       label: 'בחירת תאריכים',
@@ -112,37 +163,12 @@ function SummaryStepsForm({templateOptions = [] }) {
       component: <>123</>
     }
   ];
-  const [summaryData, setSummaryData] = useState(null);
-
-  const queryClient = useQueryClient();
-  const mutate = useMutation(summaryUpdate({queryClient}))
-  const apiR = {
-      type: 'pie',
-      groupBy: [
-        { 'table': 'data_students', 'column': 'student_id' },
-        { 'table': 'data_students', 'column': 'event' }
-      ],
-      filters: [],
-      xs: 5,
-      md: 5
-    };
-  const isTable = useBoolean();
 
   const onSubmit = async (data) => {
-    console.log('asdddd')
+
     try {
-
-      const promise = mutate.mutateAsync({data: {config: apiR}, mode: 'select'})
-
-      toast.promise(promise, {
-        loading: 'מעדכן...',
-        success: 'העדכון הצליח!',
-        error: 'העידכון נכשל!',
-      });
-
-      const summaryDa = await promise;
-      setSummaryData(summaryDa);
-      isTable.onTrue()
+      const dates = rangeData(data.start, data.end);
+      setFormData({ ...data, days: dates });
 
     } catch (error) {
       console.error('Submission error:', error);
@@ -150,32 +176,81 @@ function SummaryStepsForm({templateOptions = [] }) {
     }
   }
   const settings = useSettingsContext();
-  if (isTable.value) {
-    return <TableMainView summaryData={summaryData} />;
-  }
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'md'}>
-    <StepsProvider
-      steps={steps}
-      defaultValues={initialValues}
-      WizardSchema={WizardSchema}
-      onSubmit={onSubmit}
-    />
+      <StepsProvider
+        steps={steps}
+        defaultValues={initialValues}
+        WizardSchema={WizardSchema}
+        onSubmit={onSubmit}
+      />
   </Container>
   );
 }
 
+
+function formatSummary(data, formData){
+ if (formData.type === 'details'){
+   const newTable = data.map(e => {
+    const heb = inHebrew(e.day)
+    return { 
+    ...e,
+    day_event: `${heb.יום_עברי} ${heb.חודש_עברי} | ${e.event_name}`}
+ });
+
+    // יצירת טבלה חדשה עם צורה שונה: PIVOT
+   // העמודות בטבלה החדשה
+   const columns = new Set(newTable.map(e=>e.day_event))
+   // index:
+   const index = [...new Set(data.map(e=>e.student_id))]
+   // המערך שיכיל את הנתונים החדשים
+   const pivoted = []
+   
+   // עבור כל student_id
+   index.forEach(studentId => {
+     const row = { student_id: studentId };
+     
+     // עבור כל עמודה (day_event)
+     columns.forEach(dayEvent => {
+       // מצא את הרשומה המתאימה
+       const record = newTable.find(e => 
+         e.day_event === dayEvent &&
+         e.student_id === studentId
+       );
+       console.log('record', record);
+       // הוסף את הערך (או 0 אם לא נמצא)
+       row[dayEvent] = record ? record.data : 0;
+     });
+     
+     pivoted.push(row);
+   });
+   
+   return pivoted;
+ }
+  return data
+}
+
+
+function SummaryTableView({ formData }){
+  console.log('formData: ', formData);
+  const data = useSuspenseQuery(apiSummary(formData));
+
+  return <TableMainView summaryData={formatSummary(data.data, formData)} formData={formData} />;
+}
+
 function SummaryMainView() {
+
+
+  const [formData, setFormData] = useState(null);
 
   const template = useSuspenseQuery(apiTemplates())
 
-  console.log('Template data:', template.data);
-
+  if (formData){
+    return <SummaryTableView formData={formData} />;
+  }
   return (
-    
-      <SummaryStepsForm templateOptions={template.data || []} />
-
+      <SummaryStepsForm templateOptions={template.data || []} setFormData={setFormData} />
   );
 }
 
