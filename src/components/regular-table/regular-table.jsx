@@ -6,7 +6,7 @@ import { ReglarTableHeader } from "./regular-table-head";
     return (
       <Table
       className="print-table"
-   
+   id="pdf-table" 
       size={!table.dense ? 'small' : 'medium'} sx={{
         minWidth: 960,
         borderCollapse: themeTable === 'default' ? 'collapse' : 'separate',
@@ -14,7 +14,7 @@ import { ReglarTableHeader } from "./regular-table-head";
       '@media print': {
       '& .MuiTableCell-root': {
       fontSize: '12px',
-      padding: '0px'
+      padding: '4px'
      }
      }
    }}>

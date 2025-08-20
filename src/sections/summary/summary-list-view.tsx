@@ -21,6 +21,7 @@ import { summaryUpdate } from "src/actions/chart";
 import { useBoolean } from "src/hooks/use-boolean";
 import { TableMainView } from "./summary-list";
 import { inHebrew } from "src/utils/hebrew/getter";
+import { SummaryDataGrid } from "./summary-datagrid-view";
 
 
 //-----------------------------------------------------------------------
@@ -247,7 +248,7 @@ function SummaryMainView() {
   const template = useSuspenseQuery(apiTemplates())
 
   if (formData){
-    return <SummaryTableView formData={formData} />;
+    return <SummaryDataGrid formData={formData} />;
   }
   return (
       <SummaryStepsForm templateOptions={template.data || []} setFormData={setFormData} />

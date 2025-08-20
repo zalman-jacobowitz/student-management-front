@@ -21,7 +21,9 @@ import { Checkbox, TableCell } from "@mui/material";
 export function CellCheckbox({ id, checked, onClick }) {
   return (
     <TableCell padding="checkbox">
+
       <Checkbox
+        className="no-print"
         id={id}
         checked={checked}
         onClick={onClick}

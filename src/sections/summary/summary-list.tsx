@@ -9,6 +9,7 @@ import { apiInfoStudents } from "src/actions/info_students";
 import { LoadingScreen } from "src/components/loading-screen";
 import { InfoStudent, TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { exportToPDF } from "src/utils/export";
 import { INFO_SUMMARY } from "./columns";
 import { apiInfoColumns } from "src/actions/info_columns";
 import { Box, Button, Checkbox, LinearProgress, linearProgressClasses, Rating, Typography } from "@mui/material";
@@ -40,7 +41,7 @@ function columnsFormat(columns){
   )
 )
 }
-export const getDesc = (student: InfoStudent, desc: string[]): string => desc.map(e => student[e]).join(' ')
+export const getDesc = (student: InfoStudent, desc: string[]): string => desc.map(e => student ? student[e] : '').join(' ')
 
 export function descriptionColumns(getColumns: any[]): { primary: string[]; secondary: string[] } {
   const primary = getColumns.filter(e => e.group_name === 'primary').map(e => e.name)
@@ -73,7 +74,7 @@ function mergeSummaryData(infoStudents, summaryData, infoColumns) {
 function labelColor(num){
   if (num < 50) {
     return "error";
-  } else if (num < 80) {
+  } if (num < 80) {
     return "warning";
   }
   return "success";
@@ -102,17 +103,25 @@ export function TableMainView({ summaryData, formData }) {
   const { table, columns } = mergeSummaryData(info_students.data, summaryData, infoColumns.data);
   console.table(columns)
   console.table(table)
+
+  // פונקציית הורדת PDF
+  const handleExportPDF = () => {
+    const title = `סיכום נוכחות - ${formData.type === 'details' ? 'מפורט' : formData.type === 'mean' ? 'ממוצע' : 'סיכום'}`;
+    exportToPDF('pdf-table');
+  };
   
   const tableColumnsConfig: TableConfig = {
     headingLinks: LINKS,
-    headingTitle: 'הגדרת תבניות',
+    headingTitle: 'סיכום נוכחות',
     importButton: false,
     specialRow: ['avatar', 'checkbox'],
     rowId: 'student_id',
     styleTable: 'default',
     pagination: true,
-    addButton: true,
+    addButton: false,
+    isToolbar: true,
     Cell: formData.type === 'details' ? BoolCell : Format,
+    onExportPDF: handleExportPDF,
     tableData: table,
     tableColumns: columns
   }

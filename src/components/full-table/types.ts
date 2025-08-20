@@ -34,7 +34,7 @@ export interface TableConfig {
     onClose: () => void;
     column: Row | Record<string, never>;
   }>;
-  Cell: React.ComponentType<{
+  Cell?: React.ComponentType<{
     children: React.ReactNode;
   }>;
   styleTable: 'default' | 'striped' | 'bordered' | 'transparent' | 'background.paper';
@@ -43,6 +43,7 @@ export interface TableConfig {
   defaultValues?: {
     [key: string]: string;
   };
+  onExportPDF?: () => void;
   tableData: Table;
   tableColumns: InfoColumn[];
 }

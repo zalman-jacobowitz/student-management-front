@@ -10,13 +10,13 @@ export function ReglarTableHeader({ table, tableData, headLabels, id }) {
         headLabel={headLabels}
         rowCount={tableData.length}
         numSelected={table.selected.length}
-            onSort={table.onSort}
-            onSelectAllRows={(checked) =>
-            table.onSelectAllRows(
-                checked,
-                tableData.map((row) => row[id] || row.student_id)
-            )
-            }
+        onSort={table.onSort}
+        onSelectAllRows={(checked) =>
+        table.onSelectAllRows(
+          checked,
+          tableData.map((row) => row[id] || row.student_id)
+         )
+       }
       />
   );
 }

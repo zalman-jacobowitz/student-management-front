@@ -1,4 +1,4 @@
-import { Stack, Avatar, TableCell, Typography, ListItemText } from "@mui/material";
+import { Stack, Avatar, TableCell, Typography, ListItemText, Box } from "@mui/material";
 
 /**
  * description in hebrew: 
@@ -25,18 +25,22 @@ export function CellAvatar({
 }) {
 
   return (
-    <TableCell>
+    <TableCell className="avatar-cell" >
       <Stack direction="row" alignItems="center">
         
+        <Box className="no-print">
+          
           <Avatar
+
             alt=''
             src="https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_1.jpg"
             sx={{ mr: 2 }} 
           />
+          </Box>
 
           <ListItemText
-            className="avatar-secondary"
-            secondary={secondary}
+
+            secondary={<span className="no-print">{secondary}</span>}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
             component: 'span',
@@ -44,7 +48,7 @@ export function CellAvatar({
           }}
         >
 
-        <Typography className="avatar-primary" noWrap sx={{ width: 1 }}>
+        <Typography noWrap sx={{ width: 1 }}>
           {primary}
         </Typography>
       

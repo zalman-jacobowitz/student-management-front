@@ -57,28 +57,3 @@ input[type='number']::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
-@media print {
-  /* הסתר כל דבר אחר */
-  body * {
-    visibility: hidden;
-  }
-  
-  /* הצג רק את הטבלה */
-  .print-table, .print-table * {
-    visibility: visible;
-  }
-  
-  .print-table {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 100% !important;
-  }
-  .avatar-primary {
-    font-size: 12px;
-    padding: 0px;
-  }
-  .avatar-secondary {
-    visibility: hidden;
-  }
-}
