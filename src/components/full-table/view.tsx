@@ -114,7 +114,7 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
   // שורת כפותי עזר מעל הטבלה
   const renderHeader = isHeader && <Header importData={importData.onTrue} />
   // סרגל הכלים של הטבלה
-  const renderToolbar = isToolbar && <FullTableToolbar />
+  const renderToolbar = <FullTableToolbar />
   // הטבלה עצמה
   const renderTable = <FullTable dataFiltered={dataFiltered} />
   // כפתור הוספה

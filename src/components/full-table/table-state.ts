@@ -27,6 +27,7 @@ const useTableConfig = create<useTableConfigState>((set, get) => ({
   defaultValues: undefined,
   tableData: [],
   tableColumns: [],
+  Cell: () => null,
   //
   isHeader: false,
   isToolbar: false,

@@ -51,6 +51,8 @@ export const screenOptions = {
   templates:      { title: 'תבניות', path: paths.dashboard.templates, icon: ICONS.file, regularIcon: 'material-symbols:description' },
   days:           { title: 'ימים', path: paths.dashboard.days, icon: ICONS.calendar, regularIcon: 'material-symbols:calendar-today' },
   initialization: { title: 'איתחול המערכת', path: paths.dashboard.initialization, icon: ICONS.parameter, regularIcon: 'material-symbols:settings' },
+  scan: { title: 'סריקה', path: paths.dashboard.uploadScanDocs, icon: ICONS.parameter, regularIcon: 'material-symbols:settings' },
+
 }
 
 export const navData = [];

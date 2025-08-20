@@ -13,8 +13,9 @@
  */
 
 
-import { Stack } from "@mui/material";
+import { Stack, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { Iconify } from "src/components/iconify";
 
 
 import { FormProvider } from "src/components/form-provider";
@@ -32,6 +33,19 @@ const ApplyFilter = () => (
   </LoadingButton>
 );
 
+// כפתור הורדת PDF
+const PdfDownloadButton = ({ onExportPDF }) => (
+  <Button
+    variant="outlined"
+    size="small"
+    startIcon={<Iconify icon="eva:file-text-outline" />}
+    onClick={onExportPDF}
+    sx={{ mr: 1 }}
+  >
+    PDF הורד
+  </Button>
+);
+
 export function FullTableToolbar(): React.JSX.Element {
   
   // קבלת הפרטים על הסרגל כלים מהקונפיגורצייה:
@@ -39,7 +53,9 @@ export function FullTableToolbar(): React.JSX.Element {
     // רשימת הפעולות המופיעות בסרגל הכלים
     listActionsMap,
     // הנתונים על העמודות לצורך התאמה אישית של הפילטרים
-    tableColumns
+    tableColumns,
+    // פונקציית הורדת PDF
+    onExportPDF
   } = useTableConfig()
 
   // הצגה של הפילטרים שנקבעו על פי הגדרות המשתמש: מזוהה על פי המידע על העמודות
@@ -48,6 +64,8 @@ export function FullTableToolbar(): React.JSX.Element {
   const renderSearch = <RegularSearch onChange={()=>alert('search')} />
   // הצגה של כפתור "החל" לצורך ביצוע החיפוש בשדות החיפוש הנגישות
   const renderApplyFilterBtn = <ApplyFilter />
+  // הצגה של כפתור הורדת PDF
+  const renderPdfButton = onExportPDF && <PdfDownloadButton onExportPDF={onExportPDF} />
   // הצגה של פעולות נוספות אם יש
   const renderActions = listActionsMap && <PopoverActions listActions={listActionsMap}/> 
   
@@ -61,6 +79,7 @@ export function FullTableToolbar(): React.JSX.Element {
         {renderFilters}
         {renderSearch}
         {renderApplyFilterBtn}
+        {renderPdfButton}
         {renderActions}
       </Stack>
     </FormProvider>

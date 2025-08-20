@@ -48,9 +48,12 @@ export function FullTableRow({
     tableColumns,
     EditComponent,
     DetailsComponent,
-    rowId
+    rowId,
+    Cell
   } = useTableConfig()
-  
+
+  const CustomCell = Cell
+
   const columns = [
     {
       name: 'checkbox',
@@ -82,7 +85,7 @@ export function FullTableRow({
     return (
     <RegularRowProvider selected={selected} columns={columns} style={styleTable}>
         {columnsShow.map((column) => (
-        <TableCell key={column.name} onClick={()=>DetailsComponent ? detailsDialog.onTrue() : quickEdit.onTrue()} >{student[column.name]}</TableCell>
+        <TableCell key={column.name} onClick={()=> DetailsComponent ? detailsDialog.onTrue() : quickEdit.onTrue()} ><CustomCell>{student[column.name]}</CustomCell></TableCell>
       )
       )}
 

@@ -34,12 +34,16 @@ export interface TableConfig {
     onClose: () => void;
     column: Row | Record<string, never>;
   }>;
+  Cell?: React.ComponentType<{
+    children: React.ReactNode;
+  }>;
   styleTable: 'default' | 'striped' | 'bordered' | 'transparent' | 'background.paper';
   pagination?: boolean;
   addButton?: boolean;
   defaultValues?: {
     [key: string]: string;
   };
+  onExportPDF?: () => void;
   tableData: Table;
   tableColumns: InfoColumn[];
 }
