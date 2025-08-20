@@ -7,10 +7,7 @@ import { Form, Field } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 import JsonEditorComponent from './json-editor';
-import { DashboardContent } from 'src/layouts/dashboard';
-import { ComponentContainer } from 'src/components/blanks/component-block';
-import { Scrollbar } from 'src/components/scrollbar';
-import { UploadNewReports } from './upload-new-files';
+import DownloadTemplateReports from './download-template-reports';
 
 // Helper function to convert a File object to a base64 string
 // This is crucial for sending image data to the Gemini API
@@ -350,6 +347,7 @@ function UploadReports() {
 export function UploadReportsWrapper() {
   return (
     <Suspense fallback={<LoadingScreen />}>
+      <DownloadTemplateReports />
       <UploadReports />
     </Suspense>
   );
