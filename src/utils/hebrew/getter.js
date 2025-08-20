@@ -59,8 +59,14 @@ export function inHebrew(day, full=false) {
     return hebrewJson;
 }
 
+ 
 
-
+export function getElul(index){
+    const hebrewJson = getAllYear();
+    const elul = hebrewJson.filter(item => item.חודש_עברי === "אלול");
+    const dat = elul[index -1]
+    return `${dat.יום_עברי} ${dat.חודש_עברי}`
+}
 
 /**
  * Gets all Hebrew date information for a specific Hebrew year

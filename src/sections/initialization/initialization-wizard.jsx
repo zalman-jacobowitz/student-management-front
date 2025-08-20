@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { uuidv4 } from 'src/utils/uuidv4.js';
+import { shortId, uuidv4 } from 'src/utils/uuidv4.js';
 
 import { initUpdate } from 'src/actions/init.ts';
 
@@ -66,7 +66,7 @@ const InitializationWizardSchema = z.object({
 // ----------------------------------------------------------------------
 
 function formatStudents(table){
-  const with_ids = table.map(item => ({...item, student_id: uuidv4()}));
+  const with_ids = table.map(item => ({...item, student_id: shortId()}));
   
   return with_ids;
 }
@@ -75,8 +75,8 @@ function formatTemplates(table){
 
   const template_id = uuidv4();
 
-  const formattedTable = table.map((item) => ({
-    event_id:  uuidv4(),
+  const formattedTable = table.map((item, index) => ({
+    event_id: index,
     event_name: item.event_name,
     event_start: item.event_start,
     event_end: item.event_end,

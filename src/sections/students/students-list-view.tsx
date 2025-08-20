@@ -14,7 +14,7 @@ import { LoadingScreen } from "src/components/loading-screen";
 import { FullTableWrapper } from "src/components/full-table/view";
 import { TableConfig } from "src/components/full-table/types";
 
-import { uuidv4 } from "src/utils/uuidv4";
+
 
 import { StudentsNewEditFormDialog } from "./student-new-edit-form";
 

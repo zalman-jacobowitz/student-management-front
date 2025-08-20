@@ -236,7 +236,7 @@ function formatSummary(data, formData){
 function SummaryTableView({ formData }){
   console.log('formData: ', formData);
   const data = useSuspenseQuery(apiSummary(formData));
-
+  console.log({data});
   return <TableMainView summaryData={formatSummary(data.data, formData)} formData={formData} />;
 }
 
@@ -248,7 +248,7 @@ function SummaryMainView() {
   const template = useSuspenseQuery(apiTemplates())
 
   if (formData){
-    return <SummaryDataGrid formData={formData} />;
+    return <SummaryTableView formData={formData} />;
   }
   return (
       <SummaryStepsForm templateOptions={template.data || []} setFormData={setFormData} />

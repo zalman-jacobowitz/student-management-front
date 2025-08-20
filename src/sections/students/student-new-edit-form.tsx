@@ -11,7 +11,7 @@ import { infoStudentsUpdate } from "src/actions/info_students";
 import { Form } from "src/components/hook-form";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import { FromElement } from "src/components/hook-form/dynamic-form/elements";
-import { uuidv4 } from "src/utils/uuidv4";
+import { shortId } from "src/utils/uuidv4";
 
 
 
@@ -74,7 +74,7 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
   const onSubmit = handleSubmit(async (data) => {
 
     if (!student.student_id){
-      data.student_id = uuidv4()
+      data.student_id = shortId()
     }
 
     try {

@@ -1,6 +1,4 @@
-import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import React, { useRef, useState, useEffect } from 'react';
-import { EmptyContent } from 'src/components/empty-content';
 import { UploadTableView } from './upload-table-view';
 
 interface JsonEditorComponentProps {
@@ -10,8 +8,6 @@ interface JsonEditorComponentProps {
   }[];
   onDataChange: (data: any) => void;
 }
-
-
 
 async function uploadData(dataToSend: any) {
   try {
@@ -122,22 +118,71 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
     uploadData(editedData[0]?.json?.tables);
   };
 
-  const notFound = editedData.length === 0;
-
   return (
-    <>
-        <Typography variant="h4" component="h1" gutterBottom>
-          סיכום ועריכה
-        </Typography>
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#f8fafc',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem' /* p-4 */,
+        fontFamily: 'sans-serif',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#ffffff',
+          padding: '1.5rem 2rem',
+          borderRadius: '0.75rem',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          width: '100%',
+          maxWidth: '64rem',
+          border: '1px solid #e2e8f0',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '2.25rem',
+            fontWeight: '800',
+            textAlign: 'center',
+            color: '#374151',
+            marginBottom: '2rem',
+          }}
+        >
+          Review & Edit Parsed Data
+        </h1>
 
-        { notFound ? (
-          <EmptyContent title='לא נמצאו נתונים לעריכה' />
+        {editedData.length === 0 ? (
+          <p style={{ textAlign: 'center', color: '#6b7280' }}>אין מידע להציג</p>
         ) : (
           editedData.map((fileItem, fileIndex) => (
-            <Card key={fileIndex}>
-              <CardHeader title={`קובץ: ${fileItem.fileName}`} />
-              <CardContent>
-          {/*
+            <div
+              key={fileIndex}
+              style={{
+                marginBottom: '2.5rem',
+                padding: '1.5rem',
+                border: '1px solid #bfdbfe',
+                borderRadius: '0.5rem',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                backgroundColor: '#eff6ff',
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: '700',
+                  color: '#1e40af',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span>קובץ: {fileItem.fileName}</span>
+              </h2>
+
               <div style={{ marginBottom: '1.5rem' }}>
                 <h3
                   style={{
@@ -165,26 +210,33 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
                   onChange={(e) => handleDocumentTextChange(fileIndex, e.target.value)}
                 />
               </div>
-        */}
 
               {/* Tables Section */}
               {fileItem.json.tables && fileItem.json.tables.length > 0 && (
                 <div style={{ marginBottom: '1.5rem' /* mb-6 */ }}>
+                  <h3
+                    style={{
+                      fontSize: '1.25rem' /* text-xl */,
+                      fontWeight: '600' /* font-semibold */,
+                      color: '#4b5563',
+                      marginBottom: '1rem' /* mb-4 */,
+                    }}
+                  >
+                    טבלת תלמידים:
+                  </h3>
                   {fileItem.json.tables.map((table, tableIndex) => (
                     <UploadTableView
                       key={tableIndex}
                       tableIndex={tableIndex}
                       handleRemoveTable={handleRemoveTable}
-                      table={table}
                       fileIndex={fileIndex}
                       handleTableCellChange={handleTableCellChange}
+                      table={table}
                     />
                   ))}
                 </div>
-
               )}
-              </CardContent>
-            </Card>
+            </div>
           ))
         )}
 
@@ -212,7 +264,8 @@ const JsonEditorComponent: React.FC<JsonEditorComponentProps> = ({
             העלה
           </button>
         </div>
-      </>
+      </div>
+    </div>
   );
 };
 

@@ -1,154 +1,340 @@
 
 import React from 'react';
-import { Box, Card, IconButton, TableCell, TextField } from '@mui/material';
+import { Box, Card, Checkbox, IconButton, TableCell, TextField } from '@mui/material';
 
 import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
+import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
+import { head } from 'lodash';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { apiTemplates } from 'src/actions/templates';
+import { getElul } from 'src/utils/hebrew/getter';
+import { info_columns, info_students } from 'src/actions/moks/mokes';
+import { descriptionColumns, getDesc } from '../insert/functions';
+import { generateScanId, uuidv4 } from 'src/utils/uuidv4';
 
-function convertTableToObjects(data) {
-    const headers = data.headers;
-    const rows = data.rows;
-    
-    return rows.map((row, index) => {
-        const obj = { id: index };
-        headers.forEach((header, colIndex) => {
-            obj[header] = row[colIndex];
-        });
-        return obj;
-    });
+
+const templatesMock = [
+    {
+        "client": "zalmanjacob@gmail.com",
+        "event_end": "08:30",
+        "event_id": "1",
+        "event_name": "חסידות בוקר",
+        "event_start": "07:00",
+        "template_id": "31ac234a-01a8-4794-acf3-431a4763f7da",
+        "template_name": "רגיל"
+    },
+    {
+        "client": "zalmanjacob@gmail.com",
+        "event_end": "10:30",
+        "event_id": "2",
+        "event_name": "תפילה",
+        "event_start": "09:00",
+        "template_id": "31ac234a-01a8-4794-acf3-431a4763f7da",
+        "template_name": "רגיל"
+    },
+    {
+        "client": "zalmanjacob@gmail.com",
+        "event_end": "14:00",
+        "event_id": "3",
+        "event_name": "נגלה בוקר",
+        "event_start": "12:00",
+        "template_id": "31ac234a-01a8-4794-acf3-431a4763f7da",
+        "template_name": "רגיל"
+    },
+    {
+        "client": "zalmanjacob@gmail.com",
+        "event_end": "17:30",
+        "event_id": "4",
+        "event_name": "נגלה צהריים",
+        "event_start": "16:00",
+        "template_id": "31ac234a-01a8-4794-acf3-431a4763f7da",
+        "template_name": "רגיל"
+    },
+    {
+        "client": "zalmanjacob@gmail.com",
+        "event_end": "20:00",
+        "event_id": "5",
+        "event_name": "הלכה",
+        "event_start": "18:30",
+        "template_id": "31ac234a-01a8-4794-acf3-431a4763f7da",
+        "template_name": "רגיל"
+    }
+]
+
+const infoStudentsMock = info_students.slice(0, 10)
+const infoColumnsMock =  info_columns
+
+
+function mergeWithStudents(infoStudents, summaryData, infoColumns) {
+  // Implement your merging logic here
+  const { primary, secondary } = descriptionColumns(infoColumns);
+  const mergedData = summaryData.map(summary => {
+    const student = infoStudents.find(item => item.student_id === summary.id);
+    return {
+    'primary': getDesc(student, primary),
+      ...summary
+  }
+  });
+  return mergedData
 }
 
-function UploadTableRow({ 
-    row, 
-    headers, 
-    fileIndex, 
-    tableIndex, 
-    rowIndex, 
-    handleTableCellChange,
-    selected,
-    onSelectRow 
-}) {
-    // קומפוננטות עמודות מיוחדות (ריקות כי אנחנו לא צריכים checkbox וכו')
-    const columns = [];
 
-    return (
-        <RegularRowProvider 
-            selected={selected} 
-            columns={columns}
-            style="default"
-        >
-            {headers.map((header, colIndex) => (
-                <TableCell 
-                    key={colIndex}
-                    sx={{ textAlign: 'right', p: 1 }}
-                >
-                    <TextField
-                        size="small"
-                        fullWidth
-                        value={row[colIndex] || ''}
-                        onChange={(e) =>
-                            handleTableCellChange(
-                                fileIndex,
-                                tableIndex,
-                                rowIndex,
-                                colIndex,
-                                e.target.value
-                            )
-                        }
-                        sx={{
-                            '& .MuiInputBase-root': {
-                                backgroundColor: 'background.paper',
-                                fontSize: '0.875rem'
-                            }
-                        }}
-                    />
-                </TableCell>
-            ))}
-        </RegularRowProvider>
-    );
+// דרך 1: מבנה נפרד לקבוצות עמודות
+const tableStructure = {
+    basicColumns: [
+        { field: 'id', headerName: 'מזהה' },
+        { field: 'primary', headerName: 'שם תלמיד' }
+    ],
+    groupedColumns: [
+        {
+            groupName: getElul(1),
+            columns: [
+                { field: '1-1', event: '1'},
+                { field: '1-2', event: '2'},
+                { field: '1-3', event: '3'}
+            ]
+        },
+        {
+            groupName: getElul(2),
+            columns: [
+                { field: '2-1' , event: "1"},
+                { field: '2-2',  event: "2" },
+                { field: '2-3', event: "3"}
+            ]
+        },
+        {
+            groupName: getElul(3),
+            columns: [
+                { field: '3-1', event: "1"},
+                { field: '3-2', event: "2" },
+                { field: '3-3', event: "3"}
+            ]
+        }
+    ]
 }
 
-export function UploadTableView({ 
-    tableIndex,
-    handleRemoveTable,
-    table,
-    fileIndex,
-    handleTableCellChange
-}) {
-    const tableData = convertTableToObjects(table);
-    
-    // יצירת head labels בהתאם לפורמט הנדרש
-    const headLabels = table.headers.map(header => ({
-        id: header,
-        label: header,
-        width: header === 'שם' ? 100 : 'auto'
+const mockData = [
+    {
+        id: "1",
+        '1-1': true,
+        '1-2': true,
+        '1-3': true,
+        '2-1': true,
+        '2-2': false,
+        '2-3': true,
+        '3-1': true,
+        '3-2': false,
+        '3-3': true
+    },
+    {
+        id: "2",
+        '1-1': true,
+        '1-2': true,
+        '1-3': false,
+        '2-1': true,
+        '2-2': true,
+        '2-3': true,
+        '3-1': true,
+        '3-2': false,
+        '3-3': true
+    },
+    {
+        id: "3",
+        '1-1': true,
+        '1-2': false,
+        '1-3': true,
+        '2-1': true,
+        '2-2': true,
+        '2-3': false,
+        '3-1': true,
+        '3-2': false,
+        '3-3': true
+    },
+    {
+        id: "4",
+        '1-1': true,
+        '1-2': true,
+        '1-3': true,
+        '2-1': false,
+        '2-2': false,
+        '2-3': true,
+        '3-1': true,
+        '3-2': false,
+        '3-3': false
+    },
+    {
+        id: "5",
+        '1-1': true,
+        '1-2': true,
+        '1-3': true,
+        '2-1': false,
+        '2-2': true,
+        '2-3': false,
+        '3-1': true,
+        '3-2': false,
+        '3-3': false
+    },
+    {
+        id: "6",
+        '1-1': false,
+        '1-2': true,
+        '1-3': false,
+        '2-1': false,
+        '2-2': false,
+        '2-3': false,
+        '3-1': true,
+        '3-2': false,
+        '3-3': true
+    },
+    {
+        id: "7",
+        '1-1': true,
+        '1-2': false,
+        '1-3': false,
+        '2-1': false,
+        '2-2': false,
+        '2-3': true,
+        '3-1': false,
+        '3-2': false,
+        '3-3': false
+    },
+    {
+        id: "8",
+        '1-1': true,
+        '1-2': true,
+        '1-3': true,
+        '2-1': false,
+        '2-2': false,
+        '2-3': false,
+        '3-1': true,
+        '3-2': true,
+        '3-3': true
+    }
+];
+
+
+function getEventName(eventId) {
+
+    const event = templatesMock.find(event => event.event_id === eventId);
+    return event ? event.event_name : 'לא ידוע';
+}
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport
+        printOptions={{
+          pageStyle: `
+          @page {
+            size: A4 portrait;
+            margin: 1cm;
+          }
+          .MuiDataGrid-root {
+            direction: rtl;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          .MuiDataGrid-main {
+            direction: rtl;
+            color: #af1818ff;
+            width: 100% !important;
+          }
+          .MuiDataGrid-virtualScroller {
+            width: 100% !important;
+          }
+          .MuiDataGrid-columnHeaders {
+            width: 100% !important;
+          }
+          .MuiDataGrid-row {
+            width: 100% !important;
+          }
+          .MuiDataGrid-cell {
+          
+            flex: .6 !important;
+            min-width: 0 !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .MuiDataGrid-columnHeader {
+            color: #af1818ff !important;
+            font-weight: bold;
+            flex: .6 !important;
+            min-width: 0 !important;
+          }
+          .MuiDataGrid-columnGroupHeader {
+            color: #af1818ff !important;
+            font-weight: bold;
+            flex: .6 !important;
+          }
+          .MuiDataGrid-columnHeaderTitle {
+            color: #af1818ff !important;
+            font-size: 10px;
+          }`,
+          hideFooter: true,
+        hideToolbar: true
+        }}
+      />
+      <GridToolbarDensitySelector/>
+    </GridToolbarContainer>
+  );
+}
+
+export function UploadTableView() {
+    const templates = useSuspenseQuery(apiTemplates())
+    console.log({data: templates.data})
+
+    const merged = mergeWithStudents(infoStudentsMock, mockData, infoColumnsMock)
+
+    // בניית כל העמודות
+    const allColumns = [
+        ...tableStructure.basicColumns.map(col => ({
+            field: col.field,
+            headerName: col.headerName,
+
+        })),
+        ...tableStructure.groupedColumns.flatMap(group => 
+            group.columns.map(col => ({
+                field: col.field,
+                headerName: `${getEventName(col.event)}`,
+
+                editable: true,
+                type: 'boolean',
+                renderCell: (params) => <Checkbox checked={params.value} />
+            }))
+        )
+    ];
+
+    // בניית מודל קבוצות העמודות
+    const columnGroupingModel = tableStructure.groupedColumns.map(group => ({
+        groupId: group.groupName,
+        children: group.columns.map(col => ({ field: col.field }))
     }));
 
-    // יצירת table instance לפונקציונליות הטבלה
-    const tableInstance = useTable({
-        defaultRowsPerPage: 10,
-        defaultSelected: []
-    });
-
     return (
-        <>
-            <IconButton
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveTable(fileIndex, tableIndex);
-                }}
-                sx={{
-                    position: 'absolute',
-                    top: 16,
-                    right: 16,
-                    bgcolor: 'error.main',
-                    color: 'common.white',
-                    '&:hover': {
-                        bgcolor: 'error.dark'
-                    }
-                }}
-                size="small"
-            >
-                <Iconify icon="solar:trash-bin-minimalistic-bold" />
-            </IconButton>
-        <Card
-            key={tableIndex}
-            onClick={() => console.log('Table clicked', tableData)}
-            sx={{
-                mb: 4,
-                p: 2,
-                position: 'relative'
+        <DataGrid
+            rows={merged}
+            columns={allColumns}
+            getRowId={(row) => row.id}
+            columnGroupingModel={columnGroupingModel}
+            experimentalFeatures={{ columnGrouping: true }}
+            initialState={{
+                pagination: {
+                    paginationModel: {
+                        pageSize: 5,
+                    },
+                },
             }}
-        >
-            <Box sx={{ mt: 2, position: 'relative' }}>
-                <Scrollbar>
-                    <RegularTable 
-                        headLabels={headLabels}
-                        tableData={tableData}
-                        table={tableInstance}
-                        themeTable="default"
-                        id="id"
-                    >
-                        {table.rows.map((row, rowIndex) => (
-                            <UploadTableRow
-                                key={rowIndex}
-                                row={row}
-                                headers={table.headers}
-                                fileIndex={fileIndex}
-                                tableIndex={tableIndex}
-                                rowIndex={rowIndex}
-                                handleTableCellChange={handleTableCellChange}
-                                selected={tableInstance.selected.includes(rowIndex)}
-                                onSelectRow={() => tableInstance.onSelectRow(rowIndex)}
-                            />
-                        ))}
-                    </RegularTable>
-                </Scrollbar>
-            </Box>
-        </Card>
-        </>
+            sx={{
+                height: 'calc(100vh - 200px)', // גובה מלא פחות מקום לכותרות
+                
+            }}
+            slots={{ toolbar: CustomToolbar }}
+            pageSizeOptions={[5, 8, 10]}
+            checkboxSelection
+            disableRowSelectionOnClick
+        />
     );
 }

@@ -130,6 +130,9 @@ function generateColumns(data, formData): GridColDef[] {
 
 export function SummaryDataGrid({ formData }) {
   const summaryData = useSuspenseQuery(apiSummary(formData));
+
+  console.log('SummaryData:', summaryData.data);
+
   const infoStudents = useSuspenseQuery(apiInfoStudents());
   const infoColumns = useSuspenseQuery(apiInfoColumns());
   

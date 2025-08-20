@@ -1,13 +1,14 @@
 import { Suspense, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Stack, Button, Typography, LinearProgress, Card } from '@mui/material';
+import { Stack, Button, Typography, LinearProgress } from '@mui/material';
 
 import { Form, Field } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 import JsonEditorComponent from './json-editor';
 import DownloadTemplateReports from './download-template-reports';
+import { UploadTableView } from './upload-table-view';
 
 // Helper function to convert a File object to a base64 string
 // This is crucial for sending image data to the Gemini API
@@ -24,23 +25,13 @@ const fileToBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-
-
-function useUploadReports() {
-  // Custom hook for managing upload reports state
+function UploadReports() {
   const [step, setStep] = useState<'upload' | 'preview'>('upload');
-  // מכיל את מצב ההעלאה
   const [progress, setProgress] = useState<number>(0);
-  // מכיל את הנתונים המפוענחים
   const [parsedData, setParsedData] = useState<{ fileName: string; json: any }[]>([]);
-
-  // מכיל את מצב הטעינה הכללית
   const [loadingOverall, setLoadingOverall] = useState<boolean>(false); // New state for overall loading
-
-  // מכיל את מצב השגיאות
   const [error, setError] = useState<string>(''); // New state for error messages
 
-  // טופס הנתונים
   const methods = useForm({
     defaultValues: {
       scannedReports: [],
@@ -48,32 +39,24 @@ function useUploadReports() {
   });
 
   const { control, getValues } = methods;
-  
-  // מכיל את הנתונים שהתקבלו מהמסמך
   const uploadedFiles = useWatch({ name: 'scannedReports', control }) || [];
 
-  // שליחת הפרומט עם התמונה
   const handleProcess = () => {
-    // וידוא שהקובץ קיים
     const files = getValues('scannedReports') || [];
     const parsed = [];
 
-    // אם הקובץ ריק
     if (files.length === 0) {
       setError('Please select at least one image file to process.');
       return;
     }
 
-    // התחלת העלאה
     setLoadingOverall(true);
     setError('');
     setProgress(0);
 
-    // פרומט
     const prompt =
       "Extract all Hebrew text and any tabular data from this image. For tables, identify headers and rows. Provide the output as a JSON object with 'document_text' for general text and a 'tables' array for structured table data. Each table in the 'tables' array should have a 'table_id', 'headers' (array of strings), and 'rows' (array of arrays of strings where the order of values in each inner array corresponds to the order of headers).";
 
-    // הסכמה לקבלת התשובה
     const responseSchema = {
       type: 'OBJECT',
       properties: {
@@ -262,85 +245,35 @@ function useUploadReports() {
         setLoadingOverall(false); // Ensure loading is off regardless of success or failure
       });
   };
-  return {
-    step,
-    parsedData,
-    error,
-    setStep,
-    methods,
-    loadingOverall,
-    uploadedFiles,
-    handleProcess,
-    progress
-  };
-}
 
 
-export function UploadPreview({
-  parsedData,
-  loadingOverall,
-  error,
-  setStep 
-}) {
-      return (
+    return (
       <Stack spacing={3}>
-        {parsedData.length === 0 && !loadingOverall && (
-          <Typography variant="body1" color="text.secondary">
-            לא נתוחו דוחות בהצלחה
-          </Typography>
-        )}
+        <UploadTableView />
+      </Stack>
+  )
+  return (
+    <Form methods={methods} onSubmit={() => {}}>
+      <Stack spacing={2}>
+        <Field.Upload name="scannedReports" multiple helperText="בחר קבצי תמונה של דוחות סרוקים" />
 
-        {parsedData?.length ? (
-          <JsonEditorComponent initialParsedData={parsedData} onDataChange={undefined} />
-        ) : null}
+        {loadingOverall && <LinearProgress variant="determinate" value={progress} />}
+
         {error && (
           <Typography variant="body2" color="error">
             {error}
           </Typography>
         )}
 
-        <Button variant="outlined" onClick={() => setStep('upload')}>
-          חזור
+        <Button
+          variant="contained"
+          disabled={uploadedFiles.length === 0 || loadingOverall}
+          onClick={handleProcess}
+        >
+          {loadingOverall ? 'Processing...' : 'Process Files'}
         </Button>
       </Stack>
-    );
-  }
-
-function UploadReports() {
-  const {
-    step,
-    parsedData,
-    error,
-    setStep,
-    methods,
-    loadingOverall,
-    uploadedFiles,
-    handleProcess,
-    progress
-  } = useUploadReports();
- 
-  return (
-    <ComponentContainer sx={{}}>
-      {
-      step === 'upload' ? 
-      <UploadNewReports
-          methods={methods}
-          loadingOverall={loadingOverall}
-          progress={progress}
-          error={error}
-          uploadedFiles={uploadedFiles}
-          handleProcess={handleProcess}
-        />
-      :
-      <UploadPreview
-        parsedData={parsedData}
-        loadingOverall={loadingOverall}
-        error={error}
-        setStep={setStep}
-      />
-      }
-
-    </ComponentContainer>
+    </Form>
   );
 }
 
