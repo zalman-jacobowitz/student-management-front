@@ -65,7 +65,10 @@ export function getElul(index){
     const hebrewJson = getAllYear();
     const elul = hebrewJson.filter(item => item.חודש_עברי === "אלול");
     const dat = elul[index -1]
-    return `${dat.יום_עברי} ${dat.חודש_עברי}`
+    return {
+        day: dat.יום,
+        full: `${dat.יום_עברי} ${dat.חודש_עברי}`
+    }
 }
 
 /**

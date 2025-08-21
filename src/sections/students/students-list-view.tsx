@@ -106,6 +106,7 @@ function StudentMainViewDynamic() {
     specialRow: ['checkbox', 'avatar', 'edit'],
     // העמודה שהיא מזהה רשומה:
     rowId: 'student_id',
+    Cell: ({children})=><>{children}</>,
     // הקומפוננטה שתוצג בעת אפשרות של עריכת רשומה
     EditComponent: (props) => {
       // אפשרות פתיחה של הדיאלוג לעריכה, והנתונים עצמם של הרשומה

@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Stack, Button, Typography, LinearProgress } from '@mui/material';
+import { Stack, Button, Typography, LinearProgress, Card, CardContent, CardActions } from '@mui/material';
 
 import { Form, Field } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
@@ -9,6 +9,10 @@ import { LoadingScreen } from 'src/components/loading-screen';
 import JsonEditorComponent from './json-editor';
 import DownloadTemplateReports from './download-template-reports';
 import { UploadTableView } from './upload-table-view';
+import { DownTableView } from './down-table-view';
+import { DashboardContent } from 'src/layouts/dashboard/main';
+import { Scrollbar } from 'src/components/scrollbar';
+import { LoadingButton } from '@mui/lab';
 
 // Helper function to convert a File object to a base64 string
 // This is crucial for sending image data to the Gemini API
@@ -26,7 +30,7 @@ const fileToBase64 = (file) =>
   });
 
 function UploadReports() {
-  const [step, setStep] = useState<'upload' | 'preview'>('upload');
+  const [step, setStep] = useState<'upload' | 'preview'| 'download'>('upload');
   const [progress, setProgress] = useState<number>(0);
   const [parsedData, setParsedData] = useState<{ fileName: string; json: any }[]>([]);
   const [loadingOverall, setLoadingOverall] = useState<boolean>(false); // New state for overall loading
@@ -232,6 +236,7 @@ function UploadReports() {
         Promise.resolve()
       )
       .then(() => {
+        console.log('parsed: ', parsed)
         // This block runs after all files have been processed (or attempts made)
         setParsedData(parsed);
         setStep('preview');
@@ -246,41 +251,65 @@ function UploadReports() {
       });
   };
 
-
+  if (step === 'download') {
     return (
       <Stack spacing={3}>
-        <UploadTableView />
+        <DownTableView setStep={setStep} />
       </Stack>
-  )
+    );
+  }
+  
+  if (step === 'preview') {
+    return (
+      <Stack spacing={3}>
+        <UploadTableView dataJson={parsedData} />
+      </Stack>
+    );
+  }
+
   return (
-    <Form methods={methods} onSubmit={() => {}}>
-      <Stack spacing={2}>
-        <Field.Upload name="scannedReports" multiple helperText="בחר קבצי תמונה של דוחות סרוקים" />
+    <DashboardContent>
+      <Form methods={methods} onSubmit={() => {}}>
+        <Card >
+          <CardActions title='העלאת דוחות'/>
+          <CardContent>
+            <Scrollbar height={300}>
+            <Field.Upload name="scannedReports" multiple helperText="בחר קבצי תמונה של דוחות סרוקים" />
+             {loadingOverall && <LinearProgress variant="determinate" value={progress} />}
 
-        {loadingOverall && <LinearProgress variant="determinate" value={progress} />}
+            {error && (
+              <Typography variant="body2" color="error">
+                {error}
+              </Typography>
+            )}
+            </Scrollbar>
+            </CardContent>
+              <CardActions>
+                <Stack direction="row" spacing={2}>
+                  <Button variant="contained" onClick={() => setStep('download')}>
+                    הורד תבנית
+                  </Button>
 
-        {error && (
-          <Typography variant="body2" color="error">
-            {error}
-          </Typography>
-        )}
-
-        <Button
-          variant="contained"
-          disabled={uploadedFiles.length === 0 || loadingOverall}
-          onClick={handleProcess}
-        >
-          {loadingOverall ? 'Processing...' : 'Process Files'}
-        </Button>
-      </Stack>
+                <LoadingButton
+                variant="contained"
+                loading={loadingOverall}
+                onClick={handleProcess}
+              >
+                {loadingOverall ? 'מנתח את הקובץ שלך...' : 'העלה קובץ'}
+              </LoadingButton>
+              </Stack>
+            </ CardActions>
+          </Card>
     </Form>
+    
+    
+  </DashboardContent>
   );
 }
 
 export function UploadReportsWrapper() {
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DownloadTemplateReports />
       <UploadReports />
     </Suspense>
   );

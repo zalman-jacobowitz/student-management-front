@@ -76,7 +76,7 @@ function formatTemplates(table){
   const template_id = uuidv4();
 
   const formattedTable = table.map((item, index) => ({
-    event_id: index,
+    event_id: index + 1,
     event_name: item.event_name,
     event_start: item.event_start,
     event_end: item.event_end,
@@ -169,9 +169,10 @@ export function InitializationWizard() {
   
         await promise;
 
-      // setTimeout(() => {
-      //  router.push('/ניהול/רשימה');
-      // }, 2000);
+      queryClient.cancelQueries();
+      setTimeout(() => {
+        router.push('/ניהול/רשימה');
+      }, 2000);
       
       return false;
     } catch (error) {

@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Box, Card, Checkbox, IconButton, TableCell, TextField } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, Button, Card, Checkbox, IconButton, TableCell, TextField } from '@mui/material';
 
 import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
@@ -9,12 +9,11 @@ import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
 import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
 import { head } from 'lodash';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { apiTemplates } from 'src/actions/templates';
 import { getElul } from 'src/utils/hebrew/getter';
 import { info_columns, info_students } from 'src/actions/moks/mokes';
-import { descriptionColumns, getDesc } from '../insert/functions';
-import { generateScanId, uuidv4 } from 'src/utils/uuidv4';
+import { descriptionColumns } from '../insert/functions';
 
 
 const templatesMock = [
@@ -84,7 +83,7 @@ function mergeWithStudents(infoStudents, summaryData, infoColumns) {
 
 
 // דרך 1: מבנה נפרד לקבוצות עמודות
-const tableStructure = {
+const tableStructurea = {
     basicColumns: [
         { field: 'id', headerName: 'מזהה' },
         { field: 'primary', headerName: 'שם תלמיד' }
@@ -217,9 +216,9 @@ const mockData = [
 ];
 
 
-function getEventName(eventId) {
+function getEventName(eventId, templates) {
 
-    const event = templatesMock.find(event => event.event_id === eventId);
+    const event = templates.find(event => event.event_id === eventId);
     return event ? event.event_name : 'לא ידוע';
 }
 function CustomToolbar() {
@@ -281,60 +280,322 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { apiInfoStudents } from 'src/actions/info_students';
+import { InfoStudent } from 'src/components/full-table/types';
+import { dataStudentsEventUpdate } from 'src/actions/data_students_event';
+import { updateData } from 'src/hooks/use-update';
 
-export function UploadTableView() {
-    const templates = useSuspenseQuery(apiTemplates())
-    console.log({data: templates.data})
+const mockDataJson = {
+    "fileName": "סריקה 3.png",
+    "json": {
+        "document_text": "1. חסידות בוקר 2. תפילה 3. עיונא א 4. עיונא ב 5. הלכה מזהה שם תלמיד",
+        "tables": [
+            {
+                "headers": [
+                    "4/2",
+                    "4/1",
+                    "3/5",
+                    "3/2",
+                    "3/1",
+                    "2/4",
+                    "2/3",
+                    "2/2",
+                    "1/1",
+                    "1/3",
+                    "1/2",
+                    "1/1",
+                    "שם תלמיד",
+                    "id"
+                ],
+                "rows": [
+                    [
+                        "",
+                        "",
+                        "V",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "V",
+                        "farchy Emma",
+                        "T-1015"
+                    ],
+                    [
+                        "",
+                        "",
+                        "",
+                        "V",
+                        "",
+                        "V",
+                        "",
+                        "V",
+                        "",
+                        "",
+                        "V",
+                        "",
+                        "Ben David Yoav",
+                        "C-1037"
+                    ],
+                    [
+                        "",
+                        "V",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "V",
+                        "",
+                        "",
+                        "Minkovsky Ron",
+                        "V-1078"
+                    ],
+                    [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "Eitan Ella",
+                        "G-1113"
+                    ]
+                ],
+                "table_id": 1
+            }
+        ]
+    }
+}
+function convertTableDataToObjects(tableData) {
+   const { headers, rows } = tableData;
+   
+   // מציאת אינדקסים של עמודות חשובות
+   const idIndex = headers.findIndex(h => h === 'id');
+   const nameIndex = headers.findIndex(h => h === 'שם תלמיד');
+   
+   return rows.map(row => {
+       const obj = {
+           id: row[idIndex],
+           student_id: row[idIndex], // משתמשים באותו מזהה
+       };
+       
+       // המרת עמודות הנוכחות לפורמט הנדרש
+       headers.forEach((header, index) => {
+           if (header !== 'id' && header !== 'שם תלמיד') {
+               // המרת פורמט התאריכים מ-"1/1" ל-"1-1"
+               const fieldName = header.replace('/', '-');
+               // המרת "V" ל-true, ריק ל-false
+               obj[fieldName] = !!row[index]
+           }
+       });
+       
+       return obj;
+   });
+}
 
-    const merged = mergeWithStudents(infoStudentsMock, mockData, infoColumnsMock)
 
-    // בניית כל העמודות
+function generateTableStructure(fields) {
+  const basicColumns = [
+      { field: 'id', headerName: 'מזהה' },
+      { field: 'primary', headerName: 'שם תלמיד' }
+  ];
+  
+  // סינון עמודות שמתחילות במספר ולאחר מכן תו לא-מספרי ואז מספר נוסף
+  const eventFields = fields.filter(field => /^\d+[^\d]+\d+$/.test(field));
+  console.log({fields})
+  
+  // קיבוץ לפי המספר הראשון (יום)
+  const groupedByDay = {};
+  const allFields = {};
+
+  eventFields.forEach(field => {
+      // חיפוש התו המפריד והפיצול לפיו
+      const match = field.match(/^(\d+)([^\d]+)(\d+)$/);
+      if (match) {
+          const [, day, separator, event] = match;
+          
+          if (!groupedByDay[day]) {
+              groupedByDay[day] = [];
+          }
+          allFields[field] = {
+              day: getElul(parseInt(day)).day,
+              event
+          };
+
+          groupedByDay[day].push({
+              field,
+              event
+          });
+      }
+  });
+  
+  // המרה למבנה הנדרש
+  const groupedColumns = Object.keys(groupedByDay)
+      .sort((a, b) => parseInt(a) - parseInt(b))
+      .map(day => ({
+          groupName: getElul(parseInt(day)).full,
+          groupId: getElul(parseInt(day)).day,
+          columns: groupedByDay[day].sort((a, b) => parseInt(a.event) - parseInt(b.event))
+      }));
+  
+  return {
+      basicColumns,
+      groupedColumns,
+      allFields
+  };
+}
+
+
+const getDesc = (student: InfoStudent, desc: string[]): string => desc.map(e => student? student[e] : ' ').join(' ')
+
+
+
+
+
+export function UploadTableView({dataJson}) {
+    console.log({dataJson})
+    // השתמשו בנתונים המקומיים במקום קריאות API שלא ניתנות להרצה
+    const templates = useSuspenseQuery(apiTemplates());
+    const infoStudents = useSuspenseQuery(apiInfoStudents());
+    const convertedData = convertTableDataToObjects(dataJson[0].json.tables[0]);
+    const tableStructure = generateTableStructure(Object.keys(convertedData[0]));
+    
+    const merged = mergeWithStudents(infoStudents.data, convertedData, infoColumnsMock);
+
+    const queryClient = useQueryClient();
+      
+    const { mutateAsync } = useMutation(dataStudentsEventUpdate({queryClient}))  
+    
+    const [rows, setRows] = useState(merged);
+    
     const allColumns = [
         ...tableStructure.basicColumns.map(col => ({
             field: col.field,
             headerName: col.headerName,
-
+            editable: col.field !== 'primary' && col.field !== 'id',
         })),
         ...tableStructure.groupedColumns.flatMap(group => 
             group.columns.map(col => ({
                 field: col.field,
-                headerName: `${getEventName(col.event)}`,
-
+                headerName: `${getEventName(col.event, templates.data)}`,
                 editable: true,
                 type: 'boolean',
-                renderCell: (params) => <Checkbox checked={params.value} />
+                renderCell: (params) => <Checkbox checked={params.value} />,
             }))
         )
     ];
 
-    // בניית מודל קבוצות העמודות
     const columnGroupingModel = tableStructure.groupedColumns.map(group => ({
         groupId: group.groupName,
         children: group.columns.map(col => ({ field: col.field }))
     }));
+    
+
+
+    const generatePDF = async () => {
+        const element = document.getElementById('content');
+        const canvas = await html2canvas(element, { scale: 2 });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const margin = 10;
+        
+        const availableWidth = pageWidth - (margin * 2);
+        const availableHeight = pageHeight - (margin * 2);
+        
+        const imgRatio = canvas.width / canvas.height;
+        const pageRatio = availableWidth / availableHeight;
+        
+        let finalWidth, finalHeight;
+        
+        if (imgRatio > pageRatio) {
+            finalWidth = availableWidth;
+            finalHeight = availableWidth / imgRatio;
+        } else {
+            finalHeight = availableHeight;
+            finalWidth = availableHeight * imgRatio;
+        }
+        
+        const x = margin;
+        const y = margin;
+        
+        pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
+        pdf.save('table.pdf');
+    };
+
+    const handleRowUpdate = (newRow) => {
+        console.log('שורה מעודכנת:', newRow); 
+        setRows(prevRows => prevRows.map(row => (row.id === newRow.id ? newRow : row)));
+        return newRow;
+    };
+
+    const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
+        await updateData({
+          data,
+          mode,
+          mutateAsync
+        })
+      }, [mutateAsync])
+    
+    const handleTableAction = async (action, rows) => {
+        const allData = []
+        rows.forEach(row => {
+            Object.keys(row).forEach(item => {
+                const KEY = tableStructure.allFields[item]
+                if (!KEY) return;
+                allData.push({...KEY, student_id: row.id, data: Number(row[item]) });
+            })
+            
+        })
+        handleUpdate(allData)
+        console.table(allData);
+    }
 
     return (
-        <DataGrid
-            rows={merged}
-            columns={allColumns}
-            getRowId={(row) => row.id}
-            columnGroupingModel={columnGroupingModel}
-            experimentalFeatures={{ columnGrouping: true }}
-            initialState={{
-                pagination: {
-                    paginationModel: {
-                        pageSize: 5,
-                    },
-                },
-            }}
-            sx={{
-                height: 'calc(100vh - 200px)', // גובה מלא פחות מקום לכותרות
-                
-            }}
-            slots={{ toolbar: CustomToolbar }}
-            pageSizeOptions={[5, 8, 10]}
-            checkboxSelection
-            disableRowSelectionOnClick
-        />
+        <>
+            <Button onClick={() => handleTableAction('update', rows)}>עידכון</Button>
+            <div id='content'>
+                <DataGrid
+                    rows={rows} 
+                    columns={allColumns}
+                    getRowId={(row) => row.id}
+                    columnGroupingModel={columnGroupingModel}
+                    experimentalFeatures={{ columnGrouping: true }}
+                    initialState={{
+                        pagination: {
+                            paginationModel: {
+                                pageSize: 5,
+                            },
+                        },
+                    }}
+                    sx={{
+                        height: 'calc(100vh - 200px)',
+                    }}
+                    slots={{ toolbar: CustomToolbar }}
+                    pageSizeOptions={[5, 8, 10]}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    processRowUpdate={handleRowUpdate}
+                />
+            </div>
+        </>
     );
 }
+

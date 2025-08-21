@@ -12,7 +12,7 @@ export function uuidv4() {
 }
 
 export function shortId() {
- const digits = Math.floor(Math.random() * 900) + 100; // 100-999
+ const digits = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
  const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // ללא O, I
  const letter = letters[Math.floor(Math.random() * letters.length)];
  

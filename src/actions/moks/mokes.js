@@ -358,7 +358,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "i9j0k1l2-m3n4-5678-cdef-901234567890",
+        "student_id": "9",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "גרמניה",
@@ -373,7 +373,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "j0k1l2m3-n4o5-6789-defa-012345678901",
+        "student_id": "10",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אתיופיה",
@@ -388,7 +388,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "k1l2m3n4-o5p6-7890-efab-123456789012",
+        "student_id": "11",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אתיופיה",
@@ -403,7 +403,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "l2m3n4o5-p6q7-8901-fabc-234567890123",
+        "student_id": "12",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "לבנון",
@@ -418,7 +418,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "m3n4o5p6-q7r8-9012-abcd-345678901234",
+        "student_id": "13",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "ארה\"ב",
@@ -433,7 +433,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "n4o5p6q7-r8s9-0123-bcde-456789012345",
+        "student_id": "14",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אנגליה",
@@ -448,7 +448,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "o5p6q7r8-s9t0-1234-cdef-567890123456",
+        "student_id": "15",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "מרוקו",
@@ -463,7 +463,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "p6q7r8s9-t0u1-2345-defa-678901234567",
+        "student_id": "16",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "לבנון",
@@ -478,7 +478,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "q7r8s9t0-u1v2-3456-efab-789012345678",
+        "student_id": "17",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "ארה\"ב",
