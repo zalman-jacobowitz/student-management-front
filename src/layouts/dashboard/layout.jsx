@@ -27,10 +27,11 @@ import { screenOptions, navData as dashboardNavData } from '../config-nav-dashbo
 // ----------------------------------------------------------------------
 
 const groups = {
-  'ניהול נוכחות': ['manager', 'insert', 'export', 'profile', 'scan'],
   'ניהול נתונים': ['info', 'users'],
+  'ניהול נוכחות': ['manager', 'export', 'scan', 'download'],
   'ניהול זמנים': ['templates', 'calendar'],
-  הגדרות: ['settings', 'inialize', 'userPermissions', 'initialization'],
+  'סיכומים': ['profile', 'insert', 'summary'],
+  'הגדרות': ['settings', 'inialize', 'userPermissions', 'initialization'],
 };
 
 function screensFormat(data) {

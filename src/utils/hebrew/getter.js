@@ -53,14 +53,27 @@ export function readHebrewJson(day) {
  */
 export function inHebrew(day, full=false) {
     const hebrewJson = readHebrewJson(day);
+    if (full === 'Dm'){
+        return `${hebrewJson?.יום_עברי} ${hebrewJson?.חודש_עברי}`;
+    }
     if (full) {
         return `${hebrewJson?.יום_בשבוע} ${hebrewJson?.יום_עברי}  ${hebrewJson?.חודש_עברי} - ${hebrewJson?.שנה_עברית}`;
     }
+
     return hebrewJson;
 }
 
+ 
 
-
+export function getElul(index){
+    const hebrewJson = getAllYear();
+    const elul = hebrewJson.filter(item => item.חודש_עברי === "אלול");
+    const dat = elul[index -1]
+    return {
+        day: dat.יום,
+        full: `${dat.יום_עברי} ${dat.חודש_עברי}`
+    }
+}
 
 /**
  * Gets all Hebrew date information for a specific Hebrew year

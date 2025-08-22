@@ -1,13 +1,20 @@
 import { Suspense, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Stack, Button, Typography, LinearProgress, Card } from '@mui/material';
+import { Stack, Button, Typography, LinearProgress, Card, CardContent, CardActions } from '@mui/material';
 
 import { Form, Field } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 import JsonEditorComponent from './json-editor';
 import DownloadTemplateReports from './download-template-reports';
+import { UploadTableView } from './upload-table-view';
+import { DownTableView } from '../download/down-table-view';
+import { DashboardContent } from 'src/layouts/dashboard/main';
+import { Scrollbar } from 'src/components/scrollbar';
+import { LoadingButton } from '@mui/lab';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
 // Helper function to convert a File object to a base64 string
 // This is crucial for sending image data to the Gemini API
@@ -24,23 +31,13 @@ const fileToBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-
-
-function useUploadReports() {
-  // Custom hook for managing upload reports state
-  const [step, setStep] = useState<'upload' | 'preview'>('upload');
-  // מכיל את מצב ההעלאה
+function UploadReports() {
+  const [step, setStep] = useState<'upload' | 'preview'| 'download'>('upload');
   const [progress, setProgress] = useState<number>(0);
-  // מכיל את הנתונים המפוענחים
   const [parsedData, setParsedData] = useState<{ fileName: string; json: any }[]>([]);
-
-  // מכיל את מצב הטעינה הכללית
   const [loadingOverall, setLoadingOverall] = useState<boolean>(false); // New state for overall loading
-
-  // מכיל את מצב השגיאות
   const [error, setError] = useState<string>(''); // New state for error messages
 
-  // טופס הנתונים
   const methods = useForm({
     defaultValues: {
       scannedReports: [],
@@ -48,32 +45,24 @@ function useUploadReports() {
   });
 
   const { control, getValues } = methods;
-  
-  // מכיל את הנתונים שהתקבלו מהמסמך
   const uploadedFiles = useWatch({ name: 'scannedReports', control }) || [];
 
-  // שליחת הפרומט עם התמונה
   const handleProcess = () => {
-    // וידוא שהקובץ קיים
     const files = getValues('scannedReports') || [];
     const parsed = [];
 
-    // אם הקובץ ריק
     if (files.length === 0) {
       setError('Please select at least one image file to process.');
       return;
     }
 
-    // התחלת העלאה
     setLoadingOverall(true);
     setError('');
     setProgress(0);
 
-    // פרומט
     const prompt =
       "Extract all Hebrew text and any tabular data from this image. For tables, identify headers and rows. Provide the output as a JSON object with 'document_text' for general text and a 'tables' array for structured table data. Each table in the 'tables' array should have a 'table_id', 'headers' (array of strings), and 'rows' (array of arrays of strings where the order of values in each inner array corresponds to the order of headers).";
 
-    // הסכמה לקבלת התשובה
     const responseSchema = {
       type: 'OBJECT',
       properties: {
@@ -249,6 +238,7 @@ function useUploadReports() {
         Promise.resolve()
       )
       .then(() => {
+        console.log('parsed: ', parsed)
         // This block runs after all files have been processed (or attempts made)
         setParsedData(parsed);
         setStep('preview');
@@ -262,92 +252,63 @@ function useUploadReports() {
         setLoadingOverall(false); // Ensure loading is off regardless of success or failure
       });
   };
-  return {
-    step,
-    parsedData,
-    error,
-    setStep,
-    methods,
-    loadingOverall,
-    uploadedFiles,
-    handleProcess,
-    progress
-  };
-}
+  const router = useRouter();
 
-
-export function UploadPreview({
-  parsedData,
-  loadingOverall,
-  error,
-  setStep 
-}) {
-      return (
+  if (step === 'download') {
+    router.push(paths.dashboard.download);
+  }
+  
+  if (step === 'preview') {
+    return (
       <Stack spacing={3}>
-        {parsedData.length === 0 && !loadingOverall && (
-          <Typography variant="body1" color="text.secondary">
-            לא נתוחו דוחות בהצלחה
-          </Typography>
-        )}
-
-        {parsedData?.length ? (
-          <JsonEditorComponent initialParsedData={parsedData} onDataChange={undefined} />
-        ) : null}
-        {error && (
-          <Typography variant="body2" color="error">
-            {error}
-          </Typography>
-        )}
-
-        <Button variant="outlined" onClick={() => setStep('upload')}>
-          חזור
-        </Button>
+        <UploadTableView dataJson={parsedData} />
       </Stack>
     );
   }
 
-function UploadReports() {
-  const {
-    step,
-    parsedData,
-    error,
-    setStep,
-    methods,
-    loadingOverall,
-    uploadedFiles,
-    handleProcess,
-    progress
-  } = useUploadReports();
- 
   return (
-    <ComponentContainer sx={{}}>
-      {
-      step === 'upload' ? 
-      <UploadNewReports
-          methods={methods}
-          loadingOverall={loadingOverall}
-          progress={progress}
-          error={error}
-          uploadedFiles={uploadedFiles}
-          handleProcess={handleProcess}
-        />
-      :
-      <UploadPreview
-        parsedData={parsedData}
-        loadingOverall={loadingOverall}
-        error={error}
-        setStep={setStep}
-      />
-      }
+    <DashboardContent>
+      <Form methods={methods} onSubmit={() => {}}>
+        <Card >
+          <CardActions title='העלאת דוחות'/>
+          <CardContent>
+            <Scrollbar height={300}>
+            <Field.Upload name="scannedReports" multiple helperText="בחר קבצי תמונה של דוחות סרוקים" />
+             {loadingOverall && <LinearProgress variant="determinate" value={progress} />}
 
-    </ComponentContainer>
+            {error && (
+              <Typography variant="body2" color="error">
+                {error}
+              </Typography>
+            )}
+            </Scrollbar>
+            </CardContent>
+              <CardActions>
+                <Stack direction="row" spacing={2}>
+                  <Button variant="contained" onClick={() => setStep('download')}>
+                    הורד תבנית
+                  </Button>
+
+                <LoadingButton
+                variant="contained"
+                loading={loadingOverall}
+                onClick={handleProcess}
+              >
+                {loadingOverall ? 'מנתח את הקובץ שלך...' : 'העלה קובץ'}
+              </LoadingButton>
+              </Stack>
+            </ CardActions>
+          </Card>
+    </Form>
+    
+    
+  </DashboardContent>
   );
 }
 
 export function UploadReportsWrapper() {
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DownloadTemplateReports />
       <UploadReports />
     </Suspense>
   );

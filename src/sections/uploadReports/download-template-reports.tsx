@@ -70,7 +70,7 @@ const DownloadTemplateReports = () => {
               .map(
                 (student, index) => `
               <tr>
-                <td>${index + 1}</td>
+                <td>${student.student_id}</td>
                 <td>${student.שם} ${student?.משפחה}</td>
                 ${generateEmptyCells('td')}
               </tr>
@@ -90,7 +90,7 @@ const DownloadTemplateReports = () => {
     // Create a temporary link element to trigger the download
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'StudentList.docx';
+    link.download = 'StudentList.docx'; // Specify the file name
     document.body.appendChild(link);
     link.click();
 

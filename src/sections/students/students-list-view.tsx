@@ -14,7 +14,7 @@ import { LoadingScreen } from "src/components/loading-screen";
 import { FullTableWrapper } from "src/components/full-table/view";
 import { TableConfig } from "src/components/full-table/types";
 
-import { uuidv4 } from "src/utils/uuidv4";
+
 
 import { StudentsNewEditFormDialog } from "./student-new-edit-form";
 
@@ -106,6 +106,7 @@ function StudentMainViewDynamic() {
     specialRow: ['checkbox', 'avatar', 'edit'],
     // העמודה שהיא מזהה רשומה:
     rowId: 'student_id',
+    Cell: ({children})=><>{children}</>,
     // הקומפוננטה שתוצג בעת אפשרות של עריכת רשומה
     EditComponent: (props) => {
       // אפשרות פתיחה של הדיאלוג לעריכה, והנתונים עצמם של הרשומה

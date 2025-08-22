@@ -69,114 +69,6 @@ export const info_columns = [
         "client": "kg_gdola",
         "filters": "",
         "group_name": "",
-        "hidden": "",
-        "label": "סינון",
-        "name": "filters",
-        "required": "",
-        "sorting": 5,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "extra",
-        "group_name": "",
-        "hidden": "",
-        "label": "תיאור",
-        "name": "group_name",
-        "required": "",
-        "sorting": 11,
-        "table_name": "info_columns",
-        "type": "select"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "",
-        "hidden": "",
-        "label": "הסתרה",
-        "name": "hidden",
-        "required": "",
-        "sorting": 6,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "",
-        "hidden": "",
-        "label": "תיאור עמודה",
-        "name": "label",
-        "required": "",
-        "sorting": 3,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "secondary",
-        "hidden": "",
-        "label": "שם עמודה",
-        "name": "name",
-        "required": "",
-        "sorting": 2,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "",
-        "hidden": "",
-        "label": "חובה",
-        "name": "required",
-        "required": "",
-        "sorting": 7,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "",
-        "hidden": "t",
-        "label": "סדר",
-        "name": "sorting",
-        "required": "",
-        "sorting": 8,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "primary",
-        "hidden": "",
-        "label": "טבלה",
-        "name": "table_name",
-        "required": "",
-        "sorting": 1,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "",
-        "hidden": "",
-        "label": "סוג עמודה",
-        "name": "type",
-        "required": "",
-        "sorting": 4,
-        "table_name": "info_columns",
-        "type": "text"
-    },
-    {
-        "client": "kg_gdola",
-        "filters": "",
-        "group_name": "",
         "hidden": "1",
         "label": "client",
         "name": "client",
@@ -346,7 +238,7 @@ export const info_columns = [
 export const info_students = [
     {
         "client": "kg_gdola",
-        "student_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "student_id": "1",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "פולין",
@@ -361,7 +253,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "b2c3d4e5-f6g7-8901-bcde-f23456789012",
+        "student_id": "2",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "גרמניה",
@@ -376,7 +268,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "c3d4e5f6-g7h8-9012-cdef-345678901234",
+        "student_id": "3",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אתיופיה",
@@ -391,7 +283,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "d4e5f6g7-h8i9-0123-defa-456789012345",
+        "student_id": "4",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "לבנון",
@@ -406,7 +298,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "e5f6g7h8-i9j0-1234-efab-567890123456",
+        "student_id": "5",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "ארה\"ב",
@@ -421,7 +313,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "f6g7h8i9-j0k1-2345-fabc-678901234567",
+        "student_id": "6",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אנגליה",
@@ -436,7 +328,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "g7h8i9j0-k1l2-3456-abcd-789012345678",
+        "student_id": "7",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "מרוקו",
@@ -451,7 +343,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "h8i9j0k1-l2m3-4567-bcde-890123456789",
+        "student_id": "8",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "פולין",
@@ -466,7 +358,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "i9j0k1l2-m3n4-5678-cdef-901234567890",
+        "student_id": "9",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "גרמניה",
@@ -481,7 +373,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "j0k1l2m3-n4o5-6789-defa-012345678901",
+        "student_id": "10",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אתיופיה",
@@ -496,7 +388,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "k1l2m3n4-o5p6-7890-efab-123456789012",
+        "student_id": "11",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אתיופיה",
@@ -511,7 +403,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "l2m3n4o5-p6q7-8901-fabc-234567890123",
+        "student_id": "12",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "לבנון",
@@ -526,7 +418,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "m3n4o5p6-q7r8-9012-abcd-345678901234",
+        "student_id": "13",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "ארה\"ב",
@@ -541,7 +433,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "n4o5p6q7-r8s9-0123-bcde-456789012345",
+        "student_id": "14",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "אנגליה",
@@ -556,7 +448,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "o5p6q7r8-s9t0-1234-cdef-567890123456",
+        "student_id": "15",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "מרוקו",
@@ -571,7 +463,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "p6q7r8s9-t0u1-2345-defa-678901234567",
+        "student_id": "16",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "לבנון",
@@ -586,7 +478,7 @@ export const info_students = [
     },
     {
         "client": "kg_gdola",
-        "student_id": "q7r8s9t0-u1v2-3456-efab-789012345678",
+        "student_id": "17",
         "user_id": "zalmanjacob@gmail.com",
         "ארץ_לידה": "ישראל",
         "ארץ_לידה_הורים": "ארה\"ב",

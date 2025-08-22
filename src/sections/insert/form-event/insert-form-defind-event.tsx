@@ -105,12 +105,12 @@ export function InsertForm({infoStudents, infoColumns}: InsertFormProps) {
   )
 
   const renderSelectEvent = (
-    <Field.Select 
+    <Field.Select
       defaultValue={options.length? options[0].event_id: ''} 
-      fullWidth 
-      name="event" 
-      label="אירוע" 
-      variant="filled" 
+      fullWidth
+      name="event"
+      label="אירוע"
+      variant="filled"
       InputLabelProps={{ shrink: true }}
       data-testid="event-select"
       native={false}

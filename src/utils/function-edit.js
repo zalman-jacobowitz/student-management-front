@@ -1,6 +1,6 @@
 
 import useEventStore from "src/hooks/use-events"
-import { uuidv4 } from "./uuidv4";
+import { shortId, uuidv4 } from "./uuidv4";
 
 function getStatus(dataForm){
     const lateTime = (time) => useEventStore.getState().lateTime(time)
@@ -8,7 +8,7 @@ function getStatus(dataForm){
 }
 export const generateUniqueIds = (records, userEmail) => records.map((record) => ({
     ...record,
-    student_id: uuidv4()
+    student_id: shortId()
   }));
   
 export function managerEdit(dataForm){

@@ -1,18 +1,25 @@
 import * as React from 'react';
 import { Suspense } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+
+import { Box, Button, Card, Container, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridToolbar, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Card, Container, Typography } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
-import { apiTemplates } from 'src/actions/templates';
-import { apiInfoStudents } from 'src/actions/info_students';
-import { apiInfoColumns } from 'src/actions/info_columns';
-import { apiSummary } from 'src/actions/summary';
-import { LoadingScreen } from 'src/components/loading-screen';
-import { DashboardContent } from 'src/layouts/dashboard';
-import { PageLinksHeader } from 'src/components/layout/header-links';
+
 import { inHebrew } from 'src/utils/hebrew/getter';
+
+import { apiSummary } from 'src/actions/summary';
+import { apiTemplates } from 'src/actions/templates';
+import { DashboardContent } from 'src/layouts/dashboard';
+import { apiInfoColumns } from 'src/actions/info_columns';
+import { apiInfoStudents } from 'src/actions/info_students';
+
+import { LoadingScreen } from 'src/components/loading-screen';
+import { PageLinksHeader } from 'src/components/layout/header-links';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import { Iconify } from 'src/components/iconify';
 
 // Links for navigation
 const LINKS = [
@@ -77,8 +84,28 @@ function mergeSummaryData(infoStudents, summaryData, infoColumns, formData) {
   
   return mergedData;
 }
+export function RenderCell({ value }) {
+  console.log({ value });
+  const numValue = parseInt(Number(value));
+  
+  return (
+    <Stack justifyContent="center" padding={2} sx={{ typography: 'caption', color: 'text.secondary' }}>
+      <LinearProgress
+        value={numValue}
+        variant="determinate"
+        color={
+          (numValue < 50 && 'error') ||
+          (numValue < 80 && 'warning') ||
+          'success'
+        }
+        sx={{ mb: 1, width: 1, height: 6, maxWidth: 80 }}
+      />
+      {numValue}%
+    </Stack>
+  );
+}
 
-// Generate columns dynamically
+// Generate columns dynamically with grouping support
 function generateColumns(data, formData): GridColDef[] {
   if (!data || data.length === 0) return [];
   
@@ -109,9 +136,11 @@ function generateColumns(data, formData): GridColDef[] {
   const skipFields = ['id', 'student_id', 'primary', 'secondary'];
   Object.keys(firstRow).forEach(key => {
     if (!skipFields.includes(key)) {
+      console.log('Adding column:', key);
+      const headerName = formData.group_by === 'day'? inHebrew(key, 'Dm') : key.split('|')[1];
       columns.push({
         field: key,
-        headerName: key,
+        headerName,
         width: 120,
         headerAlign: 'center' as const,
         align: 'center' as const,
@@ -119,13 +148,50 @@ function generateColumns(data, formData): GridColDef[] {
           if (formData.type === 'details') {
             return params.value > 0 ? '✓' : '✗';
           }
-          return `${params.value}%`;
+
+          return <RenderCell value={params.value} />;
         },
       });
     }
   });
   
   return columns;
+}
+
+// Generate column grouping model for grouped display
+function generateColumnGrouping(data, formData) {
+  if (!data || data.length === 0) return [];
+  
+  const firstRow = data[0];
+  const skipFields = ['id', 'student_id', 'primary', 'secondary'];
+  const dataFields = Object.keys(firstRow).filter(key => !skipFields.includes(key));
+  
+  if (formData.type === 'details') {
+    // Group by day (extract from day_event format)
+    const dayGroups = {};
+    
+    dataFields.forEach(field => {
+      // Extract day from "יום שני ב' ניסן | חסידות בוקר" format
+      const parts = field.split(' | ');
+      
+      const dayName = parts.length > 0 ? parts[0] : 'ימים';
+      if (!dayGroups[dayName]) {
+        dayGroups[dayName] = [];
+      }
+      dayGroups[dayName].push({ field });
+    });
+    
+    return Object.keys(dayGroups).map(dayName => ({
+      groupId: dayName,
+      children: dayGroups[dayName]
+    }));
+  }
+  
+  // For other types, group all data fields together
+  return [{
+    groupId: 'נתוני סיכום',
+    children: dataFields.map(field => ({ field }))
+  }];
 }
 
 export function SummaryDataGrid({ formData }) {
@@ -141,28 +207,132 @@ export function SummaryDataGrid({ formData }) {
   );
   
   const columns = generateColumns(mergedData, formData);
+  const columnGroupingModel = generateColumnGrouping(mergedData, formData);
+
+
+  const generatePDF = async () => {
   
+    const element = document.getElementById('content');
+    const canvas = await html2canvas(element, { scale: 2 });
+  
+  
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+  
+  // גדלי דף A4 portrait
+  const pageWidth = 210;
+  const pageHeight = 297;
+  const margin = 10;
+  
+  // שטח זמין
+  const availableWidth = pageWidth - (margin * 2);
+  const availableHeight = pageHeight - (margin * 2);
+  
+  // יחס התמונה המקורי
+  const imgRatio = canvas.width / canvas.height;
+  
+  // רוחב קבוע לפי הדף
+  const finalWidth = availableWidth;
+  const finalHeight = availableWidth / imgRatio;
+  
+  // אם התמונה נכנסת בדף אחד
+  if (finalHeight <= availableHeight) {
+    pdf.addImage(imgData, 'PNG', margin, margin, finalWidth, finalHeight);
+  } else {
+    // חישוב גובה שורה (בהנחה שכל השורות באותו גובה)
+    const tableRows = element.querySelectorAll('.MuiDataGrid-row');
+    const firstRowHeight = tableRows[0]?.offsetHeight || 35;
+    const headerHeight = element.querySelector('.MuiDataGrid-columnHeaders')?.offsetHeight || 35;
+    
+    // המרה ליחס הקנבס
+    const canvasRowHeight = (firstRowHeight * canvas.height) / element.offsetHeight;
+    const canvasHeaderHeight = (headerHeight * canvas.height) / element.offsetHeight;
+    
+    // חישוב כמה שורות נכנסות בדף
+    const availableCanvasHeight = (availableHeight * canvas.height) / finalHeight;
+    const rowsPerPage = Math.floor((availableCanvasHeight - canvasHeaderHeight) / canvasRowHeight);
+    
+    let currentY = 0;
+    let pageNumber = 0;
+    
+    while (currentY < canvas.height) {
+      if (pageNumber > 0) pdf.addPage();
+      
+      // יצירת קנבס זמני לדף
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      if (pageNumber === 0) {
+        // דף ראשון - כולל כותרות + שורות
+        const pageContentHeight = Math.min(
+          canvasHeaderHeight + (rowsPerPage * canvasRowHeight),
+          canvas.height - currentY
+        );
+        
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = pageContentHeight;
+        
+        tempCtx.drawImage(
+          canvas,
+          0, currentY, canvas.width, pageContentHeight,
+          0, 0, canvas.width, pageContentHeight
+        );
+        
+        currentY += pageContentHeight;
+      } else {
+        // דפים נוספים - כותרות + שורות חדשות
+        const rowsContentHeight = Math.min(
+          rowsPerPage * canvasRowHeight,
+          canvas.height - currentY
+        );
+        
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvasHeaderHeight + rowsContentHeight;
+        
+        // הוספת כותרות בחלק העליון
+        tempCtx.drawImage(
+          canvas,
+          0, 0, canvas.width, canvasHeaderHeight,
+          0, 0, canvas.width, canvasHeaderHeight
+        );
+        
+        // הוספת השורות מתחת לכותרות
+        tempCtx.drawImage(
+          canvas,
+          0, currentY, canvas.width, rowsContentHeight,
+          0, canvasHeaderHeight, canvas.width, rowsContentHeight
+        );
+        
+        currentY += rowsContentHeight;
+      }
+      
+      const pageImgData = tempCanvas.toDataURL('image/png');
+      const pageImgHeight = (tempCanvas.height * finalWidth) / canvas.width;
+      
+      pdf.addImage(pageImgData, 'PNG', margin, margin, finalWidth, pageImgHeight);
+      pageNumber++;
+    }
+  }
+  
+  pdf.save('table.pdf');
+};
+
+
   return (
     <DashboardContent>
-      <PageLinksHeader links={LINKS} heading="סיכום נוכחות - DataGrid" />
-      
+      <PageLinksHeader links={LINKS} heading="סיכום נוכחות - DataGrid" />      
       <Card sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom sx={{ textAlign: 'right' }}>
-          סוג סיכום: {formData.type === 'details' ? 'מפורט' : formData.type === 'mean' ? 'ממוצע' : 'סיכום'}
-        </Typography>
-        
-        <Box sx={{ height: 600, width: '100%' }}>
-          <GridToolbarExport
-            printOptions={{
-              hideFooter: true,
-              hideToolbar: true,
-            }}
-          >
+        <IconButton onClick={() => generatePDF()}>
+          <Iconify icon="eva:download-outline" />
+        </IconButton>
+        <div id='content'>
+        <Box>
           <DataGrid
             rows={mergedData}
             columns={columns}
-            slots={{ toolbar: GridToolbar }}
-
+            density='standard'
+            columnGroupingModel={columnGroupingModel}
+            experimentalFeatures={{ columnGrouping: true }}
             slotProps={{
               toolbar: {
                 showQuickFilter: true,
@@ -176,42 +346,17 @@ export function SummaryDataGrid({ formData }) {
             }}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 25 },
+                paginationModel: { page: 0, pageSize: 32 },
               },
             }}
-            pageSizeOptions={[10, 25, 50, 100]}
-            checkboxSelection
+            pageSizeOptions={[10, 25, 32, 100]}
+            hideFooter
+            
             disableRowSelectionOnClick
-            sx={{
-              '& .MuiDataGrid-toolbarContainer': {
-                padding: 2,
-                borderBottom: '1px solid rgba(224, 224, 224, 1)',
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                backgroundColor: 'background.neutral',
-                borderBottom: '2px solid rgba(224, 224, 224, 1)',
-              },
-              '& .MuiDataGrid-columnHeaderTitle': {
-                fontWeight: 600,
-          
-            },
-            '@media print': {
-                'body': {
-                  margin: 0,
-                  padding: 0,
-                  color: 'rgba(0, 0, 0, 0.87)',
-                  direction: 'rtl',
-                },
-
-
-                '.MuiDataGrid-root': { color: 'rgba(0, 0, 0, 0.87)', direction: 'rtl' },
-                '.MuiDataGrid-main': { color: 'rgba(0, 0, 0, 0.87)', direction: 'rtl' },
-                
-              }
-            }}
+            
           />
-          </GridToolbarExport>
           </Box>
+          </div>
       </Card>
     </DashboardContent>
   );

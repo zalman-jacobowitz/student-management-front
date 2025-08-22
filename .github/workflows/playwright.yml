@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master , dinamicColumns]
+    branches: [ main, master , upload-style]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master , upload-style]
 jobs:
   test:
     timeout-minutes: 60
