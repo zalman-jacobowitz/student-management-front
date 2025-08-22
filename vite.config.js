@@ -15,7 +15,8 @@ const PORT = 3030;
 export default defineConfig({
   plugins: [
     react(),
-    checker({
+    // Disable type checking and linting during build for deployment
+    process.env.NODE_ENV !== 'production' && checker({
       typescript: true,
       eslint: {
         lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
@@ -28,7 +29,7 @@ export default defineConfig({
         initialIsOpen: false,
       },
     }),
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: [
       {

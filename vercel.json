@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npm run build:deploy",
+  "ignoreCommand": "exit 0",
   "rewrites": [
     {
       "source": "/(.*)",

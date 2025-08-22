@@ -1,0 +1,12 @@
+# Ignore files during deployment
+.eslintrc*
+.eslintignore
+*.test.*
+*.spec.*
+tests/
+test-results/
+playwright-report/
+e2e/
+storybook.log
+test_failures.json
+*.log
