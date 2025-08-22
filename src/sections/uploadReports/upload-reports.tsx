@@ -46,6 +46,7 @@ function UploadReports() {
 
   const { control, getValues } = methods;
   const uploadedFiles = useWatch({ name: 'scannedReports', control }) || [];
+  const router = useRouter();
 
   const handleProcess = () => {
     const files = getValues('scannedReports') || [];
@@ -252,7 +253,6 @@ function UploadReports() {
         setLoadingOverall(false); // Ensure loading is off regardless of success or failure
       });
   };
-  const router = useRouter();
 
   if (step === 'download') {
     router.push(paths.dashboard.download);
