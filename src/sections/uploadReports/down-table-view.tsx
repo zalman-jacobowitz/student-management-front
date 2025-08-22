@@ -143,12 +143,15 @@ export function DownTableView({ setStep }) {
 
     console.log({ allColumns })
 
-const generatePDF = async () => {
-  const element = document.getElementById('content');
-  const canvas = await html2canvas(element, { scale: 2 });
+
+  const generatePDF = async () => {
   
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF('p', 'mm', 'a4');
+    const element = document.getElementById('content');
+    const canvas = await html2canvas(element, { scale: 2 });
+  
+  
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
   
   // גדלי דף A4 portrait
   const pageWidth = 210;
@@ -172,7 +175,7 @@ const generatePDF = async () => {
   } else {
     // חישוב גובה שורה (בהנחה שכל השורות באותו גובה)
     const tableRows = element.querySelectorAll('.MuiDataGrid-row');
-    const firstRowHeight = tableRows[0]?.offsetHeight || 35; // גובה ברירת מחדל אם לא נמצא
+    const firstRowHeight = tableRows[0]?.offsetHeight || 35;
     const headerHeight = element.querySelector('.MuiDataGrid-columnHeaders')?.offsetHeight || 35;
     
     // המרה ליחס הקנבס
@@ -189,43 +192,65 @@ const generatePDF = async () => {
     while (currentY < canvas.height) {
       if (pageNumber > 0) pdf.addPage();
       
-      // גובה הדף הנוכחי
-      let pageContentHeight;
-      if (pageNumber === 0) {
-        // דף ראשון - כולל כותרות
-        pageContentHeight = canvasHeaderHeight + (rowsPerPage * canvasRowHeight);
-      } else {
-        // דפים נוספים - רק שורות
-        pageContentHeight = rowsPerPage * canvasRowHeight;
-      }
-      
-      // ודא שלא חורגים מהתמונה
-      pageContentHeight = Math.min(pageContentHeight, canvas.height - currentY);
-      
       // יצירת קנבס זמני לדף
       const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = canvas.width;
-      tempCanvas.height = pageContentHeight;
-      
       const tempCtx = tempCanvas.getContext('2d');
-      tempCtx.drawImage(
-        canvas,
-        0, currentY, canvas.width, pageContentHeight,
-        0, 0, canvas.width, pageContentHeight
-      );
+      
+      if (pageNumber === 0) {
+        // דף ראשון - כולל כותרות + שורות
+        const pageContentHeight = Math.min(
+          canvasHeaderHeight + (rowsPerPage * canvasRowHeight),
+          canvas.height - currentY
+        );
+        
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = pageContentHeight;
+        
+        tempCtx.drawImage(
+          canvas,
+          0, currentY, canvas.width, pageContentHeight,
+          0, 0, canvas.width, pageContentHeight
+        );
+        
+        currentY += pageContentHeight;
+      } else {
+        // דפים נוספים - כותרות + שורות חדשות
+        const rowsContentHeight = Math.min(
+          rowsPerPage * canvasRowHeight,
+          canvas.height - currentY
+        );
+        
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvasHeaderHeight + rowsContentHeight;
+        
+        // הוספת כותרות בחלק העליון
+        tempCtx.drawImage(
+          canvas,
+          0, 0, canvas.width, canvasHeaderHeight,
+          0, 0, canvas.width, canvasHeaderHeight
+        );
+        
+        // הוספת השורות מתחת לכותרות
+        tempCtx.drawImage(
+          canvas,
+          0, currentY, canvas.width, rowsContentHeight,
+          0, canvasHeaderHeight, canvas.width, rowsContentHeight
+        );
+        
+        currentY += rowsContentHeight;
+      }
       
       const pageImgData = tempCanvas.toDataURL('image/png');
-      const pageImgHeight = (pageContentHeight * finalWidth) / canvas.width;
+      const pageImgHeight = (tempCanvas.height * finalWidth) / canvas.width;
       
       pdf.addImage(pageImgData, 'PNG', margin, margin, finalWidth, pageImgHeight);
-      
-      currentY += pageContentHeight;
       pageNumber++;
     }
   }
   
   pdf.save('table.pdf');
 };
+
     return (
         <>
         <Button onClick={() => setStep('preview')}>חזור</Button>
@@ -253,7 +278,8 @@ const generatePDF = async () => {
                             "3-3": false
                         }, ...merged]}
                     columns={allColumns}
-                    getRowId={(row) => row.id}    
+                    getRowId={(row) => row.id}
+    
                     autoHeight
                     sx={{
                         width: '100%',

@@ -237,7 +237,7 @@ function SummaryTableView({ formData }){
   console.log('formData: ', formData);
   const data = useSuspenseQuery(apiSummary(formData));
   console.log({data});
-  return <TableMainView summaryData={formatSummary(data.data, formData)} formData={formData} />;
+  return <SummaryDataGrid summaryData={formatSummary(data.data, formData)} formData={formData} />;
 }
 
 function SummaryMainView() {

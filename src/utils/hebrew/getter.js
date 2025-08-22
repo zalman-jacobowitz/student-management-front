@@ -53,9 +53,13 @@ export function readHebrewJson(day) {
  */
 export function inHebrew(day, full=false) {
     const hebrewJson = readHebrewJson(day);
+    if (full === 'Dm'){
+        return `${hebrewJson?.יום_עברי} ${hebrewJson?.חודש_עברי}`;
+    }
     if (full) {
         return `${hebrewJson?.יום_בשבוע} ${hebrewJson?.יום_עברי}  ${hebrewJson?.חודש_עברי} - ${hebrewJson?.שנה_עברית}`;
     }
+
     return hebrewJson;
 }
 
