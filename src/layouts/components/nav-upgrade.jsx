@@ -28,9 +28,7 @@ export function NavUpgrade({ sx, ...other }) {
     <Stack sx={{ px: 2, py: 5, textAlign: 'center', ...sx }} {...other}>
       <Stack alignItems="center">
         <Box sx={{ position: 'relative' }}>
-          <Avatar src={user?.photoURL} alt={user?.displayName} sx={{ width: 48, height: 48 }}>
-           {!user?.photoURL && (userDetails?.user_metadata?.displayName?.charAt(0) || 'משתמש')}
-          </Avatar>
+          <Avatar src="" alt="" sx={{ width: 48, height: 48 }}/>
 
           <Label
             color="success"
@@ -44,7 +42,7 @@ export function NavUpgrade({ sx, ...other }) {
               borderBottomLeftRadius: 2,
             }}
           >
-            בטא
+           ניסיון
           </Label>
         </Box>
 

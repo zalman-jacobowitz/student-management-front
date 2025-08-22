@@ -7,10 +7,11 @@ import { varAlpha, bgGradient } from "src/theme/styles";
 import { apiInfoColumns } from "src/actions/info_columns";
 
 import { descriptionColumns, getDesc } from "../insert/functions";
+import { CONFIG } from "src/config-global";
 
 
 const avatarUrl = 'assets/images/mock/avatar/avatar-4.webp'; // 'avatar-4.webp'
-const coverUrl = 'assets/images/mock/cover/cover-4.webp'// 'cover-4.webp'
+const coverUrl = `${CONFIG.assetsDir}/assets/images/mock/cover/cover-4.webp`// 'cover-4.webp'
 
 export function ProfileCover({ studentInfo }: { studentInfo: InfoStudent }) {
   const infoColumns = useSuspenseQuery(apiInfoColumns());

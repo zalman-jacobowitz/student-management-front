@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Checkbox, IconButton, TableCell, TextField, Typography } from '@mui/material';
 
 import { useTable } from 'src/components/table';
@@ -102,9 +102,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { apiInfoStudents } from 'src/actions/info_students';
 import { apiInfoColumns } from 'src/actions/info_columns';
+import { LoadingScreen } from 'src/components/loading-screen';
 
 
-export function DownTableView({ setStep }) {
+export function DownTableView() {
     const templates = useSuspenseQuery(apiTemplates())
     console.log({ data: templates.data })
 
@@ -253,7 +254,7 @@ export function DownTableView({ setStep }) {
 
     return (
         <>
-        <Button onClick={() => setStep('preview')}>חזור</Button>
+
             <Button onClick={() => generatePDF()}>הורד תבנית</Button>
             <div id='content'>
                 <Card>
@@ -317,4 +318,12 @@ export function DownTableView({ setStep }) {
             </div>
         </>
     );
+}
+
+export function DownloadViewWrapper() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <DownTableView />
+    </Suspense>
+  );
 }

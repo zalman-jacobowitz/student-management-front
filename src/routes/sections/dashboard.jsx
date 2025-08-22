@@ -36,7 +36,8 @@ const ExceptionsPage = lazy(() => import('src/pages/dashboard/exceptions'));
 const SummaryPage = lazy(() => import('src/pages/dashboard/summary'));
 // upload scanned reports
 const UploadReportsPage = lazy(() => import('src/pages/dashboard/uploadReports'));
-
+// download template reports
+const DownloadTemplateReportsPage = lazy(() => import('src/pages/dashboard/download'));
 // ----------------------------------------------------------------------
 
 const layoutContent = (
@@ -72,6 +73,7 @@ export const dashboardRoutes = [
       { path: 'אישורים', element: <ExceptionsPage /> },
       { path: 'סיכום', element: <SummaryPage /> },
       { path: 'העלאת-דוחות-רישום', element: <UploadReportsPage /> },
+      { path: 'הורדת-תבנית', element: <DownloadTemplateReportsPage /> },
     ],
   },
   {
