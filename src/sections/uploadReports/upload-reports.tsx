@@ -260,9 +260,9 @@ function UploadReports() {
   
   if (step === 'preview') {
     return (
-      <Stack spacing={3}>
+       <DashboardContent>
         <UploadTableView dataJson={parsedData} />
-      </Stack>
+      </DashboardContent>
     );
   }
 

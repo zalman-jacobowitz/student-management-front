@@ -286,6 +286,7 @@ import { apiInfoStudents } from 'src/actions/info_students';
 import { InfoStudent } from 'src/components/full-table/types';
 import { dataStudentsEventUpdate } from 'src/actions/data_students_event';
 import { updateData } from 'src/hooks/use-update';
+import { DashboardContent } from 'src/layouts/dashboard';
 
 const mockDataJson = {
     "fileName": "סריקה 3.png",
@@ -493,6 +494,7 @@ export function UploadTableView({dataJson}) {
                 field: col.field,
                 headerName: `${getEventName(col.event, templates.data)}`,
                 editable: true,
+                width: 75,
                 type: 'boolean',
                 renderCell: (params) => <Checkbox checked={params.value} />,
             }))
@@ -569,7 +571,7 @@ export function UploadTableView({dataJson}) {
     }
 
     return (
-        <>
+        <Card sx={{ p: 2, mb: 2 }}>
             <Button onClick={() => handleTableAction('update', rows)}>עידכון</Button>
             <div id='content'>
                 <DataGrid
@@ -595,7 +597,7 @@ export function UploadTableView({dataJson}) {
                     processRowUpdate={handleRowUpdate}
                 />
             </div>
-        </>
+        </Card>
     );
 }
 
