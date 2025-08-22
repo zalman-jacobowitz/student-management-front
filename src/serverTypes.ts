@@ -1,5 +1,4 @@
-
-import { User } from "./user-type";
+import { User } from "./components/full-table/user-type";
 
 
 export type InfoStudent = {

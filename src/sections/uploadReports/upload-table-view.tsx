@@ -523,7 +523,7 @@ export function UploadTableView({dataJson}) {
         const imgRatio = canvas.width / canvas.height;
         const pageRatio = availableWidth / availableHeight;
         
-        let finalWidth, finalHeight;
+        let finalWidth; let finalHeight;
         
         if (imgRatio > pageRatio) {
             finalWidth = availableWidth;
@@ -554,13 +554,13 @@ export function UploadTableView({dataJson}) {
         })
       }, [mutateAsync])
     
-    const handleTableAction = async (action, rows) => {
+    const handleTableAction = async (action, students) => {
         const allData = []
-        rows.forEach(row => {
-            Object.keys(row).forEach(item => {
+        students.forEach(student => {
+            Object.keys(student).forEach(item => {
                 const KEY = tableStructure.allFields[item]
                 if (!KEY) return;
-                allData.push({...KEY, student_id: row.id, data: Number(row[item]) });
+                allData.push({...KEY, student_id: student.id, data: Number(student[item]) });
             })
             
         })
