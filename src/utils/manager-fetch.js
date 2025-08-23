@@ -6,7 +6,7 @@ const local = true // true for local, false for production
 const api = axios.create({
   baseURL: local
     ? "http://localhost:8080/"
-    : "https://student-managment-878143138878.us-central1.run.app",
+    : "https://student-648757147624.europe-west1.run.app",
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
