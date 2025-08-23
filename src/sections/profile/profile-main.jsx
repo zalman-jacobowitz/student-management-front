@@ -1,10 +1,12 @@
 import Grid from '@mui/material/Unstable_Grid2';
+import { Card, CardContent, CardHeader, Typography } from '@mui/material';
+
+// eslint-disable-next-line import/extensions
+import { inHebrew } from 'src/utils/hebrew/getter.js';
 
 import { ProfileAbout } from "./profile-about";
 import useInsertStore from "../insert/insert-state.ts";
 import { RegularChart } from "../charts/regular-chart";
-import { inHebrew } from 'src/utils/hebrew/getter.js';
-import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 
 
 
@@ -46,6 +48,7 @@ function groupBy(data, groupByColumns, aggregateColumn = null, aggregateFunction
   Object.keys(groups).forEach(key => {
     const group = groups[key];
     const values = group.items.map(item => item[aggregateColumn])
+                              // eslint-disable-next-line no-restricted-globals
                               .filter(val => val !== null && val !== undefined && !isNaN(val));
     
     let aggregateValue = 0;
@@ -76,7 +79,7 @@ function groupBy(data, groupByColumns, aggregateColumn = null, aggregateFunction
     // יצירת אובייקט התוצאה
     const resultItem = {
       ...group.groupValues,
-      [aggregateColumn + '_' + aggregateFunction]: aggregateValue,
+      [`${aggregateColumn  }_${  aggregateFunction}`]: aggregateValue,
       count: group.items.length
     };
     

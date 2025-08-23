@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useRouter } from 'src/routes/hooks';
 
+// eslint-disable-next-line import/extensions
 import { shortId, uuidv4 } from 'src/utils/uuidv4.js';
 
 import { initUpdate } from 'src/actions/init.ts';

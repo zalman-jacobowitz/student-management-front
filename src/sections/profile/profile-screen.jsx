@@ -124,20 +124,22 @@ export function ProfileViewScreen({ studentData , studentInfo={}, studentsInfo, 
 -*/
 
 import { useState, useCallback, Suspense } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Tab, Card, Tabs, Container, tabsClasses } from "@mui/material";
 
+import { apiProfile } from "src/actions/profile.ts";
+import { apiInfoStudents } from "src/actions/info_students.ts";
+
 import { Iconify } from "src/components/iconify";
 import { useSettingsContext } from "src/components/settings";
+import { LoadingScreen } from "src/components/loading-screen/loading-screen.tsx";
 
+// eslint-disable-next-line import/extensions
 import { ProfileCover } from "./profile-cover";
 import { ProfileDataMain } from "./profile-main";
-import useInsertStore from "../insert/insert-state.ts";
-import { LoadingScreen } from "src/components/loading-screen/loading-screen.tsx";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { apiInfoStudents } from "src/actions/info_students.ts";
-import { apiProfile } from "src/actions/profile.ts";
 import { ProfileListView } from "./profile-list.tsx";
+import useInsertStore from "../insert/insert-state.ts";
 
 const TABS = [
     {

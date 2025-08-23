@@ -9,6 +9,7 @@ import { Card, Stack, Button, MenuItem, CardHeader, Typography, CardActions, Car
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { apiTemplates } from 'src/actions/templates';
 import { apiEventsToday } from 'src/actions/events_today';
 
 import { Form, Field } from 'src/components/hook-form';
@@ -18,7 +19,6 @@ import { ComponentContainer } from 'src/components/blanks/component-block';
 import useInsertStore from '../insert-state';
 import { get_students_ids } from '../functions';
 import { InsertFormPastEvents } from './insert-form-past-events';
-import { apiTemplates } from 'src/actions/templates';
 
 type InsertFormProps = {
   infoStudents: any[];

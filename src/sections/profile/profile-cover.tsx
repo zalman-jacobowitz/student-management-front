@@ -2,12 +2,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Box, Stack, Avatar, useTheme, ListItemText } from "@mui/material";
 
+import { CONFIG } from "src/config-global";
 import { InfoStudent } from "src/serverTypes";
 import { varAlpha, bgGradient } from "src/theme/styles";
 import { apiInfoColumns } from "src/actions/info_columns";
 
 import { descriptionColumns, getDesc } from "../insert/functions";
-import { CONFIG } from "src/config-global";
 
 
 const avatarUrl = 'assets/images/mock/avatar/avatar-4.webp'; // 'avatar-4.webp'

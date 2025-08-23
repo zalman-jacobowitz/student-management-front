@@ -1,9 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
+
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import { useTheme, alpha as hexAlpha } from '@mui/material/styles';
-import { useQuery } from '@tanstack/react-query';
-import { apiChart } from 'src/actions/chart';
 
+// eslint-disable-next-line import/extensions
+import { apiChart } from 'src/actions/chart';
 import { useGetTable } from 'src/actions/table';
 
 import { Chart, useChart } from 'src/components/chart';

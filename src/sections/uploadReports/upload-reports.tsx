@@ -1,20 +1,19 @@
 import { Suspense, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { LoadingButton } from '@mui/lab';
 import { Stack, Button, Typography, LinearProgress, Card, CardContent, CardActions } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+
+import { DashboardContent } from 'src/layouts/dashboard/main';
+
+import { Scrollbar } from 'src/components/scrollbar';
 import { Form, Field } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
 
-import JsonEditorComponent from './json-editor';
-import DownloadTemplateReports from './download-template-reports';
 import { UploadTableView } from './upload-table-view';
-import { DownTableView } from '../download/down-table-view';
-import { DashboardContent } from 'src/layouts/dashboard/main';
-import { Scrollbar } from 'src/components/scrollbar';
-import { LoadingButton } from '@mui/lab';
-import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
 
 // Helper function to convert a File object to a base64 string
 // This is crucial for sending image data to the Gemini API

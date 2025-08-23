@@ -20,6 +20,7 @@ import { PageLinksHeader } from 'src/components/layout/header-links';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { Iconify } from 'src/components/iconify';
+import { int } from 'src/utils/format-number';
 
 // Links for navigation
 const LINKS = [
@@ -86,7 +87,7 @@ function mergeSummaryData(infoStudents, summaryData, infoColumns, formData) {
 }
 export function RenderCell({ value }) {
   console.log({ value });
-  const numValue = parseInt(Number(value));
+  const numValue = int(Number(value));
   
   return (
     <Stack justifyContent="center" padding={2} sx={{ typography: 'caption', color: 'text.secondary' }}>
@@ -217,6 +218,7 @@ export function SummaryDataGrid({ formData }) {
   
   
     const imgData = canvas.toDataURL('image/png');
+    // eslint-disable-next-line new-cap
     const pdf = new jsPDF('p', 'mm', 'a4');
   
   // גדלי דף A4 portrait
@@ -310,6 +312,7 @@ export function SummaryDataGrid({ formData }) {
       const pageImgHeight = (tempCanvas.height * finalWidth) / canvas.width;
       
       pdf.addImage(pageImgData, 'PNG', margin, margin, finalWidth, pageImgHeight);
+      // eslint-disable-next-line no-plusplus
       pageNumber++;
     }
   }

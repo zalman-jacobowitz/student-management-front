@@ -8,6 +8,7 @@ function processInput(inputValue) {
   if (inputValue == null || Number.isNaN(inputValue)) return null;
   return Number(inputValue);
 }
+export const int = (x)=> parseInt(x, 10)
 
 // ----------------------------------------------------------------------
 

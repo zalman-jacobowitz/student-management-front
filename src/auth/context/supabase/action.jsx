@@ -1,7 +1,6 @@
 import { paths, PATH_AFTER_LOGIN } from 'src/routes/paths';
 
 import { supabase } from 'src/auth/supabase';
-import { createInitialUser } from 'src/actions/users';
 
 
 
