@@ -3,10 +3,14 @@
 import { http, HttpResponse } from 'msw';
 
 import {
+  days,
+  delays,
+  templates,
   info_columns,
   info_students,
+  data_students,
   select_options,
-  supabase_users,
+  supabase_users
 } from 'src/actions/moks/mokes';
 
 /**
@@ -38,6 +42,10 @@ const datasets = {
   info_students,
   info_columns,
   select_options,
+  data_students,
+  days,
+  templates,
+  delays,
   users: supabase_users,
 };
 

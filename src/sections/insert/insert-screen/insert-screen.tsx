@@ -1,24 +1,23 @@
-import { useEffect, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useEffect, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@mui/material";
 
-import { useBoolean } from "src/hooks/use-boolean";
 import { updateData } from "src/hooks/use-update";
+import { useBoolean } from "src/hooks/use-boolean";
 
 import { DashboardContent } from "src/layouts/dashboard";
-
 import { dataStudentsEventUpdate } from "src/actions/data_students_event";
 
 import { EmptyContent } from "src/components/empty-content";
 
-import { formValues, insertTamplate } from "../functions";
-import useInsertStore from "../insert-state";
-import { InsertFilters } from "../components/filters";
 import { InsertList } from "./insert-list";
+import useInsertStore from "../insert-state";
 import { InsertToolbar } from "./insert-toolbar";
 import { InsertListHeader } from "./insert-header";
+import { InsertFilters } from "../components/filters";
+import { formValues, insertTamplate } from "../functions";
 import { useLoadCurrentData } from "./functions-insert-load-data";
 
 interface InsertListViewProps {
@@ -31,7 +30,7 @@ export function InsertListView({infoStudents, infoColumns}: InsertListViewProps)
 
   const queryClient = useQueryClient();
   
-  const { mutateAsync } = useMutation(dataStudentsEventUpdate({queryClient}))
+  const { mutateAsync } = useMutation(dataStudentsEventUpdate({queryClient, tamplateData: selectedEvent})); 
   
   const tamplateData = insertTamplate(infoStudents, selectedEvent);
 

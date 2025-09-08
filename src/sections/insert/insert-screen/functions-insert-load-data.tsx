@@ -40,7 +40,6 @@ export function useLoadCurrentData(reset: (values: any) => void, tamplateData: a
             return { ...item, ...updatedItem};
             
           })
-          console.table(newData)
           reset(formValues(newData));
           setCurrentData(newData);
           } else {

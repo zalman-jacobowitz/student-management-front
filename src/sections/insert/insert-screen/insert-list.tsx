@@ -96,14 +96,14 @@ export function InsertList({ methods, infoColumns, currentData, handleUpdate, fi
         delay: currentData.find((item) => item.student_id === student_id)?.delay || ''
 
     }));
-    console.table(toServer.map(e=>({נוכחות: e.data, איחור: e.delay, אישור: e.exception, student_id: e.student_id})))
+    // console.table(toServer.map(e=>({נוכחות: e.data, איחור: e.delay, אישור: e.exception, student_id: e.student_id})))
     // if there is data from server.
     
     handleUpdate(toServer, 'update')
   };
 
   const dataFiltered = newApplyFilters(currentData, filters, infoColumns)
-  console.log('dataFiltered', dataFiltered)
+
   const { primary, secondary } = descriptionColumns(infoColumns)
 
   return (

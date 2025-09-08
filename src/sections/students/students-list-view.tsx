@@ -30,13 +30,14 @@ const LINKS = [
 function StudentMainViewDynamic() {
   // המידע על העמודות
   const infoColumns = useInfoColumns('info_students')
-
+  const queryClient = useQueryClient();
   // קריאה לנתונים של התלמידים עצמם
   const infoStudents = useSuspenseQuery(apiInfoStudents());
+  console.log('cache before render:', queryClient.getQueryCache().findAll());
   // יבוא האפשרות לנווט בין דפים לצורך מעבר למסך העמודות
+  
   const router = useRouter();
   // סטייט להכלה של השאילתה של העידכון והקריאה
-  const queryClient = useQueryClient();
   // פונקציית העידכון של הנתונים על התלמידים
   const mutate = useMutation(infoStudentsUpdate({queryClient}))
   // פונקציית המחיקה של התלמידים

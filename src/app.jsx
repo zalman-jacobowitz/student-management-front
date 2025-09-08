@@ -35,7 +35,7 @@ export default function App() {
   return (
     <I18nProvider>
       <LocalizationProvider>
-        <AuthProvider>
+        
           <QueryClientProvider client={queryClient}>
             <SettingsProvider settings={defaultSettings}>
               <ThemeProvider>
@@ -48,7 +48,7 @@ export default function App() {
               </ThemeProvider>
             </SettingsProvider>
           </QueryClientProvider>
-        </AuthProvider>
+        
       </LocalizationProvider>
     </I18nProvider>
   );

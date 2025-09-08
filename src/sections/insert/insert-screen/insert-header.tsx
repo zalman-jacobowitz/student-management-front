@@ -35,7 +35,6 @@ interface InsertListHeaderProps {
 
 export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
   const selectedEvent = useInsertStore(state => state.selectedEvent);
-  console.log('selectedEvent: ', selectedEvent)
 
   const hebDay = inHebrew(selectedEvent.day)
   const data = Object.values(watch());
