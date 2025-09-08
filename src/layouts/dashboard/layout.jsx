@@ -29,8 +29,8 @@ import { screenOptions, navData as dashboardNavData } from '../config-nav-dashbo
 const groups = {
   'ניהול נתונים': ['info', 'users'],
   'ניהול נוכחות': ['manager', 'export', 'scan', 'download'],
-  'ניהול זמנים': ['templates', 'calendar'],
-  'סיכומים': ['profile', 'insert', 'summary'],
+  'ניהול זמנים': ['templates', 'days'],
+  'סיכומים': ['profile', 'insert', 'summary', 'details'],
   'הגדרות': ['settings', 'inialize', 'userPermissions', 'initialization'],
 };
 

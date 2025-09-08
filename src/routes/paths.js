@@ -45,7 +45,8 @@ export const paths = {
     exceptions: `${ROOTS.DASHBOARD}/אישורים`,
     summary: `${ROOTS.DASHBOARD}/סיכום`,
     uploadScanDocs: `${ROOTS.DASHBOARD}/העלאת-דוחות-רישום`,
-    download: `${ROOTS.DASHBOARD}/הורדת-תבנית`
+    download: `${ROOTS.DASHBOARD}/הורדת-תבנית`,
+    details: `${ROOTS.DASHBOARD}/רישומים`,
 
   },
 };

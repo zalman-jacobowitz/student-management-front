@@ -38,6 +38,10 @@ const SummaryPage = lazy(() => import('src/pages/dashboard/summary'));
 const UploadReportsPage = lazy(() => import('src/pages/dashboard/uploadReports'));
 // download template reports
 const DownloadTemplateReportsPage = lazy(() => import('src/pages/dashboard/download'));
+// DetailsPage
+const DetailsPage = lazy(() => import('src/pages/dashboard/details'));
+
+
 // ----------------------------------------------------------------------
 
 const layoutContent = (
@@ -74,6 +78,7 @@ export const dashboardRoutes = [
       { path: 'סיכום', element: <SummaryPage /> },
       { path: 'העלאת-דוחות-רישום', element: <UploadReportsPage /> },
       { path: 'הורדת-תבנית', element: <DownloadTemplateReportsPage /> },
+      { path: 'רישומים', element: <DetailsPage /> },
     ],
   },
   {
