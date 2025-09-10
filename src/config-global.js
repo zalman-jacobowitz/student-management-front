@@ -15,7 +15,7 @@ export const CONFIG = {
    */
   auth: {
     method: 'supabase',
-    skip: true,
+    skip: false,
     redirectPath: paths.dashboard.root,
   },
   /**

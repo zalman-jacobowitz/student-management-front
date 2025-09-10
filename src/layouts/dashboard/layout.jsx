@@ -28,9 +28,10 @@ import { screenOptions, navData as dashboardNavData } from '../config-nav-dashbo
 
 const groups = {
   'ניהול נתונים': ['info', 'users'],
-  'ניהול נוכחות': ['manager', 'export', 'scan', 'download'],
+  'ניהול נוכחות': ['manager', 'export', 'scan', 'download','exceptions'],
   'ניהול זמנים': ['templates', 'days'],
-  'סיכומים': ['profile', 'insert', 'summary', 'details'],
+  'מבחנים': ['tests'],
+  'סיכומים': ['profile', 'insert', 'summary', 'details', 'overview'],
   'הגדרות': ['settings', 'inialize', 'userPermissions', 'initialization'],
 };
 
