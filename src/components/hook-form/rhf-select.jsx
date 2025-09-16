@@ -20,11 +20,12 @@ export function RHFSelect({
   helperText,
   inputProps,
   InputLabelProps,
+  id,
   ...other
 }) {
   const { control } = useFormContext();
 
-  const labelId = `${name}-select-label`;
+  const labelId = id || `${name}-select-label`;
 
   return (
     <Controller

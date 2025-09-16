@@ -21,6 +21,7 @@ const LINKS = [
 ]
 
 function eventsTemplatesByReduce(templates) {
+  console.log('templates::', templates);
   return Object.values(
     templates.reduce((acc, cur) => {
       const { template_id, template_name, client, ...event } = cur;
@@ -28,6 +29,7 @@ function eventsTemplatesByReduce(templates) {
         acc[template_id] = { template_id, template_name, client, events: [] };
       }
       acc[template_id].events.push(event);
+      acc[template_id].events.sort((a, b) => a.event_start.localeCompare(b.event_start));
       return acc;
     }, {})
   );

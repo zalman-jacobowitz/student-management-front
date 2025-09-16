@@ -7,7 +7,7 @@ import { apiFetch } from 'src/utils/manager-fetch';
 export function apiTemplates() {
   const postData = { table_name: 'templates', mode: 'select', data: [] };
   return queryOptions({
-    queryKey: ['templates'],
+    queryKey: ['templates', '1'],
     queryFn: async () => {
       const res =  await apiFetch('all', postData);
       console.log('apiTemplates', res);
@@ -30,5 +30,6 @@ export const templatesUpdate = ({queryClient})=>({
   onSuccess: (data, _variables, _ctx) => {
     queryClient.invalidateQueries({ queryKey: ['templates'] });
     queryClient.cancelQueries({ queryKey: ['templates'] });
+    queryClient.refetchQueries({ queryKey: ['templates']})
   },
 })

@@ -21,14 +21,18 @@ import { uuidv4 } from "src/utils/uuidv4";
 // שלב 3: בחירת אירועים
 export function EventsSelectionStep() {
   const { control } = useFormContext();
+  
+  
   const { fields, append, remove } = useFieldArray({
     control,
     name: "events",
   });
 
+  const [shortId, setShortId] = useState(String(fields.length + 1));
+
   return (
     <Stack spacing={3}>
-      <Alert severity="info">
+      <Alert onClick={(e)=>console.log({fields})} severity="info">
         <Typography variant="body2">
           הוסף או הסר אירועים עבור תבנית זו.
         </Typography>
@@ -39,6 +43,7 @@ export function EventsSelectionStep() {
             <Stack key={item.id} spacing={2}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <Field.Text
+                  disabled={!item.new}
                   name={`events[${index}].event_name`}
                   placeholder="שם האירוע"
                   fullWidth />
@@ -66,7 +71,7 @@ export function EventsSelectionStep() {
         type="button"
         variant="outlined"
         startIcon={<Iconify icon="mdi:plus" />}
-        onClick={() => append({ event_name: '', event_id: '', event_start: '', event_end: '' })}
+        onClick={() => append({ event_name: '', event_id: shortId, event_start: '', event_end: '' , new: true})}
       >
         הוסף אירוע
       </Button>
@@ -85,12 +90,59 @@ function templateDataServerFromat(data) {
     template_id,
     template_name,
     event_name: event.event_name,
-    event_id: uuidv4(),
+    event_id: event.event_id || uuidv4(),
     event_start: event.event_start,
     event_end: event.event_end
   }))
 
   return listEvents
+}
+function compareVersions(oldData, newData) {
+    const result = [];
+    const oldIds = new Set(oldData.map(item => item.event_id));
+    const newIds = new Set(newData.map(item => item.event_id));
+    
+    // נמחקו
+    oldData.forEach(oldItem => {
+        if (!newIds.has(oldItem.event_id)) {
+            result.push({
+                ...oldItem,
+                status: 'נמחק'
+            });
+        }
+    });
+    
+    // עודכנו או נותרו
+    
+    newData.forEach(newItem => {
+        if (oldIds.has(newItem.event_id)) {
+            const oldItem = oldData.find(item => item.event_id === newItem.event_id);
+            const isChanged = oldItem.event_start !== newItem.event_start || oldItem.event_end !== newItem.event_end;
+             if (isChanged) {
+                // הרשומה החדשה - עודכן
+                result.push({
+                    ...newItem,
+                    event_id: String(oldItem.event_id * 5), // שמירת אותו מזהה
+                    active: 1
+                });
+            } else {
+                // לא השתנה
+                result.push({
+                    ...newItem,
+                    active: 2
+                });
+            }
+        } else {
+            // נוסף
+            result.push({
+                ...newItem,
+                event_id: '10', // מזהה חדש
+                active: 1
+            });
+        }
+    });
+    
+    return result;
 }
 
 function useTemplateDefinition({ template }) {
@@ -104,15 +156,19 @@ function useTemplateDefinition({ template }) {
       console.log('template data: ', data)
 
       const templateData = templateDataServerFromat(data)
-
-      const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  "update" })
+      console.log('templateData: ', templateData)
+      console.log('previus template: ', template.events)
+      const compareData = compareVersions(template?.events || [], data.events || [])
+      const withTemplateId = compareData.map(item => ({...item, template_id: template?.template_id || item.template_id, template_name: data.template_name}))
+      console.table(withTemplateId)
+      
+      const promiseTemplate = updateTemplate.mutateAsync({ data: withTemplateId, mode:  "update" })
       toast.promise(promiseTemplate, {
         loading: 'שומר תבנית...',
         success: 'תבנית נשמרה בהצלחה',
         error: 'שגיאה בשמירת התבנית'
       });
-
-      console.log(templateData)
+      
     } catch (error) {
       console.error('Error saving template:', error);
     }
@@ -179,7 +235,7 @@ export function TemplateDefinitionStep({ onComplete, template }) {
 
     template_id: template?.template_id || '',
     template_name: template?.template_name || '',
-    events: template?.events || [],
+    events: template?.events?.filter(e => Number(e.active)) || [],
   }
 
   const WizardSchema = z.object({
@@ -188,7 +244,8 @@ export function TemplateDefinitionStep({ onComplete, template }) {
     events: z.array(z.object({
       event_name: z.string().min(1, 'שם אירוע נדרש'),
       event_start: z.string(),
-      event_end: z.string()
+      event_end: z.string(),
+      event_id: z.string().optional(),
     })).optional(),
   });
 
@@ -223,7 +280,7 @@ export function TemplateDefinitionStep({ onComplete, template }) {
       name: 'basicTemplateDetails'
     },
     {
-      label: 'פרטי אירוع',
+      label: 'פרטי אירועים',
       component: <MasterStep fields={fileds} number={2} />,
       icon: "mdi:calendar-multiple",
       name: 'eventsSelection'

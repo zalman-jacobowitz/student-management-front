@@ -62,7 +62,6 @@ export interface InfoColumn {
   sorting: number;
   table_name: string;
   type: 'text' | 'number' | 'select' | 'date' | 'address' | 'checkbox';
-  user_id: string;
   options?: { value: string; label: string; icon?: string }[];
   width?: number;
 }

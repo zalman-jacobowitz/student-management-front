@@ -12,17 +12,19 @@ table form server
  * 
  */
 
+import { InfoColumn } from "src/serverTypes";
 
-export const INFO_TEMPLATES = [
+
+export const INFO_TEMPLATES: InfoColumn[] = [
     {
         client: "kg_gdola",
         filters: "",
         group_name: "primary",
-        hidden: "",
+        hidden: false,
         label: "מזהה תבנית",
         name: "template_id",
-        required: "",
-        sorting: "0.0",
+        required: false,
+        sorting: 1,
         table_name: "templates",
         type: "text",
     },

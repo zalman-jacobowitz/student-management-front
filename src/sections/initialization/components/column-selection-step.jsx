@@ -1,10 +1,11 @@
-import { Box, Typography, MenuItem } from '@mui/material';
+import { Box, Typography, MenuItem, Button } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { useEffect, useCallback } from 'react';
 
 import { Field } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { MasterStep } from 'src/components/steps-form';
+import { Walktour, useWalktour } from 'src/components/walktour';
 import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
@@ -13,6 +14,26 @@ export function ColumnSelectionStep() {
   const { watch } = useFormContext();
   const { columnsList, updateColumnProperty } = useInitializationStore();
   const watchedValues = watch('columnSelection');
+
+  const walktourSteps = [
+    {
+      target: '#name-column-field',
+      title: 'בחירת עמודת שם',
+      content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
+      placement: 'bottom'
+    },
+    {
+      target: '#family-column-field',
+      title: 'בחירת עמודת משפחה',
+      content: 'בחר כאן את העמודה המכילה את שמות המשפחה של התלמידים. יחד עם השם הפרטי, זה יוצר זיהוי ייחודי לכל תלמיד.',
+      placement: 'bottom'
+    }
+  ];
+
+  const walktour = useWalktour({
+    steps: walktourSteps,
+    defaultRun: false
+  });
 
   const fields = [
     {
@@ -23,6 +44,7 @@ export function ColumnSelectionStep() {
       InputLabelProps: { shrink: true },
       helperText: "בחר את העמודה המכילה שמות פרטיים",
       step: 1,
+      id: "name-column-field",
       children: columnsList?.map((column) => (
         <MenuItem key={column} value={column}>
           <Iconify icon="solar:user-bold" width={20} sx={{ mr: 1 }} />
@@ -38,6 +60,7 @@ export function ColumnSelectionStep() {
       InputLabelProps: { shrink: true },
       helperText: "בחר את העמודה המכילה שמות משפחה",
       step: 1,
+      id: "family-column-field",
       children: columnsList?.map((column) => (
         <MenuItem key={column} value={column}>
           <Iconify icon="solar:users-group-two-rounded-bold" width={20} sx={{ mr: 1 }} />
@@ -94,7 +117,29 @@ export function ColumnSelectionStep() {
 
   return (
     <Box sx={{ p: 3 }}>
+      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<Iconify icon="solar:info-circle-bold" />}
+          onClick={() => walktour.setRun(true)}
+        >
+          הדרכה מהירה
+        </Button>
+      </Box>
+      
       <MasterStep fields={fields} number={1} spacing={3} />
+      
+      <Walktour
+        {...walktour}
+        locale={{
+          back: 'הקודם',
+          close: 'סגור',
+          last: 'סיום',
+          next: 'הבא',
+          skip: 'דלג'
+        }}
+      />
     </Box>
   );
 }
