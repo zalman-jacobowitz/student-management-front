@@ -156,13 +156,17 @@ function useTemplateDefinition({ template }) {
       console.log('template data: ', data)
 
       const templateData = templateDataServerFromat(data)
-      console.log('templateData: ', templateData)
-      console.log('previus template: ', template.events)
+
       const compareData = compareVersions(template?.events || [], data.events || [])
-      const withTemplateId = compareData.map(item => ({...item, template_id: template?.template_id || item.template_id, template_name: data.template_name}))
+      const withTemplateId = compareData.map(item => ({
+        ...item,
+        template_id: template?.template_id || item.template_id || uuidv4(),
+        template_name: data.template_name
+      }))
       console.table(withTemplateId)
       
       const promiseTemplate = updateTemplate.mutateAsync({ data: withTemplateId, mode:  "update" })
+
       toast.promise(promiseTemplate, {
         loading: 'שומר תבנית...',
         success: 'תבנית נשמרה בהצלחה',
