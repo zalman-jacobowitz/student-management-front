@@ -67,15 +67,17 @@ function DaysCalendarMainView() {
   });
   
   const days = daysQuery.data;
+  console.log('days--', days);
   const templatesRaw = templatesQuery.data;
   const templates = eventsTemplatesByReduce(templatesRaw);
   const daysWithTemplates = joinDaysWithTemplates(days, templates);
-  
+  const defaultDay = daysWithTemplates.find(day => day.day === 'default');
+  console.log('defaultDay: ', defaultDay);
   // Convert days data to Hebrew calendar format
   const eventsData = daysWithTemplates.map(day => ({
     day: day.day, // Hebrew day name like "ראשון", "שני"
     component: (
-      <TemplateDisplayComponent 
+      <TemplateDisplayComponent
         templateName={day.template_name}
         onClick={() => {
           setSelectedDay(day);
@@ -84,6 +86,18 @@ function DaysCalendarMainView() {
       />
     )
   }));
+
+  const defaultDayEvents = (day) => (
+      <TemplateDisplayComponent
+        templateName={defaultDay.template_name || 'לא נמצא'}
+        onClick={() => {
+
+          setSelectedDay({...defaultDay, day, default: true});
+          setDialogOpen(true);
+        }}
+      />
+    )
+
 
   return (
     <Box sx={{ p: 3 }}>
@@ -95,6 +109,7 @@ function DaysCalendarMainView() {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         eventsData={eventsData}
+        defaultDayEvents={defaultDayEvents}
       />
 
       <DayDialog

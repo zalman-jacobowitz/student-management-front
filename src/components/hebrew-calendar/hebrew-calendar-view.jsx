@@ -26,7 +26,7 @@ function CalendarHeader({ monthName, onMonthChange }) {
     );
 }
 
-function CalendarViewGrid({ monthDates, selectedDate, setSelectedDate, eventsData = [] }) {
+function CalendarViewGrid({ monthDates, selectedDate, setSelectedDate, eventsData = [], defaultDayEvents = () => null }) {
     const daysOfWeek = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
     
     // Create a map for quick lookup of events by date
@@ -90,9 +90,9 @@ function CalendarViewGrid({ monthDates, selectedDate, setSelectedDate, eventsDat
                     >
                         {date['יום_עברי']}
                     </Typography>
-                    {date['יום'] && eventsMap[date['יום']] && (
+                    {date['יום'] && (
                         <Box sx={{ flexGrow: 1, width: '100%' }}>
-                            {eventsMap[date['יום']]}
+                            {eventsMap[date['יום']] || defaultDayEvents(date['יום'])}
                         </Box>
                     )}
                 </Box>
@@ -101,7 +101,7 @@ function CalendarViewGrid({ monthDates, selectedDate, setSelectedDate, eventsDat
     );
 }
 
-export function HebrewCalendarView({ selectedDate, setSelectedDate, eventsData = [] }) {
+export function HebrewCalendarView({ selectedDate, setSelectedDate, eventsData = [], defaultDayEvents = () => null }) {
     const [selectedMonth, setSelectedMonth] = useState(selectedDate?.['חודש_עברי'] || 'תשרי');
 
     const allDates = getAllYear('תשפ״ה');
@@ -124,6 +124,7 @@ export function HebrewCalendarView({ selectedDate, setSelectedDate, eventsData =
                 selectedDate={selectedDate || {}} 
                 setSelectedDate={setSelectedDate}
                 eventsData={eventsData}
+                defaultDayEvents={defaultDayEvents}
             />
         </Box>
     );

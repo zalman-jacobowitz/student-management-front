@@ -26,22 +26,21 @@ function useDayDefinition({ day }) {
 
   const onSubmit = useCallback(async (data) => {
     try {
-      console.log('day data: ', data)
 
       const dayNewDetails = {
         "day": data.day,
         "template_id": data.template_id,
       }
-
-      console.log('dayNewDetails: ', dayNewDetails)
       
-      const promiseDay = updateDay.mutateAsync({data: Array(dayNewDetails), mode: "update"})
+      const withDefault = data.default ? [{...dayNewDetails, day: 'default'}, dayNewDetails] : [dayNewDetails];
+      console.log('withDefault: ', withDefault)
+      const promiseDay = updateDay.mutateAsync({data: withDefault, mode: "update"})
       toast.promise(promiseDay, {
         loading: 'שומר יום...',
         success: 'יום נשמר בהצלחה',
         error: 'שגיאה בשמירת היום'
       });
-      
+      console.log('withDefault: ', withDefault)
       console.log(dayNewDetails)
     } catch (error) {
       console.error('Error saving day:', error);
@@ -94,11 +93,13 @@ export function DayDefinitionStep({ onComplete, day }) {
   const initialValues = {
     day: day?.day || '',
     template_id: day?.template_id || '',
-  } 
-
+    default: day?.default,
+  }
+  console.log('initialValues', day?.day, initialValues)
   const WizardSchema = z.object({
     day: z.string().min(1, 'יום נדרש'),
     template_id: z.string().min(1, 'מזהה תבנית נדרש'),
+    default: z.boolean().optional(),
   });
 
   const fileds = [
@@ -127,6 +128,14 @@ export function DayDefinitionStep({ onComplete, day }) {
         )
       ),
       component: Field.Select
+    },
+    {
+      step: 1,
+      name: "default",
+      variant: "outlined",
+      type : "text",
+      label: "הגדר כברירת מחדל",
+      component: Field.Switch
     }
   ]
 
@@ -157,6 +166,7 @@ export function DayDefinitionStep({ onComplete, day }) {
 
 // דיאלוג להצגת אשף הגדרת יום
 export function DayDialog({ open, onClose, onComplete, column }) {
+  
   const handleWizardComplete = (data) => {
     if (onComplete) {
       onComplete(data); // קריאה ל-callback שהועבר מהקומפוננטה המשתמשת
