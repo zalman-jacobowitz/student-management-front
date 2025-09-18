@@ -53,7 +53,7 @@ function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] 
     formState: { isSubmitting },
   } = methods;
    
-  const eventsToday = useQuery(apiTemplates());
+  const eventsToday = useQuery(apiEventsToday(watch('day'), students_ids));
   console.log('eventsToday: ', eventsToday.data);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

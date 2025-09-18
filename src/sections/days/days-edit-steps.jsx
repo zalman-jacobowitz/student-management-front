@@ -76,6 +76,8 @@ function eventsTemplatesByReduce(templates) {
     }, {})
   );
 }
+const removeDuplicates = (templatesRaw) => 
+  Array.from(new Map(templatesRaw.map(t => [t.template_id, t])).values());
 
 export function DayDefinitionStep({ onComplete, day }) {
   console.log('DAYS: ', day)
@@ -84,18 +86,17 @@ export function DayDefinitionStep({ onComplete, day }) {
   const templatesRaw = templatesQuery.data || [];
   
   // יצירת רשימת אפשרויות עם כל התבניות הקיימות
-  const templateOptions = templatesRaw.map(template => ({
+  const templateOptions = removeDuplicates(templatesRaw).map(template => ({
     value: template.template_id,
     label: template.template_name
   }));
-  console.log('templateOptions', templateOptions)
-  
+
   const initialValues = {
     day: day?.day || '',
     template_id: day?.template_id || '',
     default: day?.default,
   }
-  console.log('initialValues', day?.day, initialValues)
+  
   const WizardSchema = z.object({
     day: z.string().min(1, 'יום נדרש'),
     template_id: z.string().min(1, 'מזהה תבנית נדרש'),

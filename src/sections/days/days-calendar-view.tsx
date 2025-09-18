@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { useQuery, useSuspenseQueries } from "@tanstack/react-query";
 import { Box, Typography, Chip } from "@mui/material";
 
 import { apiDays } from "src/actions/days";
@@ -7,6 +7,8 @@ import { apiTemplates } from "src/actions/templates";
 import { LoadingScreen } from "src/components/loading-screen";
 import { HebrewCalendarView } from "src/components/hebrew-calendar/hebrew-calendar-view";
 import { DayDialog } from "./days-edit-steps";
+import { apiListEvents } from "src/actions/list_of_events";
+import { apiInfoStudents } from "src/actions/info_students";
 
 function eventsTemplatesByReduce(templates) {
   return Object.values(
@@ -34,6 +36,7 @@ function joinDaysWithTemplates(days, templates) {
 }
 
 function TemplateDisplayComponent({ templateName, onClick }) {
+  console.log('templateName', templateName);
   return (
     <Chip
       label={templateName}
@@ -65,16 +68,23 @@ function DaysCalendarMainView() {
       apiTemplates()
     ]
   });
-  
+
+  const infoStudents = useQuery(apiInfoStudents());
+  const students_ids = infoStudents.data?.map(student => student.student_id) || [];
+  const listOfTimesQuery = useQuery(apiListEvents(students_ids))
+  console.log('listOfTimesQuery', listOfTimesQuery.data);
+
   const days = daysQuery.data;
-  console.log('days--', days);
+  
   const templatesRaw = templatesQuery.data;
   const templates = eventsTemplatesByReduce(templatesRaw);
   const daysWithTemplates = joinDaysWithTemplates(days, templates);
+  const mergedWirhPrevEvents = [...daysWithTemplates, ...(listOfTimesQuery.data || [])];
+  console.log('mergedWirhPrevEvents: ', mergedWirhPrevEvents);
+
   const defaultDay = daysWithTemplates.find(day => day.day === 'default');
-  console.log('defaultDay: ', defaultDay);
-  // Convert days data to Hebrew calendar format
-  const eventsData = daysWithTemplates.map(day => ({
+  
+  const eventsData = mergedWirhPrevEvents.map(day => ({
     day: day.day, // Hebrew day name like "ראשון", "שני"
     component: (
       <TemplateDisplayComponent
