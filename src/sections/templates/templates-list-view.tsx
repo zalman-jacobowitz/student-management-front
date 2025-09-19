@@ -1,5 +1,7 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Grid, ListItemText, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 
@@ -9,8 +11,10 @@ import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
 
-import { TemplateDialog } from "./templates-edit-steps";
 import { INFO_TEMPLATES } from "./columns";
+import { TemplateDialog } from "./templates-edit-steps";
+import { useBoolean } from "src/hooks/use-boolean";
+import { ButtonGreen } from "src/components/button-green";
 
 
 
@@ -35,26 +39,69 @@ function eventsTemplatesByReduce(templates) {
   );
 }
 
+function TemplateView({ row, onEdit }) {
+  const { template_id, template_name, client, events } = row;
+  const dialog = useBoolean();
+  
+  return (
+    <Card sx={{ border: '1px solid #ccc', borderRadius: 2, p: 2, mb: 2, height: '100%' }}>
+      <CardHeader title={template_name} />
+      <CardContent>
+      {events.map((event, index) => (
+        <ListItemText
+          key={index}
+          primary={event.event_name}
+          secondary={`${event.event_start} - ${event.event_end}`}
+        />
+      ))}
+      </CardContent>
+      <CardActions sx={{ justifyContent: 'flex-end' }}>
+        <Box sx={{ flexGrow: 1 }} />
+        <Button variant="outlined" onClick={dialog.onTrue}>מחק</Button>
+        <Button variant="outlined" onClick={onEdit}>ערוך</Button>
+      </CardActions>
+      
+
+     
+    </Card>
+  );
+}
+
+
 function TemplatesMainView() {
     const templates = useSuspenseQuery(apiTemplates());
     const events = eventsTemplatesByReduce(templates.data);
-    console.log('events', events);
-    const tableColumnsConfig: TableConfig = {
-    headingLinks: LINKS,
-    headingTitle: 'הגדרת תבניות',
-    importButton: false,
-    specialRow: ['checkbox', 'edit'],
-    rowId: 'template_id',
-    EditComponent: TemplateDialog,
-    styleTable: 'default',
-    pagination: true,
-    addButton: true,
-    tableData: events,
-    tableColumns: INFO_TEMPLATES,
-  }
-  console.log('tableColumnsConfig', tableColumnsConfig);
 
-  return (<FullTableWrapper config={tableColumnsConfig} /> )
+    const dialog = useBoolean();
+    const [selectedRow, setSelectedRow] = useState(null);
+
+    return (
+      <>
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          תבניות - תצוגת רשימה
+        </Typography>
+      </Box>
+      <Grid container spacing={2} sx={{ p: 3 }}>
+        {events.map((template) => (
+          <Grid item xs={12} sm={6} md={4} key={template.template_id}>
+            <TemplateView row={template} onEdit={() => { setSelectedRow(template); dialog.onTrue(); }} />
+          </Grid>
+        ))}
+      </Grid>
+      <TemplateDialog
+          column={selectedRow}
+          open={dialog.value}
+          onClose={dialog.onFalse}
+      />
+      <ButtonGreen onClick={
+        () => {
+          setSelectedRow(null);
+          dialog.onTrue();
+        }
+      } />
+    </>
+  );
 }
 
 

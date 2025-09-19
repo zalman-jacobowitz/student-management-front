@@ -100,14 +100,30 @@ function CalendarViewGrid({ monthDates, selectedDate, setSelectedDate, eventsDat
         </Box>
     );
 }
+// הסבר לכל לוח השנה.
 
-export function HebrewCalendarView({ selectedDate, setSelectedDate, eventsData = [], defaultDayEvents = () => null }) {
+export function HebrewCalendarView({
+        // היום הנבחר כעת
+        selectedDate,
+        // פונקציית קאללבאק בעת בחירה של יום בלוח השנה
+        setSelectedDate,
+        // קומפוננטות לתצוגה לכל יום
+        eventsData = [],
+        // קומפוננטה להצגה בימים ללא קומפוננטה מפורשת
+        defaultDayEvents = () => null
+
+    }) {
+    // בחירה של יום
     const [selectedMonth, setSelectedMonth] = useState(selectedDate?.['חודש_עברי'] || 'תשרי');
 
+    // רשימת התאריכים והפרטים עליהם בשנה מסויימת
     const allDates = getAllYear('תשפ״ה');
+    // רשימת החודשים העבריים בשנה זו
     const hebrewMonths = [...new Set(allDates.map(date => date['חודש_עברי']))];
+    // קבלת רשימת הימים לחודש זה הנבחר
     const monthDates = getMonthDates(selectedMonth, allDates);
     
+    // שינוי החודש על ידי שימוש באינדקס קימה ואחורה
     const handleMonthChange = (direction) => {
         const currentIndex = hebrewMonths.indexOf(selectedMonth);
         const newIndex = currentIndex + direction;
@@ -119,8 +135,8 @@ export function HebrewCalendarView({ selectedDate, setSelectedDate, eventsData =
     return (
         <Box>
             <CalendarHeader monthName={selectedMonth} onMonthChange={handleMonthChange} />
-            <CalendarViewGrid 
-                monthDates={monthDates} 
+            <CalendarViewGrid
+                monthDates={monthDates}
                 selectedDate={selectedDate || {}} 
                 setSelectedDate={setSelectedDate}
                 eventsData={eventsData}

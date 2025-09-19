@@ -14,7 +14,7 @@ import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
 import { templatesUpdate } from "src/actions/templates";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uuidv4 } from "src/utils/uuidv4";
+import { shortId, uuidv4 } from "src/utils/uuidv4";
 
 
 
@@ -32,11 +32,6 @@ export function EventsSelectionStep() {
 
   return (
     <Stack spacing={3}>
-      <Alert onClick={(e)=>console.log({fields})} severity="info">
-        <Typography variant="body2">
-          הוסף או הסר אירועים עבור תבנית זו.
-        </Typography>
-      </Alert>
       <Scrollbar sx={{ maxHeight: { xs: 100, sm: 200, md: 260 } }}>
         <Stack spacing={2}>
           {fields.map((item, index) => (
@@ -122,7 +117,7 @@ function compareVersions(oldData, newData) {
                 // הרשומה החדשה - עודכן
                 result.push({
                     ...newItem,
-                    event_id: String(oldItem.event_id * 5), // שמירת אותו מזהה
+                    event_id: shortId(), // שמירת אותו מזהה
                     active: 1
                 });
             } else {
@@ -136,7 +131,7 @@ function compareVersions(oldData, newData) {
             // נוסף
             result.push({
                 ...newItem,
-                event_id: '10', // מזהה חדש
+                event_id: shortId(), // מזהה חדש
                 active: 1
             });
         }
@@ -163,7 +158,7 @@ function useTemplateDefinition({ template }) {
         template_id: template?.template_id || item.template_id || uuidv4(),
         template_name: data.template_name
       }))
-      console.table(withTemplateId)
+
       
       const promiseTemplate = updateTemplate.mutateAsync({ data: withTemplateId, mode:  "update" })
 
@@ -321,7 +316,7 @@ export function TemplateDialog({ open, onClose, onComplete, column }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth="sm" maxWidth="sm">
       <TemplateDefinitionStep
         template={column} // העברת התבנית הנוכחית לאשף
         onComplete={handleWizardComplete} // מטפל בסיום האשף

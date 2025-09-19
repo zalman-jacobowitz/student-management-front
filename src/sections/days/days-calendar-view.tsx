@@ -72,16 +72,14 @@ function DaysCalendarMainView() {
   const infoStudents = useQuery(apiInfoStudents());
   const students_ids = infoStudents.data?.map(student => student.student_id) || [];
   const listOfTimesQuery = useQuery(apiListEvents(students_ids))
-  console.log('listOfTimesQuery', listOfTimesQuery.data);
-
+  
   const days = daysQuery.data;
   
   const templatesRaw = templatesQuery.data;
   const templates = eventsTemplatesByReduce(templatesRaw);
   const daysWithTemplates = joinDaysWithTemplates(days, templates);
   const mergedWirhPrevEvents = [...daysWithTemplates, ...(listOfTimesQuery.data || [])];
-  console.log('mergedWirhPrevEvents: ', mergedWirhPrevEvents);
-
+  
   const defaultDay = daysWithTemplates.find(day => day.day === 'default');
   
   const eventsData = mergedWirhPrevEvents.map(day => ({
@@ -111,9 +109,6 @@ function DaysCalendarMainView() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>
-        לוח השנה - תצוגת ימים ותבניות
-      </Typography>
       
       <HebrewCalendarView
         selectedDate={selectedDate}
