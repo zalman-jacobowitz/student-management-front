@@ -38,22 +38,11 @@ function joinDaysWithTemplates(days, templates) {
 function TemplateDisplayComponent({ templateName, onClick }) {
   console.log('templateName', templateName);
   return (
-    <Chip
-      label={templateName}
-      size="small"
-      color={templateName === 'לא נמצא' ? 'default' : 'primary'}
+    <Typography
+      color='primary'
       variant="outlined"
       onClick={onClick}
-      sx={{ 
-        fontSize: '0.7rem', 
-        height: '20px',
-        cursor: 'pointer',
-        '&:hover': {
-          backgroundColor: 'primary.light',
-          color: 'white'
-        }
-      }}
-    />
+    >{templateName}</Typography>
   );
 }
 
@@ -82,6 +71,8 @@ function DaysCalendarMainView() {
   
   const defaultDay = daysWithTemplates.find(day => day.day === 'default');
   
+
+
   const eventsData = mergedWirhPrevEvents.map(day => ({
     day: day.day, // Hebrew day name like "ראשון", "שני"
     component: (
