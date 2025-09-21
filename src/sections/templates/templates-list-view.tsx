@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Grid, ListItemText, Typography } from "@mui/material";
+import { Box, Button,  Card,  CardActions, CardContent, CardHeader, Grid, ListItemText, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 
@@ -44,7 +44,7 @@ function TemplateView({ row, onEdit }) {
   const dialog = useBoolean();
   
   return (
-    <Card sx={{ border: '1px solid #ccc', borderRadius: 2, p: 2, mb: 2, height: '100%' }}>
+    <Card sx={{ height: '100%' }}>
       <CardHeader title={template_name} />
       <CardContent>
       {events.map((event, index) => (
@@ -55,14 +55,12 @@ function TemplateView({ row, onEdit }) {
         />
       ))}
       </CardContent>
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Box sx={{ flexGrow: 1 }} />
-        <Button variant="outlined" onClick={dialog.onTrue}>מחק</Button>
-        <Button variant="outlined" onClick={onEdit}>ערוך</Button>
-      </CardActions>
+      <CardActions>
       
-
-     
+        <Button variant="outlined" sx={{ }} onClick={dialog.onTrue}>מחק</Button>
+        <Button variant="outlined" onClick={onEdit}>ערוך</Button>
+      
+      </CardActions>
     </Card>
   );
 }
@@ -76,12 +74,8 @@ function TemplatesMainView() {
     const [selectedRow, setSelectedRow] = useState(null);
 
     return (
-      <>
+  
       <Box sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          תבניות - תצוגת רשימה
-        </Typography>
-      </Box>
       <Grid container spacing={2} sx={{ p: 3 }}>
         {events.map((template) => (
           <Grid item xs={12} sm={6} md={4} key={template.template_id}>
@@ -100,7 +94,7 @@ function TemplatesMainView() {
           dialog.onTrue();
         }
       } />
-    </>
+    </Box>
   );
 }
 

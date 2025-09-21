@@ -35,7 +35,9 @@ function CalendarDayView({
 }) {
     // בודק אם יש ליום זה קומפוננטה ואם לא - שם את ברירת המחדל
     const renderDayComponenet = date['יום']? eventsMap[date['יום']] || defaultDayEvents(date['יום']) : null
-    const isSelected = date.יום === today.יום
+    console.log('today', today)
+    // בודק אם היום הנבחר הוא היום הנוכחי
+    const isSelected = date.יום === today?.יום
 
 
     if (!date.יום){
@@ -48,7 +50,7 @@ function CalendarDayView({
 
         sx={{
             padding: .7,
-            boxShadow: (theme) => theme.customShadows.z24,
+            boxShadow: (theme) => theme.shadows[2],
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center'
@@ -121,7 +123,8 @@ export function HebrewCalendarView({
         handleMonthChange,
         selectedMonth,
         monthDates,
-        todayHebrew
+        todayHebrew,
+        currentYear
     } = useCalendarView({ selectedDate, selectedYear })
 
 
@@ -129,7 +132,7 @@ export function HebrewCalendarView({
         <Card>
             
             <CalendarHeader
-                selectedYear={selectedYear}
+                selectedYear={currentYear}
                 monthName={selectedMonth}
                 onMonthChange={handleMonthChange}
             />
