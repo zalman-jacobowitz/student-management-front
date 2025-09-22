@@ -56,6 +56,9 @@ export function inHebrew(day, full=false) {
     if (full === 'Dm'){
         return `${hebrewJson?.יום_עברי} ${hebrewJson?.חודש_עברי}`;
     }
+    if (full === 'Dms'){
+     return `${hebrewJson?.יום_בשבוע} ${hebrewJson?.יום_עברי} ${hebrewJson?.חודש_עברי}`;
+    }
     if (full) {
         return `${hebrewJson?.יום_בשבוע} ${hebrewJson?.יום_עברי}  ${hebrewJson?.חודש_עברי} - ${hebrewJson?.שנה_עברית}`;
     }

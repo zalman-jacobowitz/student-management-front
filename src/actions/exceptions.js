@@ -2,10 +2,10 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiFetch } from 'src/utils/manager-fetch';
 
-export function apiExceptions(range=null) {
-  const postData = { table_name: 'exceptions', mode: 'select', data: range || {} };
+export function apiExceptions({range=null, ids=[]}) {
+  const postData = { table_name: 'exceptions', mode: 'select', data: {range, ids} };
   return queryOptions({
-    queryKey: ['exceptions'],
+    queryKey: ['exceptions', { range }],
     queryFn: async () => {
       const res = await apiFetch('all', postData);
       console.log('apiExceptions', res);

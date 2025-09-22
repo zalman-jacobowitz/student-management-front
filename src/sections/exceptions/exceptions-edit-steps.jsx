@@ -120,7 +120,7 @@ export function ExceptionDefinitionStep({ onComplete, exception }) {
     start: exception?.start || '',
     end: exception?.end || '',
     reason: exception?.reason || '',
-    students: exception?.students || [],
+    students: exception?.students.map(student => student.student_id) || [],
   };
 
   const WizardSchema = z.object({
