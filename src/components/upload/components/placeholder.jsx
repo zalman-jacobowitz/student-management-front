@@ -8,6 +8,7 @@ import { UploadIllustration } from 'src/assets/illustrations';
 export function UploadPlaceholder({ sx, ...other }) {
   return (
     <Box
+      data-testid="upload-placeholder"
       display="flex"
       alignItems="center"
       justifyContent="center"

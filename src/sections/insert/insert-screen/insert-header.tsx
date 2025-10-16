@@ -38,7 +38,7 @@ export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
 
   const hebDay = inHebrew(selectedEvent.day)
   const data = Object.values(watch());
-
+  console.log('selectedEvent.day:', selectedEvent.day)
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
       <PageTitle

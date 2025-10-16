@@ -18,6 +18,7 @@ export function ButtonGreen({ value = 90, sx, onClick, ...other }: ButtonGreenPr
     <Fab
       aria-label="Back to top"
       onClick={onClick}
+
       sx={{
         width: 48,
         height: 48,

@@ -77,6 +77,7 @@ export function Upload({
       sx={{ width: 1, position: 'relative', ...sx }}
     >
       <Box
+        data-testid="upload-placeholder"
         {...getRootProps()}
         sx={{
           p: 5,

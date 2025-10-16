@@ -88,7 +88,9 @@ function TemplatesMainView() {
           open={dialog.value}
           onClose={dialog.onFalse}
       />
-      <ButtonGreen onClick={
+      <ButtonGreen
+        data-testid="btn-green"
+        onClick={
         () => {
           setSelectedRow(null);
           dialog.onTrue();
