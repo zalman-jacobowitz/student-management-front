@@ -9,6 +9,9 @@ import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/down
 import { Upload } from 'src/components/upload';
 
 import useInitializationStore from '../initialization-state.ts';
+import { useBoolean } from 'src/hooks/use-boolean.js';
+import { StudentsViewer } from '../viewer/students.jsx';
+import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -114,6 +117,14 @@ export function StudentFileUploadStep() {
         </Box>
       </Box>
   )
+  const viewer = useBoolean();
+
+  useEffect(() => {
+    if (watchedFile) {
+      viewer.onTrue();
+    }
+  }, [watchedFile]);
+
 
   return (
     <Box sx={{ p: 3 }}>
@@ -151,6 +162,7 @@ export function StudentFileUploadStep() {
           </Typography>
         </Box>
       )}
+      <StudentsViewer open={viewer.value} onClose={viewer.onFalse} />
     </Box>
   );
 }

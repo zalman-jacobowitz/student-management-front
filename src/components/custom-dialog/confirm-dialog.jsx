@@ -1,8 +1,11 @@
+import { m } from 'framer-motion';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+
+import { varFade, varZoom } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
@@ -14,8 +17,29 @@ export function ConfirmDialog({
   action=<> </>,
   content,
   onClose,
+  animate = false,
+  animationType = 'fade',
   ...other
 }) {
+  
+  // Get animation variants based on type
+  const getAnimationVariants = () => {
+    switch (animationType) {
+      case 'zoom':
+        return varZoom().in;
+      case 'fadeUp':
+        return varFade().inUp;
+      case 'fadeDown':
+        return varFade().inDown;
+      case 'fadeLeft':
+        return varFade().inLeft;
+      case 'fadeRight':
+        return varFade().inRight;
+      case 'fade':
+      default:
+        return varFade().in;
+    }
+  };
   
   const contentElement = (
     <>
@@ -33,9 +57,22 @@ export function ConfirmDialog({
     </>
   )
 
+  const dialogContent = mode === 'full' ? content : contentElement;
+
   return (
     <Dialog fullWidth maxWidth={maxWidth} open={open} onClose={onClose} {...other}>
-     {mode === 'full' ? content : contentElement}
+      {animate ? (
+        <m.div
+          variants={getAnimationVariants()}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          {dialogContent}
+        </m.div>
+      ) : (
+        dialogContent
+      )}
     </Dialog>
   );
 }
