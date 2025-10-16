@@ -1,4 +1,4 @@
-import { Box, Card } from "@mui/material";
+import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import useInitializationStore from "../initialization-state";
@@ -17,6 +17,7 @@ function createDataGridColumns(columns) {
 }
 
 export function StudentsViewer({
+    title='',
     open,
     onClose
 }) {
@@ -24,22 +25,14 @@ export function StudentsViewer({
     const store = useInitializationStore();
     const { studentsData, columnsList } = store;
 
+    if (!open) return null;
+    if (!studentsData || studentsData.length === 0) return <EmptyContent title="אין תלמידים להצגה"/>;
+
     return (
-        <ConfirmDialog
-            animate
-        maxWidth="md" maxHeight="xl" open={open} onClose={onClose}
-            title="תצוגת תלמידים" actionText="סגור"
-        content={
-        
-            <Card sx={{ p: 2 }}>
-        {
-            !studentsData || studentsData.length === 0 ? (
-                <EmptyContent title="אין תלמידים להצגה"/>
-            ) : null
-        }
-        { studentsData && studentsData.length > 0 &&
-        
-                <Box>
+        <>
+            <Card sx={{ p: 2 }}> 
+                <CardHeader title={title} />   
+                <CardContent>
                   <DataGrid
                     rows={studentsData.map((row, index) => ({ id: index, ...row }))}
                     columns={createDataGridColumns(columnsList)}
@@ -56,13 +49,8 @@ export function StudentsViewer({
                     disableRowSelectionOnClick
                     
                   />
-                  </Box>
-              }
-              </Card>
-        }
-        >
-
-              </ConfirmDialog>
-
+                </CardContent>
+              </Card>        
+        </>
     )
 }

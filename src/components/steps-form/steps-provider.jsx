@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { Card } from "@mui/material";
+import { Card, Container } from "@mui/material";
 
 import { useSteps } from "src/hooks/use-stepper";
 
@@ -28,7 +28,7 @@ export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onC
       watch(methods.getValues());
     }, [watchValue, watch, methods]);
     
-    const {alertHelper, component} = steps[activeStep];
+    const {alertHelper, component, maxWidth='sm'} = steps[activeStep];
     const submit = handleSubmit(async (data)=> {
        const result = await onSubmit(data);
        if (result) {
@@ -43,9 +43,11 @@ export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onC
       <Form methods={methods} onSubmit={submit}>
         <InitStepper steps={steps} activeStep={activeStep} />
         
+        <Container maxWidth={maxWidth}>
         <StepProvider alertHelper={alertHelper}>
           {component}
         </StepProvider>
+        </Container>
 
         <StepperActions
           steps={steps}

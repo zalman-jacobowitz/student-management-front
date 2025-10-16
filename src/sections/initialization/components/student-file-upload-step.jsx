@@ -126,10 +126,8 @@ export function StudentFileUploadStep() {
   }, [watchedFile]);
 
 
-  return (
-    <Box sx={{ p: 3 }}>
-      {renderTemplatesDownload}
-      <Upload
+  const renderUpload = (
+    <Upload
         multiple={false}
         files={watchedFile ? [watchedFile] : []}
         onDrop={handleFileUpload}
@@ -154,15 +152,21 @@ export function StudentFileUploadStep() {
           </Box>
         }
       />
+  )
 
-      {watchedFile && (
-        <Box sx={{ mt: 2, p: 2, bgcolor: 'success.lighter', borderRadius: 1 }}>
-          <Typography variant="body2" color="success.dark">
-            נבחר קובץ: {watchedFile.name} ({(watchedFile.size / 1024).toFixed(1)} KB)
-          </Typography>
-        </Box>
-      )}
-      <StudentsViewer open={viewer.value} onClose={viewer.onFalse} />
-    </Box>
+
+  const renderTemplatesViewer = (
+    <StudentsViewer
+      open={viewer.value}
+      onClose={viewer.onFalse}
+      title={watchedFile ? `נבחר קובץ: ${watchedFile.name} (${(watchedFile.size / 1024).toFixed(1)} KB)` : ''} />
+  );
+
+  return (
+    <Box sx={{ p: 3 }}>
+      { !watchedFile && renderTemplatesDownload}
+      { !watchedFile && renderUpload }
+      { watchedFile && renderTemplatesViewer }
+      </Box>
   );
 }

@@ -64,6 +64,12 @@ const simpleLayoutContent = (
   </SimpleLayout>
 );
 
+const nothingLayoutContent = (
+  <Suspense fallback={<LoadingScreen />}>
+    <Outlet />
+  </Suspense>
+);
+
 export const dashboardRoutes = [
   {
     path: 'ניהול',
@@ -89,7 +95,7 @@ export const dashboardRoutes = [
   },
   {
     path: 'ניהול/איתחול',
-    element: CONFIG.auth.skip ? <>{simpleLayoutContent}</> : <AuthGuard>{simpleLayoutContent}</AuthGuard>,
+    element: CONFIG.auth.skip ? <>{nothingLayoutContent}</> : <AuthGuard>{nothingLayoutContent}</AuthGuard>,
     children: [
       { element: <InitializationPage />, index: true },
     ],

@@ -144,6 +144,7 @@ export function InitializationWizard() {
       // שלב העלאת קובץ התלמידים
       name: 'studentUpload',
       label: 'העלאת תלמידים',
+      maxWidth: 'lg',
       icon: "solar:users-group-rounded-bold-duotone",
       component: <StudentFileUploadStep />,
       alertHelper: 'העלה קובץ Excel או CSV עם פרטי התלמידים'
