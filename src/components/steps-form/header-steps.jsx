@@ -23,7 +23,7 @@ export function StepperActions({steps, activeStep, handleNext, handleBack, isSub
     {activeStep > 0 && <Button onClick={handleBack}>הקודם</Button>}
     <Box sx={{ flex: '1 1 auto' }} />
         {activeStep < steps.length - 2 && (
-          <Button variant="contained" onClick={() => handleNext()}>
+          <Button variant="contained" id='next-button' onClick={() => handleNext()}>
             הבא
           </Button>
         )}

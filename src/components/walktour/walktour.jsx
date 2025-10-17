@@ -9,7 +9,13 @@ import { WalktourTooltip } from './walktour-tooltip';
 // ----------------------------------------------------------------------
 
 export function Walktour({
-  locale,
+  locale={
+                      back: 'הקודם',
+                      close: 'סגור',
+                      last: 'סיום',
+                      next: 'הבא',
+                      skip: 'דלג'
+                    },
   continuous = true,
   showProgress = true,
   scrollDuration = 500,
@@ -27,7 +33,7 @@ export function Walktour({
 
   return (
     <Joyride
-      scrollOffset={100}
+            scrollOffset={100}
       locale={{ last: 'Done', ...locale }}
       continuous={continuous}
       showProgress={showProgress}
@@ -54,9 +60,11 @@ export function Walktour({
         },
         beacon: {
           outline: 0,
+          
         },
         beaconInner: {
           backgroundColor: theme.vars.palette.error.main,
+
         },
         beaconOuter: {
           borderColor: theme.vars.palette.error.main,

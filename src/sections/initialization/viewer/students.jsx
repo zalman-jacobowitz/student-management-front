@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader } from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, CardHeader } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import useInitializationStore from "../initialization-state";
@@ -17,6 +17,7 @@ function createDataGridColumns(columns) {
 }
 
 export function StudentsViewer({
+    handleRemoveFile,
     title='',
     open,
     onClose
@@ -30,6 +31,7 @@ export function StudentsViewer({
 
     return (
         <>
+        
             <Card sx={{ p: 2 }}> 
                 <CardHeader title={title} />   
                 <CardContent>
@@ -50,6 +52,9 @@ export function StudentsViewer({
                     
                   />
                 </CardContent>
+                <CardActions>
+                    <Button onClick={() => handleRemoveFile()}>חזור</Button>
+                </CardActions>
               </Card>        
         </>
     )

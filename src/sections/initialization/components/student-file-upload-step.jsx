@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 import { useFormContext } from 'react-hook-form';
 
-import { Box, Typography, Button, Link } from '@mui/material';
+import { Box, Typography, Button, Link, Container } from '@mui/material';
 
 import { readFile } from 'src/utils/files/read-file';
 import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
@@ -11,11 +11,31 @@ import { Upload } from 'src/components/upload';
 import useInitializationStore from '../initialization-state.ts';
 import { useBoolean } from 'src/hooks/use-boolean.js';
 import { StudentsViewer } from '../viewer/students.jsx';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useWalktour } from 'src/components/walktour/use-walktour.jsx';
+import { Walktour } from 'src/components/walktour/walktour.jsx';
 
 // ----------------------------------------------------------------------
 
+      const walktourSteps = [
+      {
+          target: '#download-template',
+        title: 'לחץ על אחד הכפתורים להורדה של דוגמא לקובץ פרטי תלמידים',
+        content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
+        placement: 'bottom',
+        disableBeacon: true
+      },
+    {
+        target: '#upload-file',
+        title: 'אם יש לך קובץ מוכן גרור אותו לכאן',
+        content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
+        placement: 'bottom',
+        disableBeacon: true
+    }
+      
+    ];
 
+// ------------------------------------------------------------
 function useStudentFileUpload(){
   const { setValue, watch } = useFormContext();
   // מקבל את המסמך שהעולה
@@ -89,13 +109,15 @@ export function StudentFileUploadStep() {
     handleDownloadTemplate,
     watchedFile,
     handleRemoveFile,
-    handleFileUpload
-  
+    handleFileUpload,
+    
   } = useStudentFileUpload()
 
-
+  
+  
   const renderTemplatesDownload = (
-      <Box sx={{ mb: 3 }}>
+    <Container maxWidth='sm'>
+      <Box sx={{ mb: 3 }} id='download-template'>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           הורד תבנית קובץ:
         </Typography>
@@ -116,6 +138,7 @@ export function StudentFileUploadStep() {
           </Button>
         </Box>
       </Box>
+      </Container>
   )
   const viewer = useBoolean();
 
@@ -127,7 +150,10 @@ export function StudentFileUploadStep() {
 
 
   const renderUpload = (
+    <Container maxWidth='sm'>
+      <Box id='upload-file'>
     <Upload
+
         multiple={false}
         files={watchedFile ? [watchedFile] : []}
         onDrop={handleFileUpload}
@@ -152,11 +178,14 @@ export function StudentFileUploadStep() {
           </Box>
         }
       />
+      </Box>
+      </Container>
   )
 
 
   const renderTemplatesViewer = (
     <StudentsViewer
+    handleRemoveFile={handleRemoveFile}
       open={viewer.value}
       onClose={viewer.onFalse}
       title={watchedFile ? `נבחר קובץ: ${watchedFile.name} (${(watchedFile.size / 1024).toFixed(1)} KB)` : ''} />
@@ -167,6 +196,8 @@ export function StudentFileUploadStep() {
       { !watchedFile && renderTemplatesDownload}
       { !watchedFile && renderUpload }
       { watchedFile && renderTemplatesViewer }
-      </Box>
+      
+      <Walktour {...useWalktour({steps: walktourSteps})} />
+    </Box>
   );
 }

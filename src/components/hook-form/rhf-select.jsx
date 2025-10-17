@@ -30,10 +30,12 @@ export function RHFSelect({
   return (
     <Controller
       name={name}
+      
       control={control}
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}
+          
           select
           fullWidth
           SelectProps={{
@@ -44,6 +46,7 @@ export function RHFSelect({
           InputLabelProps={{ htmlFor: labelId, ...InputLabelProps }}
           inputProps={{ id: labelId, ...inputProps }}
           error={!!error}
+          id={id}
           helperText={error ? error?.message : helperText}
           {...other}
         >

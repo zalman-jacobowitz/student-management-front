@@ -1,24 +1,59 @@
 import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import { 
-  Box, 
-  Stack, 
-  Button, 
+import {
+  Box,
+  Stack,
+  Button,
   Typography,
-  IconButton 
+  IconButton
 } from '@mui/material';
 
 import { Iconify } from 'src/components/iconify';
 import { Field } from 'src/components/hook-form';
 import { Scrollbar } from 'src/components/scrollbar';
+import { useWalktour, Walktour } from 'src/components/walktour';
 
 // ----------------------------------------------------------------------
 
-function useTamplatesStep(){
-  
+const walktourSteps = [
+
+  {
+    target: '#event-name',
+    title: 'הכנס את שם הסדר',
+    content: 'לדוגמא: סדר א, סדר בוקר וכן הלאה',
+    placement: 'bottom',
+    disableBeacon: true
+  },
+  {
+    target: '#event-start',
+    title: 'הכנס את זמן התחלת הסדר',
+    content: 'מתי מתחיל הסדר הראשון של היום?',
+    placement: 'bottom',
+    disableBeacon: true
+  },
+  {
+    target: '#event-end',
+    title: 'הכנס את זמן סיום הסדר',
+    content: 'מתי מסתיים הסדר הראשון של היום?',
+    placement: 'bottom',
+    disableBeacon: true
+  }, 
+  {
+    target: '#add-event',
+    title: 'הוסף את הסדרים הנוספים בסדר יום',
+    content: 'לאחר מכן תוכל לשנות את הזמנים ולעדכן אירועים מיוחדים',
+    placement: 'bottom',
+    disableBeacon: true
+  },
+
+];
+
+//-----------------------------------------------------------------------
+function useTamplatesStep() {
+
   const { control, watch } = useFormContext();
-  
+
   const watchedTemplate = watch('templateData');
 
   const { fields, append, remove } = useFieldArray({
@@ -38,19 +73,19 @@ function useTamplatesStep(){
     remove(index);
   };
 
-  return { 
+  return {
     fields,
     handleRemoveEvent,
     handleAddEvent,
     watchedTemplate
-   }
+  }
 }
 
 
 export function TemplateDefinitionStep() {
-  
+
   const {
-    
+
     fields,
     handleRemoveEvent,
     handleAddEvent,
@@ -65,17 +100,18 @@ export function TemplateDefinitionStep() {
           <Scrollbar sx={{ maxHeight: 400 }}>
             <Stack spacing={2}>
               {fields.map((item, index) => (
-                <Box 
-                  key={item.id} 
-                  sx={{ 
-                    p: 2, 
-                    border: '1px solid', 
-                    borderColor: 'divider', 
+                <Box
+                  key={item.id}
+                  sx={{
+                    p: 2,
+                    border: '1px solid',
+                    borderColor: 'divider',
                     borderRadius: 1,
                     position: 'relative'
                   }}
                 >
                   <IconButton
+                    id='event-delete'
                     onClick={() => handleRemoveEvent(index)}
                     color="error"
                     size="small"
@@ -88,13 +124,15 @@ export function TemplateDefinitionStep() {
                     <Field.Text
                       name={`templateData.events[${index}].event_name`}
                       label="שם האירוע"
+                      id='event-name'
                       placeholder="לדוגמה: שיעור ראשון"
                       variant="filled"
                       fullWidth
                     />
-                    
+
                     <Stack direction="row" spacing={2}>
                       <Field.Text
+                        id='event-start'
                         name={`templateData.events[${index}].event_start`}
                         label="זמן התחלה"
                         type="time"
@@ -102,8 +140,9 @@ export function TemplateDefinitionStep() {
                         fullWidth
                         InputLabelProps={{ shrink: true }}
                       />
-                      
+
                       <Field.Text
+                        id='event-end'
                         name={`templateData.events[${index}].event_end`}
                         label="זמן סיום"
                         type="time"
@@ -121,6 +160,7 @@ export function TemplateDefinitionStep() {
           <Button
             type="button"
             variant="outlined"
+            id='add-event'
             startIcon={<Iconify icon="mdi:plus" />}
             onClick={handleAddEvent}
             sx={{ mt: 2 }}
@@ -138,6 +178,7 @@ export function TemplateDefinitionStep() {
           </Box>
         )}
       </Stack>
+      <Walktour {...useWalktour({ steps: walktourSteps })} />
     </Box>
   );
 }

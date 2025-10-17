@@ -1,4 +1,4 @@
-import { Box, Typography, MenuItem, Button } from '@mui/material';
+import { Box, Typography, MenuItem, Button, ListItemText, ListItemButton, ListItemAvatar, ListItem, Avatar, Card, CardHeader } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { useEffect, useCallback } from 'react';
 
@@ -10,31 +10,76 @@ import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
 
+function primaryText(level) {
+  switch (level) {
+    case 1:
+      return (
+        <>
+          <span style={{ color: 'red' }}>ישראל</span> ישראלי
+        </>
+      );
+    case 2:
+      return (
+        <>
+          ישראל <span style={{ color: 'red' }}>ישראלי</span>
+        </>
+      );
+    case 3:
+      return <>ישראל ישראלי</>;
+    default:
+      return null;
+  }
+}
+
+const DemoItem = ({level=1, text=''}) => {
+  
+   return (
+    <Box sx={{padding: 2}}>
+    <Typography padding={2}>כעת אתה מגדיר את ה{text}</Typography>
+    <Card>
+      <ListItem>
+        <ListItemAvatar>
+          <Avatar alt=''/>
+        </ListItemAvatar>
+        <ListItemText
+          primary={primaryText(level)}
+          secondary="ביתר עילית"
+          secondaryTypographyProps={{color: level === 3 ? 'red' : 'inherit'}} />
+      </ListItem>
+    </Card>
+  </Box>
+)
+}
+//-----------------------------------------------------------------------
 export function ColumnSelectionStep() {
   const { watch } = useFormContext();
   const { columnsList, updateColumnProperty } = useInitializationStore();
   const watchedValues = watch('columnSelection');
+  
 
-  const walktourSteps = [
-    {
-      target: '#name-column-field',
-      title: 'בחירת עמודת שם',
-      content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
-      placement: 'bottom'
-    },
-    {
-      target: '#family-column-field',
-      title: 'בחירת עמודת משפחה',
-      content: 'בחר כאן את העמודה המכילה את שמות המשפחה של התלמידים. יחד עם השם הפרטי, זה יוצר זיהוי ייחודי לכל תלמיד.',
-      placement: 'bottom'
-    }
+const walktourSteps = [
+  {
+    target: '#first',
+    title: 'בחר את שם העמודה המצביעה על שם פרטי',
+    content: <DemoItem level={1} text='שם פרטי'/>, //<ListItemAvatar primary='שניאור זלמן יעקובוביץ' secondary='ביתר עילית'/>,
+    placement: 'right',
+    disableBeacon: true
+  },
+  {
+    target: '#sec',
+    title: 'בחר את שם העמודה המצביעה על שם משפחה',
+    content: <DemoItem level={2} text='שם משפחה'/>, //<ListItemAvatar primary='שניאור זלמן יעקובוביץ' secondary='ביתר עילית'/>,
+    placement: 'right',
+    disableBeacon: true
+  },
+  {
+    target: '#last',
+    title: 'בחר את המידע שברצונך לראות בנגישות: לדוגמא "עיר"',
+    content: <DemoItem level={3} text='עמודה נגישה'/>, //<ListItemAvatar primary='שניאור זלמן יעקובוביץ' secondary='ביתר עילית'/>,
+    placement: 'right',
+    disableBeacon: true
+  }
   ];
-
-  const walktour = useWalktour({
-    steps: walktourSteps,
-    defaultRun: false
-  });
-
   const fields = [
     {
       component: Field.Select,
@@ -44,7 +89,7 @@ export function ColumnSelectionStep() {
       InputLabelProps: { shrink: true },
       helperText: "בחר את העמודה המכילה שמות פרטיים",
       step: 1,
-      id: "name-column-field",
+      id: 'first',
       children: columnsList?.map((column) => (
         <MenuItem key={column} value={column}>
           <Iconify icon="solar:user-bold" width={20} sx={{ mr: 1 }} />
@@ -60,7 +105,7 @@ export function ColumnSelectionStep() {
       InputLabelProps: { shrink: true },
       helperText: "בחר את העמודה המכילה שמות משפחה",
       step: 1,
-      id: "family-column-field",
+      id: "sec",
       children: columnsList?.map((column) => (
         <MenuItem key={column} value={column}>
           <Iconify icon="solar:users-group-two-rounded-bold" width={20} sx={{ mr: 1 }} />
@@ -73,6 +118,7 @@ export function ColumnSelectionStep() {
       name: "columnSelection.accessibleColumn",
       label: "בחר עמודה נגישה",
       variant: "filled",
+      id: "last",
       InputLabelProps: { shrink: true },
       helperText: "בחר עמודה שתהיה נגישה במהירות",
       step: 1,
@@ -113,33 +159,13 @@ export function ColumnSelectionStep() {
       chip: true,
       step: 1
     }
+    
   ];
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<Iconify icon="solar:info-circle-bold" />}
-          onClick={() => walktour.setRun(true)}
-        >
-          הדרכה מהירה
-        </Button>
-      </Box>
-      
       <MasterStep fields={fields} number={1} spacing={3} />
-      
-      <Walktour
-        {...walktour}
-        locale={{
-          back: 'הקודם',
-          close: 'סגור',
-          last: 'סיום',
-          next: 'הבא',
-          skip: 'דלג'
-        }}
-      />
+      <Walktour {...useWalktour({ steps: walktourSteps })} />
     </Box>
   );
 }

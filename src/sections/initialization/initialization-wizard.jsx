@@ -18,6 +18,7 @@ import { ColumnSelectionStep } from './components/column-selection-step.jsx';
 import { StudentFileUploadStep } from './components/student-file-upload-step.jsx';
 import { TemplateDefinitionStep } from './components/template-definition-step.jsx';
 import { InitializationColumnsView } from './components/initialization-columns-view.jsx';
+import { Welcome } from './components/welcome.jsx';
 
 
 
@@ -122,7 +123,13 @@ export function InitializationWizard() {
     studentFile: null,
     // רשימה של הסדרים וזמניהם
     templateData: {
-      events: []
+      events: [
+        {
+          event_name: '',
+          event_start: '',
+          event_end: ''
+        }
+      ]
     },
     // הגדרת סוג העמודות אם הוא ייחודי
     columnSelection: {
@@ -140,6 +147,13 @@ export function InitializationWizard() {
   }), []);
 
   const steps = useMemo(() => [
+    {
+      // הצגת הודעת ברוכים הבאים- וכפתור ההדרכה
+      name: 'welcome',
+      label: 'ברוכים הבאים',
+      icon: "solar:hand-wave-bold-duotone",
+      component: <Welcome />,
+    },
     {
       // שלב העלאת קובץ התלמידים
       name: 'studentUpload',
@@ -201,6 +215,7 @@ export function InitializationWizard() {
           info_columns: newFormattedColumns,
           templates: formatTemplates(data.templateData.events)
         }
+      return
       console.log('Formatted Tables:', formattedTables);
       
       const promise =   mutate.mutateAsync({data: formattedTables, mode: 'update'});
