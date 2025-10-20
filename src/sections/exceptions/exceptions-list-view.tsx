@@ -82,7 +82,7 @@ function ExceptionsMainView() {
     const infoStudents = useSuspenseQuery(apiInfoStudents());
 
     // בקשה של האישורים של התלמידים
-    const api_exceptions = useSuspenseQuery(apiExceptions({ids: infoStudents.data.map(s => s.student_id)}));
+    const api_exceptions = useSuspenseQuery(apiExceptions());
     const infoColumns = useSuspenseQuery(apiInfoColumns())
     const exceptionWithStudent = mergeWithStudents(infoStudents.data, api_exceptions.data, infoColumns.data);
     const exceptions = exceptionsByReduce(exceptionWithStudent);

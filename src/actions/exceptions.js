@@ -2,8 +2,13 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiFetch } from 'src/utils/manager-fetch';
 
-export function apiExceptions({range=null, ids=[]}) {
-  const postData = { table_name: 'exceptions', mode: 'select', data: {range, ids} };
+const defaultRange = {
+  start: '1990-01-01 00:00',
+  end: '2050-01-01 23:59'
+}
+
+export function apiExceptions(range=defaultRange) {
+  const postData = { table_name: 'exceptions', mode: 'select', data: {range} };
   return queryOptions({
     queryKey: ['exceptions', { range }],
     queryFn: async () => {
