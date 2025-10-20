@@ -64,7 +64,9 @@ function StudentsSelectionStep() {
 }
 
 function exceptionsDataServerFromat(data) {
-  const exception_id = uuidv4()
+
+  const exception_id = data.exception_id || uuidv4()
+  
   const { students, reason, start, end } = data
 
   const listEvents = []
@@ -72,8 +74,8 @@ function exceptionsDataServerFromat(data) {
   data.students.map(student_id => listEvents.push({
     exception_id,
     reason,
-    start,
-    end,
+    start: `${start} 00:00`,
+    end: `${end} 23:59`,
     student_id
   }))
 
@@ -88,6 +90,9 @@ function useExceptionDefinition({ exception }) {
       console.log('exception data: ', data);
       
       const exceptionData = exceptionsDataServerFromat(data);
+
+      console.log('exceptionData formatted: ', exceptionData);
+      
 
       const promiseException = updateException.mutateAsync({ 
         data: exceptionData, 
@@ -115,12 +120,14 @@ function useExceptionDefinition({ exception }) {
 export function ExceptionDefinitionStep({ onComplete, exception }) {
 
 
+  const students = exception?.students?.length ? exception.students :  [];
+
   const initialValues = {
     exception_id: exception?.exception_id || '',
     start: exception?.start || '',
     end: exception?.end || '',
     reason: exception?.reason || '',
-    students: exception?.students.map(student => student.student_id) || [],
+    students: students.map(student => student.student_id) || [],
   };
 
   const WizardSchema = z.object({

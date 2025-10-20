@@ -78,7 +78,10 @@ function MultiPiple({row, column, children}){
 }
 
 function ExceptionsMainView() {
+    // מידע על תלמידים לצורך ההצגה של השמות בטבלה
     const infoStudents = useSuspenseQuery(apiInfoStudents());
+
+    // בקשה של האישורים של התלמידים
     const api_exceptions = useSuspenseQuery(apiExceptions({ids: infoStudents.data.map(s => s.student_id)}));
     const infoColumns = useSuspenseQuery(apiInfoColumns())
     const exceptionWithStudent = mergeWithStudents(infoStudents.data, api_exceptions.data, infoColumns.data);

@@ -60,18 +60,15 @@ function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] 
   const options = (eventsToday?.data || []) as any[]
   
   const onSubmit = handleSubmit(async (selectedDay) => {
-        // move to the students page
         const moreDetails = options.find((option) => option.event_id === selectedDay.event)
-
-        changeEvent( {...selectedDay,  ...moreDetails})
+        changeEvent( {...moreDetails, ...selectedDay})
   })
   useEffect(()=>{
     if (options.length > 0){
     setValue('event', options[0].event_name)
     }
   }, [options, setValue])
-  console.log('options: ', options)  
-
+  
   return {
     methods,
     onSubmit,
