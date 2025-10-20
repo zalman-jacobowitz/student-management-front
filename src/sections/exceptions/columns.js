@@ -56,7 +56,7 @@ export const INFO_EXCEPTIONS = [
         required: "true",
         sorting: 4,
         table_name: "exceptions",
-        type: "date",
+        type: "text",
     },
     {
         client: "kg_gdola",

@@ -20,7 +20,7 @@ export function apiExceptions(range=defaultRange) {
 }
 
 export const exceptionsUpdate = ({queryClient}) => ({
-  mutationKey: ['exceptions'],
+  mutationKey: ['exceptions', { range: defaultRange }],
   mutationFn: async ({data, mode='update'}) => {
     const res = await apiFetch('all', {
       table_name: 'exceptions',
@@ -31,8 +31,8 @@ export const exceptionsUpdate = ({queryClient}) => ({
   },
   onSuccess: (data, _variables, _ctx) => {
 
-    queryClient.cancelQueries({ queryKey: ['exceptions'] });
-    queryClient.invalidateQueries({ queryKey: ['exceptions'] });
+    queryClient.cancelQueries({ queryKey: ['exceptions', { range: defaultRange }] });
+    queryClient.invalidateQueries({ queryKey: ['exceptions', { range: defaultRange }] });
     queryClient.cancelQueries({ queryKey: ['data_students'] });
     queryClient.invalidateQueries({ queryKey: ['data_students'] });
     
