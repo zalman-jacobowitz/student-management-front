@@ -146,7 +146,7 @@ export function ExceptionDefinitionStep({ onComplete, exception }) {
       variant: "filled",
       InputLabelProps: { shrink: true },
       type: "date",
-      component: Field.HebrewDatePicker
+      component: Field.HebrewDateTimePicker
     },
     {
       step: 1,

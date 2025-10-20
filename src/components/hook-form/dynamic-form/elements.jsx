@@ -35,7 +35,8 @@ const Element = {
   address: RHFAddressAutocomplete,
   country: Field.CountrySelect,
   checkbox: Field.Switch,
-  date: HebrewDat
+  date: HebrewDat,
+  datetime: Field.HebrewDateTimePicker,
 };
 
 export function FromElement({ info }) {
