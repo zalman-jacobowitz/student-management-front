@@ -14,6 +14,7 @@ import { apiInfoStudents } from "src/actions/info_students.ts";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { uuidv4 } from "src/utils/uuidv4";
 import { description } from "../insert/functions.ts";
+import { SelectStudents } from "../insert/delays/select-students.jsx";
 
 function StudentsSelectionStep() {
   const { control, watch, setValue } = useFormContext();
@@ -41,20 +42,11 @@ function StudentsSelectionStep() {
         </Typography>
       </Alert>
       
-      <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
-        <Stack spacing={2}>
-          {students.map((student) => (
-            <Chip
-              key={student.student_id}
-              label={`${student.שם} ${student.משפחה}`}
-              onClick={() => handleStudentToggle(student.student_id)}
-              color={selectedStudents.includes(student.student_id) ? 'primary' : 'default'}
-              variant={selectedStudents.includes(student.student_id) ? 'filled' : 'outlined'}
-              sx={{ justifyContent: 'flex-start' }}
-            />
-          ))}
-        </Stack>
-      </Box>
+      <SelectStudents
+        multiple
+        name="students"
+        placeholder="הוסף תלמידים"
+      />
       
       <Typography variant="body2" color="text.secondary">
         נבחרו {selectedStudents.length} תלמידים
