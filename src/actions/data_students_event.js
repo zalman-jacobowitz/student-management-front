@@ -6,8 +6,9 @@ import { apiFetch } from "src/utils/manager-fetch";
 export function apiDataStudentsEvent(tamplateData, above={}) {
   console.log('tamplateData: ', tamplateData)
     const cache =  useInsertStore.getState().selectedEvent;
+    
     console.log({cache})
-    const postData = { table_name: 'data_students', mode: 'select', data: tamplateData };
+    const postData = { table_name: 'data_students', mode: 'select', data: cache };
     return queryOptions({
       enabled: !!tamplateData.length,
       queryKey: ['data_students', {day: cache.day, event: cache.event}],

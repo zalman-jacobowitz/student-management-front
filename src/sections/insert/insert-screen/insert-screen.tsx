@@ -23,38 +23,45 @@ import { apiInfoStudents } from "src/actions/info_students";
 import { apiInfoColumns } from "src/actions/info_columns";
 
 
-
-export function InsertListView({}) {
+function useInsertForm() {
   
   const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
+  
   const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
+  
 
-  const {currentData, selectedEvent} = useInsertStore(state => state);
+  // מקבל את נתוני הרישום - ואת פרטי הסדר
+  const { currentData , selectedEvent } = useInsertStore();
 
+  // פונקציית עידכון התלמידים
   const queryClient = useQueryClient();
   
   const { mutateAsync } = useMutation(dataStudentsEventUpdate({queryClient, tamplateData: selectedEvent})); 
   
+  // תבנית הכנסת נתונים באם לא התבצע רישום לסדר זה
   const tamplateData = insertTamplate(infoStudents, selectedEvent);
 
+  // ערכי ברירת מחדל לטופס - מבוסס על תבנית הכנסת הנתונים
   const defaultValues = formValues(tamplateData);
   
+  // טכניקות של react-hook-form לניהול הטופס
   const methods = useForm({defaultValues});
-  
-  const filterDrawer = useBoolean();
-
   const { reset, watch} = methods;
 
+  // טעינת נתוני הרישום הנוכחיים או התבנית במידה ואין רישום קיים
   useLoadCurrentData(reset, tamplateData);
 
-  
+  // נתוני רישום קודמים להדבקה - במקרה הצורך
   const previousData = useInsertStore(state => state.previousData);
+  
   useEffect(() => {
     if (!previousData.length) {
       reset(formValues(currentData))
     }
   }, [previousData.length, reset, currentData])
 
+
+  // הפונקציה שמבצעת את העידכון בפועל
   const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
     await updateData({
       data,
@@ -63,15 +70,45 @@ export function InsertListView({}) {
     })
   }, [mutateAsync])
 
+
+  // פילטרים לתצוגת התלמידים
   const [filters, setFilters] = useState<{ [key: string]: any }>({});
   
   const handleFilter = (data: any) => {
     setFilters((prev) => ({...data}));
   }
 
+
+
+  return {
+    methods,
+    handleUpdate,
+    handleFilter,
+    filters,
+    infoColumns,
+    infoStudents,
+    currentData,
+    reset,
+    watch
+}
+}
+
+
+export function InsertListView({}) {
+  const {
+    methods,
+    handleUpdate,
+    handleFilter,
+    filters,
+    infoColumns,
+    infoStudents,
+    currentData,
+    reset,
+    watch
+  } = useInsertForm();
+
   return (
     <DashboardContent sx={{}} disablePadding={false}>
-
 
       <InsertListHeader currentData={currentData} watch={watch}/>
 
