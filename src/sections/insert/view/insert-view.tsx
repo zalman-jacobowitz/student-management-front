@@ -13,31 +13,12 @@ import { InsertForm } from "../form-event/insert-form-defind-event";
 
 
 
-function InsertView() {
-  // המסך הכנסת הנתונים מורכב משניים לכן מנוהל על ידי סטייט גלובאלי
-  // כמו כן כדי לשמור על הנתונים בין סדרים שונים
-
-  //  המסך שנבחר לתצוגה הוא
-  const screen = useInsertStore((state) => state.screen);
-  
-  // אם המסך הוא של הכנסת אירוע
-  if (screen === 'form') {
-    // BUG: יש לשפר את הטייפים
-    // אין צורך בשליפת הנתונים מחדש כי הם כבר קיימים במטמון - אפשר לקרואלהם בקומפוננטה
-    return (
-      <InsertForm />
-    );
-  }
-  return (
-    <InsertListView />
-  );
-}
-
-
 export default function InsertViewWrapper() {
+  const { screen } = useInsertStore();
+
   return (
     <Suspense fallback={<LoadingScreen />}> 
-      <InsertView />
+      { screen === 'form' ? <InsertForm /> : <InsertListView /> }
     </Suspense>
   );
 }
