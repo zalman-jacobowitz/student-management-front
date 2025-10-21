@@ -8,7 +8,7 @@ import { updateData } from "src/hooks/use-update";
 import { useBoolean } from "src/hooks/use-boolean";
 
 import { DashboardContent } from "src/layouts/dashboard";
-import { dataStudentsEventUpdate } from "src/actions/data_students_event";
+import { apiDataStudentsEvent, dataStudentsEventUpdate } from "src/actions/data_students_event";
 
 import { EmptyContent } from "src/components/empty-content";
 
@@ -21,47 +21,33 @@ import { formValues, insertTamplate } from "../functions";
 import { useLoadCurrentData } from "./functions-insert-load-data";
 import { apiInfoStudents } from "src/actions/info_students";
 import { apiInfoColumns } from "src/actions/info_columns";
+import { mergeWithStudents } from "src/sections/exceptions/utils";
+
 
 
 function useInsertForm() {
   
   const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
-  
   const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
-  
-
   // מקבל את נתוני הרישום - ואת פרטי הסדר
-  const { currentData , selectedEvent } = useInsertStore();
-
+  const {  selectedEvent } = useInsertStore();
+  
   // פונקציית עידכון התלמידים
   const queryClient = useQueryClient();
-  
   const { mutateAsync } = useMutation(dataStudentsEventUpdate({queryClient, tamplateData: selectedEvent})); 
   
-  // תבנית הכנסת נתונים באם לא התבצע רישום לסדר זה
-  const tamplateData = insertTamplate(infoStudents, selectedEvent);
-
-  // ערכי ברירת מחדל לטופס - מבוסס על תבנית הכנסת הנתונים
-  const defaultValues = formValues(tamplateData);
-  
   // טכניקות של react-hook-form לניהול הטופס
-  const methods = useForm({defaultValues});
-  const { reset, watch} = methods;
+  const methods = useForm();
+  const { reset, watch } = methods;
 
-  // טעינת נתוני הרישום הנוכחיים או התבנית במידה ואין רישום קיים
-  useLoadCurrentData(reset, tamplateData);
-
-  // נתוני רישום קודמים להדבקה - במקרה הצורך
-  const previousData = useInsertStore(state => state.previousData);
-  
+  const crnt = useSuspenseQuery(apiDataStudentsEvent());
+  console.log('crnt.data in useInsertForm: ', crnt.data);
+  const currentData = mergeWithStudents(infoStudents, crnt.data, infoColumns);
+  console.log('currentData in useInsertForm: ', currentData);
   useEffect(() => {
-    if (!previousData.length) {
-      reset(formValues(currentData))
-    }
-  }, [previousData.length, reset, currentData])
+    reset(formValues(crnt.data))
+  }, [selectedEvent]);
 
-
-  // הפונקציה שמבצעת את העידכון בפועל
   const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
     await updateData({
       data,
@@ -81,6 +67,7 @@ function useInsertForm() {
 
 
   return {
+    
     methods,
     handleUpdate,
     handleFilter,
@@ -125,9 +112,8 @@ export function InsertListView({}) {
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
       
       <InsertList
-        methods={methods}
-        infoColumns={infoColumns}
         currentData={currentData}
+        methods={methods}
         handleUpdate={handleUpdate}
         filters={filters}
       />

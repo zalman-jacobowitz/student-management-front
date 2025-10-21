@@ -10,8 +10,6 @@ import { newApplyFilters } from "../components/filters";
 
 interface InsertListProps {
   methods: any;
-  infoColumns: any[];
-  currentData: any[];
   filters: {
     [key: string]: any;
   };
@@ -57,7 +55,7 @@ function enhanceStudentData(student) {
     label = 'איחור';
     icon = 'solar:alarm-bold-duotone';
     tooltip = student.arrival_time || '';
-  } else if (student.exception) {
+  } else if (student.reason) {
     color = 'default';
     label = 'אישור';
     icon = 'solar:clipboard-check-bold-duotone';
@@ -76,16 +74,14 @@ function enhanceStudentData(student) {
 
 
 
-export function InsertList({ methods, infoColumns, currentData, handleUpdate, filters }: InsertListProps) {
+export function InsertList({ currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
 
-  const selectedEvent = useInsertStore(state => state.selectedEvent);
-
+  const { selectedEvent } = useInsertStore(state => state);
 
   const { handleSubmit } = methods;
 
   const onSubmit = (values: any) => {
-
     // כאן תוכל לשלוח את הערכים לשרת או להמשיך הלאה
     const toServer = Object.entries(values).map(([student_id, data]) => ({
         student_id,
@@ -102,9 +98,7 @@ export function InsertList({ methods, infoColumns, currentData, handleUpdate, fi
     handleUpdate(toServer, 'update')
   };
 
-  const dataFiltered = newApplyFilters(currentData, filters, infoColumns)
-
-  const { primary, secondary } = descriptionColumns(infoColumns)
+  const dataFiltered = newApplyFilters(currentData, filters)
 
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -118,7 +112,7 @@ export function InsertList({ methods, infoColumns, currentData, handleUpdate, fi
           md: 'repeat(3, 1fr)',
         }}
       >
-        {dataFiltered.map((student) => {
+        {currentData.map((student) => {
           const enhancedStudent = enhanceStudentData(student);
           return (
             <Field.BoolianList
@@ -128,8 +122,8 @@ export function InsertList({ methods, infoColumns, currentData, handleUpdate, fi
               icon={enhancedStudent.icon}
               label={enhancedStudent.label}
               tooltip={enhancedStudent.tooltip}
-              primary={getDesc(student, primary)}
-              secondary={getDesc(student, secondary)}
+              primary={student.primary}
+              secondary={student.secondary}
             />
           );
         })}

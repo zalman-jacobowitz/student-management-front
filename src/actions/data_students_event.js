@@ -3,15 +3,12 @@ import useInsertStore from 'src/sections/insert/insert-state';
 
 import { apiFetch } from "src/utils/manager-fetch";
 
-export function apiDataStudentsEvent(tamplateData, above={}) {
-  console.log('tamplateData: ', tamplateData)
-    const cache =  useInsertStore.getState().selectedEvent;
-    
-    console.log({cache})
-    const postData = { table_name: 'data_students', mode: 'select', data: cache };
-    return queryOptions({
-      enabled: !!tamplateData.length,
-      queryKey: ['data_students', {day: cache.day, event: cache.event}],
+export function apiDataStudentsEvent() {
+  const eventDetails = useInsertStore.getState().selectedEvent;
+
+  const postData = { table_name: 'data_students', mode: 'select', data: eventDetails };
+  return queryOptions({
+      queryKey: ['data_students', eventDetails],
       queryFn: async () => {
         const res =  await apiFetch('all', postData);
         console.log('res: ', res)
