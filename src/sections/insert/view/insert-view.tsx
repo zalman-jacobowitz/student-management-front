@@ -14,17 +14,22 @@ import { InsertForm } from "../form-event/insert-form-defind-event";
 
 
 function InsertView() {
-  const selectEventScreen = useInsertStore((state) => state.selectEventScreen);
+  // המסך הכנסת הנתונים מורכב משניים לכן מנוהל על ידי סטייט גלובאלי
+  // כמו כן כדי לשמור על הנתונים בין סדרים שונים
+
+  //  המסך שנבחר לתצוגה הוא
+  const screen = useInsertStore((state) => state.screen);
   
-  const { newData: infoColumns } = useInfoColumns('info_students');
-  const infoStudents = useSuspenseQuery(apiInfoStudents())
-  if (selectEventScreen) {
+  // אם המסך הוא של הכנסת אירוע
+  if (screen === 'form') {
+    // BUG: יש לשפר את הטייפים
+    // אין צורך בשליפת הנתונים מחדש כי הם כבר קיימים במטמון - אפשר לקרואלהם בקומפוננטה
     return (
-      <InsertForm infoStudents={(infoStudents.data as any[]) || []} infoColumns={infoColumns}/>
+      <InsertForm />
     );
   }
   return (
-    <InsertListView infoStudents={(infoStudents.data as any[]) || []} infoColumns={infoColumns} />
+    <InsertListView />
   );
 }
 

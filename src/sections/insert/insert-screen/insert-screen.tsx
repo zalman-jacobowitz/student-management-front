@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useCallback, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 import { Button } from "@mui/material";
 
@@ -19,13 +19,16 @@ import { InsertListHeader } from "./insert-header";
 import { InsertFilters } from "../components/filters";
 import { formValues, insertTamplate } from "../functions";
 import { useLoadCurrentData } from "./functions-insert-load-data";
+import { apiInfoStudents } from "src/actions/info_students";
+import { apiInfoColumns } from "src/actions/info_columns";
 
-interface InsertListViewProps {
-  infoStudents: any[];
-  infoColumns: any[];
-}
 
-export function InsertListView({infoStudents, infoColumns}: InsertListViewProps) {
+
+export function InsertListView({}) {
+  
+  const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
+  const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
+
   const {currentData, selectedEvent} = useInsertStore(state => state);
 
   const queryClient = useQueryClient();

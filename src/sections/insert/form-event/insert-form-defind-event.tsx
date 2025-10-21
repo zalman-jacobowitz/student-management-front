@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
 import { useEffect } from 'react';
 import { useForm } from "react-hook-form";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { LoadingButton } from '@mui/lab';
@@ -19,11 +19,8 @@ import { ComponentContainer } from 'src/components/blanks/component-block';
 import useInsertStore from '../insert-state';
 import { get_students_ids } from '../functions';
 import { InsertFormPastEvents } from './insert-form-past-events';
-
-type InsertFormProps = {
-  infoStudents: any[];
-  infoColumns: any[];
-}
+import { apiInfoStudents } from 'src/actions/info_students';
+import { apiInfoColumns } from 'src/actions/info_columns';
 
 
 const today = new Date().toISOString().split('T')[0]
@@ -78,7 +75,9 @@ function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] 
   };
 }
 
-export function InsertForm({infoStudents, infoColumns}: InsertFormProps) {
+export function InsertForm() {
+
+  const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
 
   const { setEventDetails } = useInsertStore();
   const students_ids = get_students_ids(infoStudents);
