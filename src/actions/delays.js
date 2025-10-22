@@ -1,7 +1,7 @@
 import { apiFetch } from "src/utils/manager-fetch";
 
-export const delaysUpdate = ({queryClient})=>({
-  mutationKey: ['delays'],
+export const delaysUpdate = ({queryClient, eventDetails})=>({
+  mutationKey: ['delays', eventDetails],
   mutationFn: async ({data, mode='update'}) => {
     const res = await apiFetch('all', {
       table_name: 'delays',

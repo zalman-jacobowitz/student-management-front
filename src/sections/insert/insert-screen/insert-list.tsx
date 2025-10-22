@@ -54,6 +54,7 @@ function enhanceStudentData(student) {
     color = 'warning';
     label = 'איחור';
     icon = 'solar:alarm-bold-duotone';
+    
     tooltip = student.arrival_time || '';
   } else if (student.reason) {
     color = 'default';
@@ -74,7 +75,7 @@ function enhanceStudentData(student) {
 
 
 
-export function InsertList({ currentData, methods, handleUpdate, filters }: InsertListProps) {
+export function InsertList({dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
 
   const { selectedEvent } = useInsertStore(state => state);

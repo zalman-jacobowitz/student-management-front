@@ -43,6 +43,7 @@ interface InsertToolbarProps {
 }
 
 export function InsertToolbar({
+  dialogDelay,
   handleDelete,
   currentData,
   reset,
@@ -74,7 +75,7 @@ export function InsertToolbar({
   ]
 
   const filterDrawer = useBoolean();
-  const dialogDelay = useBoolean();
+
 
   return (
     <Stack

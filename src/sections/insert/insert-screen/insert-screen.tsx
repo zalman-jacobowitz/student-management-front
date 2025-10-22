@@ -93,13 +93,14 @@ export function InsertListView({}) {
     reset,
     watch
   } = useInsertForm();
-
+  const dialogDelay = useBoolean();
   return (
     <DashboardContent sx={{}} disablePadding={false}>
 
       <InsertListHeader currentData={currentData} watch={watch}/>
 
       <InsertToolbar
+        dialogDelay={dialogDelay} 
         handleDelete={(data: any)=> handleUpdate(data, 'delete')}
         currentData={currentData}
         reset={reset}
@@ -112,6 +113,7 @@ export function InsertListView({}) {
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
       
       <InsertList
+        dialogDelay={dialogDelay}
         currentData={currentData}
         methods={methods}
         handleUpdate={handleUpdate}
