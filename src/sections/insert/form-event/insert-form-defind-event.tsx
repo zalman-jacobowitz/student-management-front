@@ -33,15 +33,13 @@ const EventSchema = zod.object({
 });
 
 function mergeCurrentWithPastEvents(currentData, pastEvent, today) {
+  const newData = [...currentData, ...pastEvent.filter((event) => event.day === today)];
   
-  const todayPastEvents = pastEvent.filter((event) => event.day === today);
-  return [...currentData].map((current) => {
-    const matchingPast = todayPastEvents.find((past) => past.event_id === current.event_id);
-    return {
-      ...current,
-      ...(matchingPast ? { pastEvent: matchingPast } : {}),
-    };
-  });
+  // drop duplicates based on event_id
+
+  const uniqueData = Array.from(new Map(newData.map(item => [item.event_id, item])).values());
+
+  return uniqueData;
 }
 
 function useInsertForm() {
