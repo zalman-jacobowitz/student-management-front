@@ -1,11 +1,11 @@
-import { Suspense, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense, useCallback, useState } from "react";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 import { Box, Button,  Card,  CardActions, CardContent, CardHeader, Grid, ListItemText, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 
-import { apiTemplates } from "src/actions/templates";
+import { apiTemplates, templatesUpdate } from "src/actions/templates";
 
 import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
@@ -15,6 +15,8 @@ import { INFO_TEMPLATES } from "./columns";
 import { TemplateDialog } from "./templates-edit-steps";
 import { useBoolean } from "src/hooks/use-boolean";
 import { ButtonGreen } from "src/components/button-green";
+import { uuidv4 } from "src/utils/uuidv4";
+import { toast } from "sonner";
 
 
 
@@ -39,7 +41,7 @@ function eventsTemplatesByReduce(templates) {
   );
 }
 
-function TemplateView({ row, onEdit }) {
+function TemplateView({ row, onEdit, onSubmit }) {
   const { template_id, template_name, client, events } = row;
   const dialog = useBoolean();
   
@@ -57,7 +59,7 @@ function TemplateView({ row, onEdit }) {
       </CardContent>
       <CardActions>
       
-        <Button variant="outlined" sx={{ }} onClick={dialog.onTrue}>מחק</Button>
+        <Button variant="outlined" sx={{ }} onClick={(data)=>onSubmit(template_id, 'delete')}>מחק</Button>
         <Button variant="outlined" onClick={onEdit}>ערוך</Button>
       
       </CardActions>
@@ -65,15 +67,71 @@ function TemplateView({ row, onEdit }) {
   );
 }
 
+function templateDataServerFromat(data, templateId=null) {
+  const template_id = templateId || uuidv4()
+  const { events, template_name } = data
+
+  const listEvents = []
+
+  data.events.map(event => listEvents.push({
+    template_id,
+    template_name,
+    event_name: event.event_name,
+    event_id: event.event_id || uuidv4(),
+    event_start: event.event_start,
+    event_end: event.event_end
+  }))
+
+  return listEvents
+}
+
+function useTemplateDefinition({ template, dialog }) {
+
+  const queryClient = useQueryClient();
+
+  // הגדרת המוטציה לעדכון התבנית
+  const updateTemplate = useMutation(templatesUpdate({ queryClient }))
+
+  const onSubmit = useCallback(async (data, mode="update") => {
+    try {
+      console.log('template data: ', data)
+
+
+      const templateData = mode === "update" ? templateDataServerFromat(data, template?.template_id) : data
+      console.log({templateData})
+
+      const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  mode })
+
+      toast.promise(promiseTemplate, {
+        loading: 'שומר תבנית...',
+        success: 'תבנית נשמרה בהצלחה',
+        error: 'שגיאה בשמירת התבנית'
+      });
+      dialog.onFalse();
+    } catch (error) {
+      console.error('Error saving template:', error);
+    }
+  }, [updateTemplate]);
+
+  return {
+    onSubmit
+  }
+}
 
 function TemplatesMainView() {
     // קריאה לרשימת התבניות הרלוונטיות
     const templates = useSuspenseQuery(apiTemplates());
-    // 
+    console.log('templates:', templates.data);
+    // קיבוץ הסדרים תחת התבניות שלהם
     const events = eventsTemplatesByReduce(templates.data);
+    console.log('events:', events);
 
+    // טופס הוספה ועריכה של תבנית
     const dialog = useBoolean();
+    
+    // בחירה בשורה מסויימת לעריכה
     const [selectedRow, setSelectedRow] = useState(null);
+    const { onSubmit } = useTemplateDefinition({ template: selectedRow, dialog });
 
     return (
   
@@ -81,11 +139,13 @@ function TemplatesMainView() {
       <Grid container spacing={2} sx={{ p: 3 }}>
         {events.map((template) => (
           <Grid item xs={12} sm={6} md={4} key={template.template_id}>
-            <TemplateView row={template} onEdit={() => { setSelectedRow(template); dialog.onTrue(); }} />
+            <TemplateView onSubmit={onSubmit} row={template} onEdit={() => { setSelectedRow(template); dialog.onTrue(); }} />
           </Grid>
         ))}
       </Grid>
       <TemplateDialog
+          onSubmit={onSubmit}
+          onComplete={dialog.onFalse}
           column={selectedRow}
           open={dialog.value}
           onClose={dialog.onFalse}

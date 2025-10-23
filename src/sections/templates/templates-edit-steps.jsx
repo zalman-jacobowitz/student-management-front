@@ -38,7 +38,6 @@ export function EventsSelectionStep() {
             <Stack key={item.id} spacing={2}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <Field.Text
-                  disabled={!item.new}
                   name={`events[${index}].event_name`}
                   placeholder="שם האירוע"
                   fullWidth />
@@ -75,108 +74,6 @@ export function EventsSelectionStep() {
 }
 
 
-function templateDataServerFromat(data) {
-  const template_id = uuidv4()
-  const { events, template_name } = data
-
-  const listEvents = []
-
-  data.events.map(event => listEvents.push({
-    template_id,
-    template_name,
-    event_name: event.event_name,
-    event_id: event.event_id || uuidv4(),
-    event_start: event.event_start,
-    event_end: event.event_end
-  }))
-
-  return listEvents
-}
-function compareVersions(oldData, newData) {
-    const result = [];
-    const oldIds = new Set(oldData.map(item => item.event_id));
-    const newIds = new Set(newData.map(item => item.event_id));
-    
-    // נמחקו
-    oldData.forEach(oldItem => {
-        if (!newIds.has(oldItem.event_id)) {
-            result.push({
-                ...oldItem,
-                status: 'נמחק'
-            });
-        }
-    });
-    
-    // עודכנו או נותרו
-    
-    newData.forEach(newItem => {
-        if (oldIds.has(newItem.event_id)) {
-            const oldItem = oldData.find(item => item.event_id === newItem.event_id);
-            const isChanged = oldItem.event_start !== newItem.event_start || oldItem.event_end !== newItem.event_end;
-             if (isChanged) {
-                // הרשומה החדשה - עודכן
-                result.push({
-                    ...newItem,
-                    event_id: shortId(), // שמירת אותו מזהה
-                    active: 1
-                });
-            } else {
-                // לא השתנה
-                result.push({
-                    ...newItem,
-                    active: 2
-                });
-            }
-        } else {
-            // נוסף
-            result.push({
-                ...newItem,
-                event_id: shortId(), // מזהה חדש
-                active: 1
-            });
-        }
-    });
-    
-    return result;
-}
-
-function useTemplateDefinition({ template }) {
-
-  const queryClient = useQueryClient();
-
-  const updateTemplate = useMutation(templatesUpdate({ queryClient }))
-
-  const onSubmit = useCallback(async (data) => {
-    try {
-      console.log('template data: ', data)
-
-      const templateData = templateDataServerFromat(data)
-
-      const compareData = compareVersions(template?.events || [], data.events || [])
-      const withTemplateId = compareData.map(item => ({
-        ...item,
-        template_id: template?.template_id || item.template_id || uuidv4(),
-        template_name: data.template_name
-      }))
-
-      
-      const promiseTemplate = updateTemplate.mutateAsync({ data: withTemplateId, mode:  "update" })
-
-      toast.promise(promiseTemplate, {
-        loading: 'שומר תבנית...',
-        success: 'תבנית נשמרה בהצלחה',
-        error: 'שגיאה בשמירת התבנית'
-      });
-      
-    } catch (error) {
-      console.error('Error saving template:', error);
-    }
-  }, [updateTemplate]);
-
-  return {
-    onSubmit
-  }
-}
 
 /*
 [
@@ -227,14 +124,15 @@ function useTemplateDefinition({ template }) {
     }
 ]
 */
-export function TemplateDefinitionStep({ onComplete, template }) {
+export function TemplateDefinitionStep({onSubmit, onComplete, template }) {
   console.log('TEMPLATES: ', template)
 
+  // ערכים בהתאם לנתונים קיימים או חדשים
   const initialValues = {
 
     template_id: template?.template_id || '',
     template_name: template?.template_name || '',
-    events: template?.events?.filter(e => Number(e.active)) || [],
+    events: template?.events || [],
   }
 
   const WizardSchema = z.object({
@@ -290,15 +188,15 @@ export function TemplateDefinitionStep({ onComplete, template }) {
     }
   ]
 
-  const { onSubmit } = useTemplateDefinition({ template });
 
   return (
     <StepsProvider
       steps={steps}
       defaultValues={initialValues}
       WizardSchema={WizardSchema}
-      onSubmit={onSubmit}
+      onSubmit={(data) => onSubmit(data, "update")}
     />
+
   );
 }
 
@@ -307,7 +205,7 @@ export function TemplateDefinitionStep({ onComplete, template }) {
 
 
 // דיאלוג להצגת אשף הגדרת תבנית
-export function TemplateDialog({ open, onClose, onComplete, column }) {
+export function TemplateDialog({ onSubmit, open, onClose, onComplete, column }) {
   const handleWizardComplete = (data) => {
     if (onComplete) {
       onComplete(data); // קריאה ל-callback שהועבר מהקומפוננטה המשתמשת
@@ -318,6 +216,7 @@ export function TemplateDialog({ open, onClose, onComplete, column }) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth="sm" maxWidth="sm">
       <TemplateDefinitionStep
+        onSubmit={onSubmit}
         template={column} // העברת התבנית הנוכחית לאשף
         onComplete={handleWizardComplete} // מטפל בסיום האשף
       />
