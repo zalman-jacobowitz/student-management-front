@@ -16,9 +16,8 @@ interface InsertFormPastEventsProps {
   reset?: (option: any) => void;
 }
 
-export function InsertFormPastEvents({dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
+export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
 
-  const listOfTimes = useQuery(apiListEvents())
 
   return (
     

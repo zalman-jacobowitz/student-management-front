@@ -1,5 +1,5 @@
 import { z as zod } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from "react-hook-form";
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,8 @@ import { ComponentContainer } from 'src/components/blanks/component-block';
 import useInsertStore from '../insert-state';
 
 import { InsertFormPastEvents } from './insert-form-past-events';
+import { apiListEvents } from 'src/actions/list_of_events';
+
 
 
 const today = new Date().toISOString().split('T')[0]
@@ -30,6 +32,17 @@ const EventSchema = zod.object({
   day: zod.string().min(1, { message: 'חובה להכניס יום' })
 });
 
+function mergeCurrentWithPastEvents(currentData, pastEvent, today) {
+  
+  const todayPastEvents = pastEvent.filter((event) => event.day === today);
+  return [...currentData].map((current) => {
+    const matchingPast = todayPastEvents.find((past) => past.event_id === current.event_id);
+    return {
+      ...current,
+      ...(matchingPast ? { pastEvent: matchingPast } : {}),
+    };
+  });
+}
 
 function useInsertForm() {
 
@@ -49,10 +62,13 @@ function useInsertForm() {
     watch,
     formState: { isSubmitting },
   } = methods;
-  
+
+  const listOfTimes = useSuspenseQuery(apiListEvents())
   // קריאה לסדרים של היום לפי סוגי הזמנים - מקבל יום ומחזיר את הסדרים היום.
-  const eventsToday = useQuery(apiEventsToday(watch('day'))).data || [];
-  
+  const currentEvent = useQuery(apiEventsToday(watch('day'))).data || [];
+
+  const eventsToday = useMemo(() => mergeCurrentWithPastEvents(currentEvent, listOfTimes.data, watch('day')), [watch('day'), currentEvent, listOfTimes.data]);
+  console.log('eventsToday:', eventsToday)
   const onSubmit = handleSubmit(async (data) => {
         // מוצא את פרטי ה event
         const moreDetails = eventsToday.find((option) => option.event_id === data.event)
@@ -70,7 +86,8 @@ function useInsertForm() {
     onSubmit,
     eventsToday,
     isSubmitting,
-    reset
+    reset,
+    listOfTimes
   };
 }
 
@@ -81,7 +98,8 @@ export function InsertForm() {
     onSubmit,
     reset,
     eventsToday,
-    isSubmitting
+    isSubmitting,
+    listOfTimes
   } = useInsertForm();
 
   const dialogPrevEvents = useBoolean(false);
@@ -160,6 +178,7 @@ export function InsertForm() {
 
            content={
             <InsertFormPastEvents
+                listOfTimes={listOfTimes}
                 dialogPrevEvents={dialogPrevEvents}
                 methods={methods}
                 reset={reset}
