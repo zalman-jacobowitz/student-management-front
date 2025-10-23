@@ -17,10 +17,8 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { ComponentContainer } from 'src/components/blanks/component-block';
 
 import useInsertStore from '../insert-state';
-import { get_students_ids } from '../functions';
+
 import { InsertFormPastEvents } from './insert-form-past-events';
-import { apiInfoStudents } from 'src/actions/info_students';
-import { apiInfoColumns } from 'src/actions/info_columns';
 
 
 const today = new Date().toISOString().split('T')[0]
@@ -33,9 +31,11 @@ const EventSchema = zod.object({
 });
 
 
-function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] = []) {
- 
-  // form methods
+function useInsertForm() {
+
+  const { setEventDetails } = useInsertStore();
+  
+  // טופס לבחירה של סדר מסויים לביצוע רישום
   const methods = useForm({
     mode: 'onChange',
     resolver: zodResolver(EventSchema),
@@ -49,46 +49,40 @@ function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] 
     watch,
     formState: { isSubmitting },
   } = methods;
-   
-  const eventsToday = useQuery(apiEventsToday(watch('day'), students_ids));
-  console.log('eventsToday: ', eventsToday.data);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const options = (eventsToday?.data || []) as any[]
   
-  const onSubmit = handleSubmit(async (selectedDay) => {
-        const moreDetails = options.find((option) => option.event_id === selectedDay.event)
-        changeEvent( {...moreDetails, ...selectedDay})
+  // קריאה לסדרים של היום לפי סוגי הזמנים - מקבל יום ומחזיר את הסדרים היום.
+  const eventsToday = useQuery(apiEventsToday(watch('day'))).data || [];
+  
+  const onSubmit = handleSubmit(async (data) => {
+        // מוצא את פרטי ה event
+        const moreDetails = eventsToday.find((option) => option.event_id === data.event)
+        setEventDetails( {...moreDetails, ...data})
   })
   useEffect(()=>{
-    if (options.length > 0){
-    setValue('event', options[0].event_name)
+    if (eventsToday.length > 0){
+      // כאן צריך להיות חישוב של איזה סדר שייך לעכשיו
+      setValue('event', eventsToday[0].event_id)
     }
-  }, [options, setValue])
+  }, [eventsToday, setValue])
   
   return {
     methods,
     onSubmit,
-    options,
+    eventsToday,
     isSubmitting,
     reset
   };
 }
 
 export function InsertForm() {
-
-  const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
-
-  const { setEventDetails } = useInsertStore();
-  const students_ids = get_students_ids(infoStudents);
-
+  
   const {
     methods,
     onSubmit,
     reset,
-    options,
+    eventsToday,
     isSubmitting
-  } = useInsertForm(setEventDetails, students_ids);
+  } = useInsertForm();
 
   const dialogPrevEvents = useBoolean(false);
 
@@ -102,7 +96,7 @@ export function InsertForm() {
 
   const renderSelectEvent = (
     <Field.Select
-      defaultValue={options.length? options[0].event_id: ''} 
+      defaultValue={eventsToday.length? eventsToday[0].event_id: ''} 
       fullWidth
       name="event"
       label="אירוע"
@@ -114,7 +108,7 @@ export function InsertForm() {
       helperText=""
       inputProps={{}}
     >
-    {options.map((option) => (
+    {eventsToday.map((option) => (
       <MenuItem
         key={option.event_id}
         value={option.event_id}
@@ -166,7 +160,6 @@ export function InsertForm() {
 
            content={
             <InsertFormPastEvents
-                students_ids={students_ids}
                 dialogPrevEvents={dialogPrevEvents}
                 methods={methods}
                 reset={reset}

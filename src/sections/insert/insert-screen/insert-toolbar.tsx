@@ -13,6 +13,8 @@ import useInsertStore from "../insert-state";
 import { CopyPasteButtons } from "../components/copy-paste-buttons";
 import { InsertFilters } from "../components/filters";
 import { DelayDialog } from "../delays/delays-edit-steps";
+import { ButtonGreen } from "src/components/button-green";
+import { ExceptionDialog } from "src/sections/exceptions/exceptions-edit-steps";
 
 
 
@@ -33,6 +35,7 @@ const FILTER_OPTIONS = [
 // ----------------------------------------------------------------------
 
 interface InsertToolbarProps {
+  delay: string,
   handleDelete: (data: any) => void;
   currentData: any[];
   reset?: (values: any) => void;
@@ -43,6 +46,8 @@ interface InsertToolbarProps {
 }
 
 export function InsertToolbar({
+  exceptionDialog,
+  selectedLabel,
   dialogDelay,
   handleDelete,
   currentData,
@@ -54,8 +59,6 @@ export function InsertToolbar({
 }: InsertToolbarProps) {
   
   const onBack  = useInsertStore(state => state.onBack);
-  const { onCopy, onPaste, previousData } = useInsertStore();
-  
 
   const listActionsMap = [
     {
@@ -75,7 +78,7 @@ export function InsertToolbar({
   ]
 
   const filterDrawer = useBoolean();
-
+  
 
   return (
     <Stack
@@ -85,15 +88,7 @@ export function InsertToolbar({
       sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
     >
       <RegularButton onClick={onBack} icon="solar:arrow-right-bold" data-testid="back-button">חזור</RegularButton>
-      <Button onClick={filterDrawer.onTrue}>סינון</Button>
-      <Button color="warning" variant="soft" onClick={dialogDelay.onTrue}>איחור</Button>
-      
-      <CopyPasteButtons
-        onCopy={onCopy}
-        onPaste={onPaste}
-        previousData={previousData}
-      />
-      
+      <Button onClick={filterDrawer.onTrue}>סינון</Button>      
       <RegularSelect
         label="סדר לפי"
         onChange={()=>{}}
@@ -124,17 +119,26 @@ export function InsertToolbar({
         filters={filters}
         table={currentData}
       />
+      <ButtonGreen number={1} color="warning" onClick={dialogDelay.onTrue}/>
+      <ButtonGreen number={2} color="default" onClick={exceptionDialog.onTrue}/>
 
       <DelayDialog
         open={dialogDelay.value}
         onClose={dialogDelay.onFalse}
+        delay={selectedLabel}
         onComplete={(data) => {
-          
           dialogDelay.onFalse();
         }}
-        delay={{}}
-
+  
       />
+      <ExceptionDialog
+        open={exceptionDialog.value}
+        onClose={exceptionDialog.onFalse}
+        onComplete={(data) => {
+          exceptionDialog.onFalse();
+        }}
+        column={selectedLabel}
+      /> 
      
     </Stack>
 );

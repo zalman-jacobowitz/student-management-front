@@ -7,6 +7,7 @@ import { ButtonGreen } from "src/components/button-green";
 import useInsertStore from "../insert-state";
 import { getDesc, descriptionColumns } from "../functions";
 import { newApplyFilters } from "../components/filters";
+import { useCallback } from "react";
 
 interface InsertListProps {
   methods: any;
@@ -49,14 +50,18 @@ function enhanceStudentData(student) {
   let label = '';
   let icon = '';
   let tooltip = '';
+  let type = ''
 
   if (student.delay) {
+    type = 'delay'
     color = 'warning';
-    label = 'איחור';
+    label = `${student.delay_minutes} דק'`;
     icon = 'solar:alarm-bold-duotone';
-    
     tooltip = student.arrival_time || '';
+    
+  
   } else if (student.reason) {
+    type = 'exception'
     color = 'default';
     label = 'אישור';
     icon = 'solar:clipboard-check-bold-duotone';
@@ -68,14 +73,15 @@ function enhanceStudentData(student) {
     color,
     label,
     icon,
-    tooltip
+    tooltip,
+    type
   };
 }
 
 
 
 
-export function InsertList({dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
+export function InsertList({selectLabel,exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
 
   const { selectedEvent } = useInsertStore(state => state);
@@ -98,6 +104,20 @@ export function InsertList({dialogDelay, currentData, methods, handleUpdate, fil
     
     handleUpdate(toServer, 'update')
   };
+
+  const handleOnClick = useCallback((type, details) =>{
+
+    if (type === 'exception'){
+      console.log('details: ', details)
+      selectLabel(details)
+      exceptionDialog.onTrue()
+    }
+    if (type === 'delay'){
+      selectLabel({...details, students: [details]})
+      dialogDelay.onTrue()
+      
+    }
+  }, [])
 
   const dataFiltered = newApplyFilters(currentData, filters)
 
@@ -123,6 +143,7 @@ export function InsertList({dialogDelay, currentData, methods, handleUpdate, fil
               icon={enhancedStudent.icon}
               label={enhancedStudent.label}
               tooltip={enhancedStudent.tooltip}
+              onClick={()=>handleOnClick(enhancedStudent.type, student)}
               primary={student.primary}
               secondary={student.secondary}
             />

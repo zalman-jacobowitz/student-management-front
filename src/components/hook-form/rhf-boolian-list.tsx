@@ -11,7 +11,7 @@ interface RHFBoolianListProps {
   [key: string]: any;
 }
 
-export function RHFBoolianList({ name, primary, secondary, color=null, icon=null, tooltip=null, label=null, ...other }: RHFBoolianListProps) {
+export function RHFBoolianList({ name, primary, secondary, onClick, color=null, icon=null, tooltip=null, label=null, ...other }: RHFBoolianListProps) {
   const { control } = useFormContext();
 
   return (
@@ -27,8 +27,8 @@ export function RHFBoolianList({ name, primary, secondary, color=null, icon=null
             >
               {icon && label &&
               <ListItemIcon>
-                <Tooltip title={tooltip}>
-                  <Label color={color} >
+                <Tooltip title={tooltip} >
+                  <Label color={color} onClick={onClick}>
                     <Iconify icon={icon} />
                     {label}
                   </Label>

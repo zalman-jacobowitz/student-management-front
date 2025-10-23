@@ -93,13 +93,26 @@ export function InsertListView({}) {
     reset,
     watch
   } = useInsertForm();
+  
   const dialogDelay = useBoolean();
+  const exceptionDialog = useBoolean();
+
+  const [selectedLabel, selectLabel] = useState({});
+
+  useEffect(() => {
+   if (!dialogDelay.value){
+    selectLabel({})
+  }
+  }, [dialogDelay.value])
+
   return (
     <DashboardContent sx={{}} disablePadding={false}>
 
       <InsertListHeader currentData={currentData} watch={watch}/>
 
       <InsertToolbar
+        exceptionDialog={exceptionDialog}
+        selectedLabel={selectedLabel}
         dialogDelay={dialogDelay} 
         handleDelete={(data: any)=> handleUpdate(data, 'delete')}
         currentData={currentData}
@@ -113,14 +126,14 @@ export function InsertListView({}) {
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
       
       <InsertList
+        selectLabel={selectLabel}
         dialogDelay={dialogDelay}
+        exceptionDialog={exceptionDialog}
         currentData={currentData}
         methods={methods}
         handleUpdate={handleUpdate}
         filters={filters}
       />
-
-
     </DashboardContent>
 );
 }

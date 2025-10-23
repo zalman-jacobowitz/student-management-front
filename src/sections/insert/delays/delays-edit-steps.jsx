@@ -28,9 +28,9 @@ import { Field } from "src/components/hook-form";
 import useInsertStore from "../insert-state.ts";
 import { SelectStudents } from "./select-students";
 
-function delayDataServerFormat(data, eventDetails) {
-  const delay_id = uuidv4()
-  const { arrival_time, students } = data
+function delayDataServerFormat(data, eventDetails, delay) {
+  const delay_id = delay.delay ? delay.delay : uuidv4();
+  const { arrival_time, students } = data;
 
   const listDelays = []
 
@@ -46,24 +46,24 @@ function delayDataServerFormat(data, eventDetails) {
       arrival_time,
       student_id: student,
       percent: attendancePercentage.toString(),
-      minutes: latenessMinutes
+      delay_minutes: latenessMinutes
     })
   })
 
   return listDelays
 }
 
-function useDelayDefinition() {
+function useDelayDefinition(delay) {
   const queryClient = useQueryClient();
   const eventDetails = useInsertStore.getState().selectedEvent
   const mutate = useMutation(delaysUpdate({queryClient, eventDetails}))
   
-  const onSubmit = useCallback(async (data) => {
+  const onSubmit = useCallback(async (data, mode='update') => {
     try {
-      const delayData = delayDataServerFormat(data, eventDetails)
-      const promise = mutate.mutateAsync({data: {eventDetails, delayData}, mode: 'update'})
+      const delayData = delayDataServerFormat(data, eventDetails, delay)
+      const promise = mutate.mutateAsync({data: {eventDetails, delayData}, mode})
       console.log('eventDetails: ', {eventDetails, delayData})
-      
+
       toast.promise(promise, {
         loading: 'עידכון איחורים...',
         success: 'הצליח העדכון!',
@@ -78,7 +78,7 @@ function useDelayDefinition() {
       console.error('Error saving delay:', error);
       toast.error('שגיאה בשמירת האיחור');
     }
-  }, [mutate]);
+  }, [mutate, delay]);
 
   return {
     onSubmit
@@ -99,7 +99,7 @@ export function DelayDefinitionStep({ onComplete, delay }) {
 
   const [delayInfo, setDelayInfo] = useState({ latenessMinutes: 0, attendancePercentage: 100 });
 
-  
+  console.log('delay: ', delay);
   const initialValues = {
     arrival_time: delay?.arrival_time || eventDetails.event_start || '08:00',
     students: delay?.students?.map(s => s.student_id) || []
@@ -124,11 +124,11 @@ export function DelayDefinitionStep({ onComplete, delay }) {
   });
 
   const { handleSubmit, watch } = methods;
-  const { onSubmit: handleDelaySubmit } = useDelayDefinition();
+  const { onSubmit: handleDelaySubmit } = useDelayDefinition(delay);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data, mode) => {
     console.log('data submitted: ', data);
-    await handleDelaySubmit(data);
+    await handleDelaySubmit(data, mode);
     if (onComplete) {
       onComplete(data);
     }
@@ -203,8 +203,15 @@ export function DelayDefinitionStep({ onComplete, delay }) {
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button
               variant="contained"
+              color="error"
+              onClick={handleSubmit((data) => onSubmit(data, 'delete'))}
+            >
+              מחק
+            </Button>
+            <Button
+              variant="contained"
               color="primary"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit((data) => onSubmit(data, 'update'))}
             >
               שמירת איחור
             </Button>
@@ -218,7 +225,7 @@ export function DelayDefinitionStep({ onComplete, delay }) {
 
 
 // דיאלוג להצגת טופס איחור
-export function DelayDialog({ open, onClose, onComplete, delay }) {
+export function DelayDialog({ open, onClose, onComplete, delay, editMode=false }) {
 
   const handleFormComplete = (data) => {
     if (onComplete) {
@@ -229,14 +236,10 @@ export function DelayDialog({ open, onClose, onComplete, delay }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-
-
-        <DelayDefinitionStep
-          delay={delay}
-          onComplete={handleFormComplete}
-        />
-
-
+      <DelayDefinitionStep
+        delay={delay}
+        onComplete={handleFormComplete}
+      />
     </Dialog>
   );
 }

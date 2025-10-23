@@ -109,7 +109,7 @@ function useExceptionDefinition({ exception }) {
 }
 
 
-export function ExceptionDefinitionStep({ onComplete, exception }) {
+export function ExceptionDefinitionStep({ onComplete, exception, editMode=false }) {
 
 
   const students = exception?.students?.length ? exception.students :  [];
@@ -199,7 +199,7 @@ export function ExceptionDefinitionStep({ onComplete, exception }) {
   );
 }
 
-export function ExceptionDialog({ open, onClose, onComplete, column }) {
+export function ExceptionDialog({ open, onClose, onComplete, column, editMode=false }) {
   const handleWizardComplete = (data) => {
     if (onComplete) {
       onComplete(data);
@@ -212,6 +212,7 @@ export function ExceptionDialog({ open, onClose, onComplete, column }) {
       <ExceptionDefinitionStep
         exception={column}
         onComplete={handleWizardComplete}
+        editMode={editMode}
       />
     </Dialog>
   );

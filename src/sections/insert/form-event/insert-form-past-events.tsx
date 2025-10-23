@@ -7,6 +7,7 @@ import { inHebrew } from "src/utils/hebrew/getter";
 import { apiListEvents } from "src/actions/list_of_events";
 
 import { InsertFormEventLoading } from "./insert-form-past-loading";
+import { LoadingScreen } from "src/components/loading-screen";
 
 interface InsertFormPastEventsProps {
   students_ids: string[];
@@ -15,9 +16,9 @@ interface InsertFormPastEventsProps {
   reset?: (option: any) => void;
 }
 
-export function InsertFormPastEvents({students_ids, dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
+export function InsertFormPastEvents({dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
 
-  const listOfTimes = useQuery(apiListEvents(students_ids))
+  const listOfTimes = useQuery(apiListEvents())
 
   return (
     
@@ -50,7 +51,7 @@ export function InsertFormPastEvents({students_ids, dialogPrevEvents, methods, r
           אין אירועים קודמים
         </Typography>
       )}
-      {listOfTimes.isLoading && <InsertFormEventLoading/>}
+      {listOfTimes.isLoading && <LoadingScreen/>}
     </Stack>
     
   ) 
