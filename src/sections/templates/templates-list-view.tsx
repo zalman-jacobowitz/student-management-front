@@ -67,7 +67,9 @@ function TemplateView({ row, onEdit }) {
 
 
 function TemplatesMainView() {
+    // קריאה לרשימת התבניות הרלוונטיות
     const templates = useSuspenseQuery(apiTemplates());
+    // 
     const events = eventsTemplatesByReduce(templates.data);
 
     const dialog = useBoolean();

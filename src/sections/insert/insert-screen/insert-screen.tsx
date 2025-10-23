@@ -50,7 +50,7 @@ function useInsertForm() {
 
   const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
     await updateData({
-      data,
+      data: {data, eventDetails: selectedEvent},
       mode,
       mutateAsync
     })
