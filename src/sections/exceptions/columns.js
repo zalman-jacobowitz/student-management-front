@@ -2,8 +2,10 @@
 Table exceptions {
 student_id varchar
   exception_id varchar
-  start varchar
-  end varchar
+  from_day varchar
+  from_hour varchar
+  to_day varchar
+  to_hour varchar
   reason varchar
 }
 */

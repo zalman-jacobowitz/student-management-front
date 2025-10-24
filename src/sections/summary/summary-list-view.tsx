@@ -16,7 +16,7 @@ import { apiTemplates } from "src/actions/templates";
 import { apiInfoStudents, infoStudentsUpdate } from "src/actions/info_students";
 
 import { toast } from "src/components/snackbar";
-import { Field } from "src/components/hook-form";
+import { Field, Form } from "src/components/hook-form";
 import { Iconify } from "src/components/iconify";
 import { useSettingsContext } from "src/components/settings";
 import { LoadingScreen } from "src/components/loading-screen";
@@ -25,6 +25,7 @@ import { MasterStep } from "src/components/steps-form/dynamiv-component";
 
 import { TableMainView } from "./summary-list";
 import { SummaryDataGrid } from "./summary-datagrid-view";
+import { useForm } from "react-hook-form";
 
 
 //-----------------------------------------------------------------------
@@ -258,10 +259,21 @@ function SummaryMainView() {
   );
 }
 
+function HebrewCalendar(){
+
+  const methods = useForm()
+
+  return (
+  <Form methods={methods} onSubmit={(data)=>console.log(data)}>
+    <Field.HebrewDatePicker defaultValue="2025-01-01" time={true}/>
+  </Form>
+  )
+}
+
 export function SummaryViewWrapper() {
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <SummaryMainView />
+      <HebrewCalendar />
     </Suspense>
   );
 }

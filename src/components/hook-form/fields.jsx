@@ -12,7 +12,7 @@ import { RHFBoolianList } from './rhf-boolian-list.tsx';
 import { RHFSwitch, RHFMultiSwitch } from './rhf-switch';
 import { RHFSelect, RHFMultiSelect } from './rhf-select';
 import { RHFCheckbox, RHFMultiCheckbox } from './rhf-checkbox';
-import { RHFHebrewDatePicker, RHFHebrewDateTimePicker } from './rhf-hebrew-date-picker';
+import { RHFHebrewDatePicker } from './rhf-hebrew-date-picker';
 import { RHFUpload, RHFUploadBox, RHFUploadAvatar } from './rhf-upload';
 import { RHFDatePicker, RHFMobileDateTimePicker } from './rhf-date-picker';
 import { RHFSwitchButton } from './rhf-switch-button';
@@ -42,7 +42,6 @@ export const Field = {
   CountrySelect: RHFCountrySelect,
   MobileDateTimePicker: RHFMobileDateTimePicker,
   HebrewDatePicker: RHFHebrewDatePicker,
-  HebrewDateTimePicker: RHFHebrewDateTimePicker,
   BoolianList: RHFBoolianList, 
   ToggleButtonSwitch: RHFSwitchButton
 };

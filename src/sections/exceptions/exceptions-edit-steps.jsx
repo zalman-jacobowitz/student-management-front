@@ -59,15 +59,17 @@ function exceptionsDataServerFromat(data) {
 
   const exception_id = data.exception_id || uuidv4()
   
-  const { students, reason, start, end } = data
+  const { students, reason, from_day, from_hour, to_day, to_hour } = data
 
   const listEvents = []
 
   data.students.map(student_id => listEvents.push({
     exception_id,
     reason,
-    start: `${start} 00:00`,
-    end: `${end} 23:59`,
+    from_day,
+    from_hour,
+    to_day,
+    to_hour,
     student_id
   }))
 
@@ -116,16 +118,20 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode=false 
 
   const initialValues = {
     exception_id: exception?.exception_id || '',
-    start: exception?.start || '',
-    end: exception?.end || '',
+    from_day: exception?.from_day || '',
+    from_hour: exception?.from_hour || '',
+    to_day: exception?.to_day || '',
+    to_hour: exception?.to_hour || '',
     reason: exception?.reason || '',
     students: students.map(student => student.student_id) || [],
   };
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),
-    start: z.string().min(1, 'תאריך התחלה נדרש'),
-    end: z.string().min(1, 'תאריך סיום נדרש'),
+    from_day: z.string().min(1, 'תאריך התחלה נדרש'),
+    from_hour: z.string().min(1, 'שעת התחלה נדרשת'),
+    to_day: z.string().min(1, 'תאריך סיום נדרש'),
+    to_hour: z.string().min(1, 'שעת סיום נדרשת'),
     reason: z.string().min(1, 'סיבה נדרשת'),
     students: z.array(z.string()).min(1, 'יש לבחור לפחות תלמיד אחד'),
   });
@@ -133,21 +139,39 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode=false 
   const fields = [
     {
       step: 1,
-      name: "start",
-      label: "תחילת אישור",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "date",
-      component: Field.HebrewDateTimePicker
-    },
-    {
-      step: 1,
-      name: "end",
-      label: "סיום אישור",
+      name: "from_day",
+      label: "תאריך התחלה",
       variant: "filled",
       InputLabelProps: { shrink: true },
       type: "date",
       component: Field.HebrewDatePicker
+    },
+    {
+      step: 1,
+      name: "from_hour",
+      label: "שעת התחלה",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "time",
+      component: Field.Text
+    },
+    {
+      step: 1,
+      name: "to_day",
+      label: "תאריך סיום",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "date",
+      component: Field.HebrewDatePicker
+    },
+    {
+      step: 1,
+      name: "to_hour",
+      label: "שעת סיום",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "time",
+      component: Field.Text
     },
     {
       step: 1,

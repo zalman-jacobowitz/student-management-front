@@ -11,9 +11,9 @@ export function exceptionsByReduce(exception) {
 
   return Object.values(
     exception.reduce((acc, cur) => {
-      const { exception_id, start, end, reason, student_id } = cur;
+      const { exception_id, from_day, from_hour, to_day, to_hour, reason, student_id } = cur;
       if (!acc[exception_id]) {
-        acc[exception_id] = { exception_id, start, end, reason, students: [] };
+        acc[exception_id] = { exception_id, from_day, from_hour, to_day, to_hour, reason, students: [] };
       }
       acc[exception_id].students.push({ student_id, primary: cur.primary, secondary: cur.secondary });
       return acc;
