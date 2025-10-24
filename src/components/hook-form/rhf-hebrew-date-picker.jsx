@@ -27,12 +27,13 @@ export function RHFHebrewDatePicker({
     inputProps = {},
 }) {
     // day format: 01-01-2024
-    const defaultDate = defaultDateToday(defaultValue)
-    const [selectedDate, setSelectedDate] = useState(defaultDate);
 
     const { control, watch } = useFormContext();
-
+    
     const values = watch();
+
+    const defaultDate = defaultDateToday(values[name])
+    const [selectedDate, setSelectedDate] = useState(defaultDate);
 
     useEffect(()=>{
       if (values.day){
@@ -50,6 +51,7 @@ export function RHFHebrewDatePicker({
             <Box>
             <TextField
                 {...field}
+                
                 label={label}
                 data-testid="hebrew-date-picker"
                 value={`${selectedDate['יום_בשבוע']} ${selectedDate['יום_עברי']} ${selectedDate['חודש_עברי']} ${selectedDate['שנה_עברית']}`}

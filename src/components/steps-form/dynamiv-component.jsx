@@ -23,6 +23,7 @@ export function MultiField({fields, ...other}) {
               chip={field.chip}
               helperText={field.helperText}
               id={field.id}
+              defaultValue={field.defaultValue}
               {...other}
             />
           );
