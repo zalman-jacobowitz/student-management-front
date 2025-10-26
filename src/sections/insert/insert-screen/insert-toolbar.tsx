@@ -46,6 +46,7 @@ interface InsertToolbarProps {
 }
 
 export function InsertToolbar({
+  summaryMode,
   exceptionDialog,
   selectedLabel,
   dialogDelay,
@@ -62,7 +63,7 @@ export function InsertToolbar({
 
   const listActionsMap = [
     {
-      icon: 'solar:trash-bold-duotone',
+      icon: 'solar:trash-bin-trash-bold-duotone',
       label: 'מחק',
       onClick: () => {
         handleDelete(changeBool(currentData))
@@ -73,6 +74,19 @@ export function InsertToolbar({
       label: 'ייצוא',
       onClick: () => {
         // exportToExcel([], 'students_export.xlsx');
+      }
+    },
+    {
+      icon: 'solar:copy-bold',
+      label: 'העתק',
+      component: <CopyPasteButtons infoStudents={infoStudents} reset={reset} />
+    },
+    {
+      icon: 'solar:chart-bold-duotone',
+      label: summaryMode ? 'מצב רגיל' : 'מצב סיכום',
+      color: summaryMode ? 'primary' : 'default',
+      onClick: () => {
+        summaryMode.onToggle();
       }
     }
   ]

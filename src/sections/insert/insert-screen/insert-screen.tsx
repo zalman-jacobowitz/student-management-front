@@ -97,6 +97,9 @@ export function InsertListView({}) {
   const dialogDelay = useBoolean();
   const exceptionDialog = useBoolean();
 
+
+  const summaryMode = useBoolean();
+
   const [selectedLabel, selectLabel] = useState({});
 
   useEffect(() => {
@@ -119,6 +122,7 @@ export function InsertListView({}) {
         reset={reset}
         handleFilter={handleFilter}
         filters={filters}
+        summaryMode={summaryMode}
         infoColumns={infoColumns}
         infoStudents={infoStudents}
       />
@@ -126,6 +130,7 @@ export function InsertListView({}) {
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
       
       <InsertList
+        summaryMode={summaryMode.value}
         selectLabel={selectLabel}
         dialogDelay={dialogDelay}
         exceptionDialog={exceptionDialog}

@@ -3,9 +3,9 @@ import useInsertStore from 'src/sections/insert/insert-state';
 
 import { apiFetch } from "src/utils/manager-fetch";
 
-export function apiDataStudentsEvent() {
-  const eventDetails = useInsertStore.getState().selectedEvent;
-
+export function apiDataStudentsEvent(eventDetailsOverride = null) {
+  const eventDetails = eventDetailsOverride || useInsertStore.getState().selectedEvent;
+  console.log({eventDetails})
   const postData = { table_name: 'data_students', mode: 'select', data: eventDetails };
   return queryOptions({
       queryKey: ['data_students', eventDetails],
@@ -44,3 +44,19 @@ export function apiDataStudentsEvent() {
   },
   })
 }
+
+
+export function apiLastEvents() {
+  const eventDetails = useInsertStore.getState().selectedEvent;
+  const postData = { table_name: 'last_events', mode: 'select', data: eventDetails };
+  return queryOptions({
+      queryKey: ['last_events', eventDetails],
+      queryFn: async () => {
+        const res =  await apiFetch('all', postData);
+        console.log('res: ', res)
+        const data = res?.data?.map(e=> ({...e, data: Number(e.data)})) ?? null;
+        return data;
+      }
+    });
+  }
+

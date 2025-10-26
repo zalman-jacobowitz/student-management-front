@@ -17,6 +17,7 @@ import { useBoolean } from "src/hooks/use-boolean";
 import { ButtonGreen } from "src/components/button-green";
 import { uuidv4 } from "src/utils/uuidv4";
 import { toast } from "sonner";
+import { apiDays } from "src/actions/days";
 
 
 
@@ -85,18 +86,23 @@ function templateDataServerFromat(data, templateId=null) {
   return listEvents
 }
 
-function useTemplateDefinition({ template, dialog }) {
+function useTemplateDefinition({ template, dialog, template_id_default }) {
 
   const queryClient = useQueryClient();
 
   // הגדרת המוטציה לעדכון התבנית
   const updateTemplate = useMutation(templatesUpdate({ queryClient }))
+  
 
   const onSubmit = useCallback(async (data, mode="update") => {
     try {
       console.log('template data: ', data)
-
-
+      console.log('mode: ', template)
+      if (template_id_default === data && mode === "delete") {
+        toast.error('לא ניתן למחוק את התבנית המוגדרת כברירת מחדל');
+        return
+      }
+      
       const templateData = mode === "update" ? templateDataServerFromat(data, template?.template_id) : data
       console.log({templateData})
 
@@ -121,6 +127,8 @@ function useTemplateDefinition({ template, dialog }) {
 function TemplatesMainView() {
     // קריאה לרשימת התבניות הרלוונטיות
     const templates = useSuspenseQuery(apiTemplates());
+    const days = useSuspenseQuery(apiDays()).data;
+    const template_id_default = days?.find(d => d.day === 'default')?.template_id || null;
     console.log('templates:', templates.data);
     // קיבוץ הסדרים תחת התבניות שלהם
     const events = eventsTemplatesByReduce(templates.data);
@@ -131,7 +139,7 @@ function TemplatesMainView() {
     
     // בחירה בשורה מסויימת לעריכה
     const [selectedRow, setSelectedRow] = useState(null);
-    const { onSubmit } = useTemplateDefinition({ template: selectedRow, dialog });
+    const { onSubmit } = useTemplateDefinition({ template: selectedRow, dialog , template_id_default});
 
     return (
   

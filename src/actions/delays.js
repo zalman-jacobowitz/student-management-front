@@ -15,10 +15,12 @@ export const delaysUpdate = ({queryClient, eventDetails})=>({
     // מסמן את הקוורי כלא-עדכני
     queryClient.invalidateQueries({ queryKey: ['delays', eventDetails] });
     queryClient.cancelQueries({ queryKey: ['delays', eventDetails] });
-    queryClient.refetchQueries({ queryKey: ['delays', eventDetails] });
+    queryClient.refetchQueries({ queryKey: ['delays', eventDetails] }
+      
+    );
     // ואם אתה רוצה לראות מיד את הדאטה החדש בלי לחכות לפוקוס/רימאונט:
-    queryClient.setQueryData(['data_students', eventDetails]);
     queryClient.invalidateQueries({ queryKey: ['data_students', eventDetails] });
     queryClient.cancelQueries({ queryKey: ['data_students', eventDetails] });
+    queryClient.refetchQueries({ queryKey: ['data_students', eventDetails] });
   },
 })

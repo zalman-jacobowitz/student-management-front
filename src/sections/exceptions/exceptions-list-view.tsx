@@ -33,7 +33,7 @@ const LINKS = [
       headingLinks: LINKS,
       headingTitle: 'ניהול אישורים',
       importButton: false,
-      specialRow: ['checkbox', 'edit'],
+      specialRow: ['checkbox'],
       rowId: 'exception_id',
       EditComponent: ExceptionDialog,
       removeAction: true,

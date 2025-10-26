@@ -90,7 +90,7 @@ export function RenderCell({ value }) {
   const numValue = int(Number(value));
   
   return (
-    <Stack justifyContent="center" padding={2} sx={{ typography: 'caption', color: 'text.secondary' }}>
+    <Stack justifyContent="center" padding={0.2} sx={{ typography: 'caption', color: 'text.secondary' }}>
       <LinearProgress
         value={numValue}
         variant="determinate"
