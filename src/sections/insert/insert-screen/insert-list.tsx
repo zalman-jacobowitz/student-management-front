@@ -1,5 +1,5 @@
 
-import { Avatar, Box, Button, Card, CardContent, CardHeader, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography } from "@mui/material";
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
@@ -17,6 +17,8 @@ import { GridMoreVertIcon } from "@mui/x-data-grid";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { apiDataStudentsEvent } from "src/actions/data_students_event";
 import { apiListEvents } from "src/actions/list_of_events";
+import { inHebrew } from "src/utils/hebrew/getter";
+import { stat } from "fs";
 
 interface InsertListProps {
   methods: any;
@@ -87,6 +89,21 @@ function enhanceStudentData(student) {
   };
 }
 
+  const colorMap = {
+    true: 'success',
+    false: 'error',
+    delayed: 'warning',
+    exceptional: 'default',
+  };
+
+
+  const text = {
+    exceptional: 'נעדר באישור',
+    delayed: 'איחר',
+    true: 'היה',
+    false: 'חיסר',
+  }
+
 
 function CountShows({ count }: {}) {
   /*
@@ -107,50 +124,46 @@ function CountShows({ count }: {}) {
     false: 'solar:check-circle-bold-duotone',
   };
 
-  const colorMap = {
-    true: 'success',
-    false: 'error',
-    delayed: 'warning',
-    exceptional: 'default',
-  };
-
-  return (
-    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+  return <>
       {Object.entries(count).map(([eventName, status]) => (
-        <Tooltip key={eventName} title={eventName}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              p: 0.0,
-            }}
-          >
-
-            <Label
+        <Tooltip title={eventName.split(' | ')[1]} key={eventName}>
+            <Chip
+              key={eventName}
+              size="small"
+              label={`${text[status]} ב${eventName.split(' | ')[0]}`}
+              tooltip={eventName}
               color={colorMap[status as keyof typeof colorMap]}
               variant="soft"
-              sx={{ ml: 0.5 }}>
-              {eventName}
-            </Label>
-          </Box>
+              sx={{ m: 0.3, p:0 }}
+            />
+            
         </Tooltip>
+
       ))}
-    </Box>
-  );
+  </>
 }
 
 
-   
-
-
-function SummaryMode({ student = {}, enhancedStudent = {}, data={} }: { children: React.ReactNode }) {
-  const { color, label, icon, tooltip } = enhancedStudent;
+const getColorByStatus = (student) => {
   
-  const SLabel = icon && label && (
+  if (student.delay) {
+    return {color: 'warning', label: 'איחר', icon: 'solar:check-circle-bold-duotone', type: 'delay', tooltip: 'התלמיד איחר'};
+  }
+  if (student.reason) {
+    return {color: 'default', label: 'נעדר באישור', icon: 'solar:check-circle-bold-duotone', type: 'exceptional', tooltip: 'התלמיד נעדר באישור'};
+  }
+  if (Number(student.data)) {
+    return {color: 'success', label: 'היה', icon: 'solar:check-circle-bold-duotone', type: 'present', tooltip: 'התלמיד היה נוכח'};
+  }
+  return {color: 'error', label: 'חיסר', icon: 'solar:check-circle-bold-duotone', type: 'absent', tooltip: 'התלמיד היה חסר'};
+};
+
+function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [] }: { children: React.ReactNode }) {
+  const { color, label, icon, tooltip } = getColorByStatus(student);
+  const SLabel =  (
     <Tooltip title={tooltip}>
       <Label
-        color={color}
+        color={color || 'default'}
         variant='filled'
         sx={{
           bottom: -10,
@@ -160,7 +173,7 @@ function SummaryMode({ student = {}, enhancedStudent = {}, data={} }: { children
           height: 20,
           position: 'absolute',
           borderRadius: 1,
-          opacity: 0.6,
+          opacity: 0.7,
         }}
       >
         <Iconify icon={icon} />
@@ -170,25 +183,30 @@ function SummaryMode({ student = {}, enhancedStudent = {}, data={} }: { children
   );
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{bgcolor: 'background.neutral'}}>
       <CardHeader
-        title={student.primary}
+
+        title={<Typography variant="h6">{student.primary}</Typography>}
         avatar={
+          
           <Box sx={{ position: 'relative' }}>
-            <Avatar  src="" alt="" sx={{ width: 48, height: 48 }} />
+            <Avatar color={color}  src="" alt="" sx={{ width: 48, height: 48, opacity: 0.7 }}  />
             {SLabel}
           </Box>}
 
-        subheader={student.secondary}
-        sx={{ alignContent: 'center' }}
+        subheader={<Typography>{student.secondary}</Typography>}
+        subheaderTypographyProps={{color: 'success'}}
+        sx={{ alignContent: 'center', bgcolor: 'background.neutral' }}
       >
 
       </CardHeader>
       <CardContent>
-    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            אחרונים: 
-          </Typography>
-          <CountShows count={data} />
+        <Box sx={{ mb: 2, p: 1 }}>
+        <CountShows count={events} />
+        </Box>
+        <Box sx={{ mb: 2, p: 1 }}>
+        <CountShows count={days} />
+        </Box>
       </CardContent>
 
     </Card>
@@ -211,6 +229,7 @@ function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) 
   */
   const result: Record<string, Record<string, any>> = {};
 
+
   Object.entries(allEventsData).forEach(([eventName, students]) => {
     students.forEach((student: any) => {
       if (!result[student.student_id]) {
@@ -219,26 +238,24 @@ function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) 
 
       // קביעת המצב לפי הנתונים
       let status: any = false;
-
-      if (student.data === 1) {
-        // נוכחות
-        status = true;
-      } else if (student.data === 0) {
-      // עדר
-      
-      
-      if (student.exception_id || student.exception) {
-          // יש אישור
-          status = 'exceptional';
-        } 
       if (student.delay_id || student.delay) {
           // יש איחור
           status = 'delayed';
-        } else {
-          // עדר ללא הסבר
-          status = false;
-        }
+      } 
+      else if (student.data === 1) {
+        // נוכחות
+        status = true;
       }
+      else if (student.data === 0) {
+      // עדר
+        status = false;
+      }
+    
+      if (student.exception_id || student.exception) {
+          // יש אישור
+          status = 'exceptional';
+        }
+      
 
       result[student.student_id][eventName] = status;
     });
@@ -248,15 +265,30 @@ function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) 
 }
 
 function useLastEventsData() {
+  const { selectedEvent } = useInsertStore(state => state);
+
   const lastEvents = useSuspenseQuery(apiListEvents());
   const allEventsData = {}
-  lastEvents.data.forEach((event) => {
+  const allDaysData = {}
+  // 4 limit
+  lastEvents.data.slice(0, 3).forEach((event) => {
     console.log('event: ', event);
-    event.event = event.event_id; // הוספת שדה event כדי להתאים לפונקציה
-    allEventsData[event.event_name] = useSuspenseQuery(apiDataStudentsEvent(event)).data;
+        event.event = event.event_id; 
+    const eventData = useSuspenseQuery(apiDataStudentsEvent(event)).data;
+
+
+    if (event.event_id === selectedEvent.event_id) {
+      const textLabel = ` ${inHebrew(event.day, false, true)} | ${selectedEvent.event_name}`;
+      allDaysData[textLabel] = [...eventData];
+      allDaysData[textLabel].push(event);
+    }
+    allEventsData[`${event.event_name} | ${inHebrew(event.day, false, true)}`] = [...eventData];
   });
 
-  return transformEventsDataForCountShows(allEventsData);
+  return  {
+    event: transformEventsDataForCountShows(allEventsData),
+    day: transformEventsDataForCountShows(allDaysData)
+  };
 }
 
 export function InsertList({ summaryMode, selectLabel, exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
@@ -331,8 +363,13 @@ export function InsertList({ summaryMode, selectLabel, exceptionDialog, dialogDe
               secondary={student.secondary}
             />
 
-          ) : <SummaryMode key={student.student_id} student={student} enhancedStudent={enhancedStudent} data={lastEventsData[student.student_id]} />;
-        })}
+          ) : <SummaryMode
+                key={student.student_id}
+                student={student}
+                enhancedStudent={enhancedStudent}
+                events={lastEventsData.event[student.student_id]}
+                days={lastEventsData.day[student.student_id]} />;
+            })}
         <ButtonGreen type="submit" data-testid="update-button" sx={{ mt: 2 }} onClick={() => { }} />
 
       </Box>

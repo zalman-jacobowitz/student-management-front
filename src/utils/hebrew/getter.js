@@ -51,8 +51,35 @@ export function readHebrewJson(day) {
  *   "פרשת_השבוע": "פרשת השבוע"
  * } or null if not found
  */
-export function inHebrew(day, full=false) {
+
+function describeHebrew(day){
+    const today = new Date();
+        const dateToCheck = new Date(day);
+        // מחזיר: היום אתמול לפני X ימים 
+        const diffTime = today - dateToCheck;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays === 0) return 'היום';
+        if (diffDays === 1) return 'אתמול';
+        if (diffDays === 2) return 'לפני יומיים';
+        if (diffDays === 7) return 'שבוע שעבר';
+        if (diffDays <= 7) return `לפני ${diffDays} ימים`;
+        if (diffDays <= 30) {
+            const weeks = Math.ceil(diffDays / 7);
+            return `לפני ${weeks} שבועות`;
+        }
+        const months = Math.ceil(diffDays / 30);
+        if (months === 1) return 'לפני חודש';
+        if (months === 2) return 'לפני חודשיים';
+        if (months <= 13) return `שנה שעברה`;
+        return `לפני ${months} חודשים`;
+}
+
+
+export function inHebrew(day, full=false, desc=false) {
     const hebrewJson = readHebrewJson(day);
+    if (desc){
+        return describeHebrew(day);
+    }
     if (full === 'Dm'){
         return `${hebrewJson?.יום_עברי} ${hebrewJson?.חודש_עברי}`;
     }
