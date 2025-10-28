@@ -246,8 +246,8 @@
         <div class="critical">
             <h3>1. שנה עברית קבועה (Hard-coded Year)</h3>
             <p><strong>קובץ</strong>: <code>src/components/hebrew-calendar/hebrew-date-picker.jsx:150</code></p>
-            <pre><code>const allDates = getAllYear('תשפ״ה')</code></pre>
-            <p><strong>בעיה</strong>: השנה העברית קבועה לתשפ״ה ולא מתעדכנת אוטומטית</p>
+            <pre><code>const allDates = getAllYear('תשפ״ו')</code></pre>
+            <p><strong>בעיה</strong>: השנה העברית קבועה לתשפ״ו ולא מתעדכנת אוטומטית</p>
             <p><strong>השפעה</strong>:</p>
             <ul>
                 <li>לא ניתן לבחור תאריכים משנים אחרות</li>
@@ -384,7 +384,7 @@ function getCurrentHebrewYear() {
             <h4>פתרון מתקדם:</h4>
             <pre><code>// רכיב בחירת שנה נפרד
 function HebrewYearSelector({ value, onChange }) {
-    const availableYears = ['תשפ״ד', 'תשפ״ה', 'תשפ״ו'];
+    const availableYears = ['תשפ״ד', 'תשפ״ו', 'תשפ״ו'];
     return (
         &lt;Select value={value} onChange={onChange}&gt;
             {availableYears.map(year =&gt; (

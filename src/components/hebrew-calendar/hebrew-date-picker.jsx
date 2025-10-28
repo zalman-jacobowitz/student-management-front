@@ -12,7 +12,7 @@ import { getAllYear } from "src/utils/hebrew/getter";
         "יום_בשבוע":"שישי",
         "יום_עברי":"ב׳",
         "חודש_עברי":"תשרי",
-        "שנה_עברית":"תשפ״ה",
+        "שנה_עברית":"תשפ״ו",
         "פרשת_השבוע":"האזינו"
     },
 */
@@ -20,6 +20,7 @@ import { getAllYear } from "src/utils/hebrew/getter";
 
 function paddingStart(monthDates){
     const firstDate = monthDates[0];
+
     const firstDayOfWeek = firstDate['יום_בשבוע'];
     const daysOfWeek = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
     const paddingDays = [];
@@ -147,7 +148,7 @@ export function HebrewDateCal({selectedDate, setSelectedDate, onClose, name}){
 
     const [selectedMonth, setSelectedMonth] = useState(selectedDate['חודש_עברי'] || 'תשרי');
 
-    const allDates = getAllYear('תשפ״ה')
+    const allDates = getAllYear('תשפ״ו'); // Example year
     const hebrewMonths = [...new Set(allDates.map(date => date['חודש_עברי']))]
     const monthDates = getMonthDates(selectedMonth, allDates);
     const handleMonthChange = (direction) => {

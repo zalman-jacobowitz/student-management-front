@@ -4,6 +4,7 @@ import { apiInfoStudents } from "src/actions/info_students";
 import { LoadingScreen } from "src/components/loading-screen";
 import { useRouter } from "src/routes/hooks";
 import { paths } from "src/routes/paths";
+import { AboutView } from "../about/view/about-view";
 
 
 
@@ -21,7 +22,7 @@ function OverviewMainView() {
 export function OverviewViewWrapper() {
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <OverviewMainView />
+      <AboutView />
     </Suspense>
   );
 }

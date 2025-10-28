@@ -52,6 +52,8 @@ export const paths = {
     list: `${ROOTS.DASHBOARD}/רשימה`,
 
   },
+  // ABOUT
+  about: '/אודות',
 };
 
 export const PATH_AFTER_LOGIN = paths.dashboard.root;

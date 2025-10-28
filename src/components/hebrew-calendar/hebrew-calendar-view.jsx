@@ -107,7 +107,7 @@ function CalendarViewGrid({today, monthDates, selectedDate, setSelectedDate, eve
 // הסבר לכל לוח השנה.
 
 export function HebrewCalendarView({
-    selectedYear = "תשפ״ה",
+    selectedYear = "תשפ״ו",
     // היום הנבחר כעת
     selectedDate,
     // פונקציית קאללבאק בעת בחירה של יום בלוח השנה

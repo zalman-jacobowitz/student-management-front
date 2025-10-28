@@ -43,6 +43,8 @@ const DetailsPage = lazy(() => import('src/pages/dashboard/details'));
 
 // overview:
 const OverviewPage = lazy(() => import('src/pages/dashboard/overview'));
+// about
+const AboutPage = lazy(() => import('src/sections/about/view/about-view'));
 
 
 // ----------------------------------------------------------------------
@@ -97,5 +99,9 @@ export const dashboardRoutes = [
     children: [
       { element: <InitializationPage />, index: true },
     ],
+  },
+  {
+    path: 'אודות',
+    element: <AboutPage />,
   },
 ];

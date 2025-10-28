@@ -44,9 +44,6 @@ export function Welcome() {
         >
           לחץ על הבא כדי להתחיל.
         </Typography>
-        <Button id="start">
-            start
-        </Button>
         
       </Box>
       <Walktour
