@@ -1,3 +1,85 @@
+/*
+    template_id = Column(String, primary_key=True)
+    template_name = Column(String)
+    event_id = Column(String)
+    event_name = Column(String)
+    event_start = Column(String)
+    event_end = Column(String)
+    client = Column(String)
+*/
+
+export const templates = [
+  {
+    template_id: 't_123',
+    template_name: 'regular',
+    event_id: 'e_123',
+    event_name: 'גמרא',
+    event_start: '10:00',
+    event_end: '12:00'
+  }
+]
+
+/*
+
+class Days(db.Model):
+    __tablename__ = "days"
+    day = Column(String)
+    template_id = Column(String)
+    client = Column(String)
+    
+    __table_args__ = (
+        PrimaryKeyConstraint("day", "client"),
+    )
+*/
+export const days = [
+  {
+    day: '2025-09-04',
+    template_id: 't_123',
+  }
+]
+
+/*
+                    DataStudents.data,
+                    DataStudents.event,
+                    DataStudents.student_id,
+                    DataStudents.day,
+                    DataStudents.delay,
+                    DataStudents.exception,
+                    Exceptions.reason,
+                    Delays.arrival_time
+*/
+
+export const data_students = [
+  {
+    data: 0,
+    event: 'e_123',
+    student_id: '1',
+    day: '2025-09-04',
+    delay: 'd_123',
+    exception: '',
+    reason: ''
+  }
+]
+
+/*
+class Delays(db.Model):
+    __tablename__ = "delays"
+    delay_id = Column(String, primary_key=True)  # Changed from varbinary to String for consistency
+    arrival_time = Column(String)
+    delay_minutes = Column(String)
+    percent = Column(String)
+
+*/
+export const delays = [
+  {
+    delay_id: 'd_123',
+    arrival_time: '10:45',
+    delay_minutes: '15',
+    percent: '45',
+    
+  }
+] 
+
 export const select_options = [
     {
         "client": "kg_gdola",

@@ -44,8 +44,11 @@ export const infoStudentsUpdate = ({queryClient}: InfoStudentsUpdateProps) => ({
       return res?.data ?? null;
     
   },
-  onSuccess: () => {
-    queryClient.cancelQueries({ queryKey: ['info_students'] });
+    onSuccess: async () => {
+    // מסמן את הקוורי כלא-עדכני
+    await queryClient.invalidateQueries({ queryKey: ['info_students'] });
+    // ואם אתה רוצה לראות מיד את הדאטה החדש בלי לחכות לפוקוס/רימאונט:
+    await queryClient.refetchQueries({ queryKey: ['info_students'] });
   },
 })
 

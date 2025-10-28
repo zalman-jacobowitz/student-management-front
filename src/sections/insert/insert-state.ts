@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 
 type InsertState = {
-  selectEventScreen: boolean;
+  screen: 'form' | 'view';
   selectedEvent: any;
   currentData: any[];
   previousData: any[];
@@ -18,11 +18,10 @@ type InsertState = {
 
 
 const useInsertStore = create<InsertState>((set, get) => ({
-  selectEventScreen: true,
+  screen: 'form',
   selectedEvent: {},
-  
-  onBack : () => set({ selectEventScreen: true }),
-  
+  onBack : () => set({ screen: 'form' }),
+
   delays: [],
   setDelays: (data: any[]) => {
 
@@ -46,7 +45,7 @@ const useInsertStore = create<InsertState>((set, get) => ({
   currentData: [],
   setCurrentData: (data: any[]) => set({ currentData: data, delays: [] }),
 
-  setEventDetails: (details: any) => set({ selectedEvent: details , selectEventScreen: false,  delays: []}),
+  setEventDetails: (details: any) => set({ selectedEvent: details , screen: 'view',  delays: []}),
 
   onCopy: () => {
     const { currentData } = get();

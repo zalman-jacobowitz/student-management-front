@@ -10,7 +10,7 @@ export function InitializationView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'md'}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <InitializationWizard />
     </Container>
   );

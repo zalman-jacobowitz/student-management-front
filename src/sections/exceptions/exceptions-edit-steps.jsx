@@ -14,6 +14,7 @@ import { apiInfoStudents } from "src/actions/info_students.ts";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { uuidv4 } from "src/utils/uuidv4";
 import { description } from "../insert/functions.ts";
+import { SelectStudents } from "../insert/delays/select-students.jsx";
 
 function StudentsSelectionStep() {
   const { control, watch, setValue } = useFormContext();
@@ -41,20 +42,11 @@ function StudentsSelectionStep() {
         </Typography>
       </Alert>
       
-      <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
-        <Stack spacing={2}>
-          {students.map((student) => (
-            <Chip
-              key={student.student_id}
-              label={`${student.שם} ${student.משפחה}`}
-              onClick={() => handleStudentToggle(student.student_id)}
-              color={selectedStudents.includes(student.student_id) ? 'primary' : 'default'}
-              variant={selectedStudents.includes(student.student_id) ? 'filled' : 'outlined'}
-              sx={{ justifyContent: 'flex-start' }}
-            />
-          ))}
-        </Stack>
-      </Box>
+      <SelectStudents
+        multiple
+        name="students"
+        placeholder="הוסף תלמידים"
+      />
       
       <Typography variant="body2" color="text.secondary">
         נבחרו {selectedStudents.length} תלמידים
@@ -64,16 +56,20 @@ function StudentsSelectionStep() {
 }
 
 function exceptionsDataServerFromat(data) {
-  const exception_id = uuidv4()
-  const { students, reason, start, end } = data
+
+  const exception_id = data.exception_id || uuidv4()
+  
+  const { students, reason, from_day, from_hour, to_day, to_hour } = data
 
   const listEvents = []
 
   data.students.map(student_id => listEvents.push({
     exception_id,
     reason,
-    start,
-    end,
+    from_day,
+    from_hour,
+    to_day,
+    to_hour,
     student_id
   }))
 
@@ -88,6 +84,9 @@ function useExceptionDefinition({ exception }) {
       console.log('exception data: ', data);
       
       const exceptionData = exceptionsDataServerFromat(data);
+
+      console.log('exceptionData formatted: ', exceptionData);
+      
 
       const promiseException = updateException.mutateAsync({ 
         data: exceptionData, 
@@ -112,21 +111,27 @@ function useExceptionDefinition({ exception }) {
 }
 
 
-export function ExceptionDefinitionStep({ onComplete, exception }) {
+export function ExceptionDefinitionStep({ onComplete, exception, editMode=false }) {
 
+
+  const students = exception?.students?.length ? exception.students :  [];
 
   const initialValues = {
     exception_id: exception?.exception_id || '',
-    start: exception?.start || '',
-    end: exception?.end || '',
+    from_day: exception?.from_day || '',
+    from_hour: exception?.from_hour || '',
+    to_day: exception?.to_day || '',
+    to_hour: exception?.to_hour || '',
     reason: exception?.reason || '',
-    students: exception?.students || [],
+    students: students.map(student => student.student_id) || [],
   };
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),
-    start: z.string().min(1, 'תאריך התחלה נדרש'),
-    end: z.string().min(1, 'תאריך סיום נדרש'),
+    from_day: z.string().min(1, 'תאריך התחלה נדרש'),
+    from_hour: z.string().min(1, 'שעת התחלה נדרשת'),
+    to_day: z.string().min(1, 'תאריך סיום נדרש'),
+    to_hour: z.string().min(1, 'שעת סיום נדרשת'),
     reason: z.string().min(1, 'סיבה נדרשת'),
     students: z.array(z.string()).min(1, 'יש לבחור לפחות תלמיד אחד'),
   });
@@ -134,8 +139,8 @@ export function ExceptionDefinitionStep({ onComplete, exception }) {
   const fields = [
     {
       step: 1,
-      name: "start",
-      label: "תחילת אישור",
+      name: "from_day",
+      label: "תאריך התחלה",
       variant: "filled",
       InputLabelProps: { shrink: true },
       type: "date",
@@ -143,12 +148,30 @@ export function ExceptionDefinitionStep({ onComplete, exception }) {
     },
     {
       step: 1,
-      name: "end",
-      label: "סיום אישור",
+      name: "from_hour",
+      label: "שעת התחלה",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "time",
+      component: Field.Text
+    },
+    {
+      step: 1,
+      name: "to_day",
+      label: "תאריך סיום",
       variant: "filled",
       InputLabelProps: { shrink: true },
       type: "date",
       component: Field.HebrewDatePicker
+    },
+    {
+      step: 1,
+      name: "to_hour",
+      label: "שעת סיום",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "time",
+      component: Field.Text
     },
     {
       step: 1,
@@ -200,7 +223,7 @@ export function ExceptionDefinitionStep({ onComplete, exception }) {
   );
 }
 
-export function ExceptionDialog({ open, onClose, onComplete, column }) {
+export function ExceptionDialog({ open, onClose, onComplete, column, editMode=false }) {
   const handleWizardComplete = (data) => {
     if (onComplete) {
       onComplete(data);
@@ -213,6 +236,7 @@ export function ExceptionDialog({ open, onClose, onComplete, column }) {
       <ExceptionDefinitionStep
         exception={column}
         onComplete={handleWizardComplete}
+        editMode={editMode}
       />
     </Dialog>
   );

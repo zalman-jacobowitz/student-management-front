@@ -35,11 +35,10 @@ interface InsertListHeaderProps {
 
 export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
   const selectedEvent = useInsertStore(state => state.selectedEvent);
-  console.log('selectedEvent: ', selectedEvent)
 
   const hebDay = inHebrew(selectedEvent.day)
   const data = Object.values(watch());
-
+  console.log('selectedEvent.day:', selectedEvent.day)
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
       <PageTitle

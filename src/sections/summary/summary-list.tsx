@@ -1,21 +1,24 @@
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { Box, Button, Checkbox, LinearProgress, linearProgressClasses, Rating, Typography } from "@mui/material";
+
 import { paths } from "src/routes/paths";
 
-import { apiTemplates } from "src/actions/templates";
-import { apiInfoStudents } from "src/actions/info_students";
-
-import { LoadingScreen } from "src/components/loading-screen";
-import { InfoStudent, TableConfig } from "src/components/full-table/types";
-import { FullTableWrapper } from "src/components/full-table/view";
 import { exportToPDF } from "src/utils/export";
-import { INFO_SUMMARY } from "./columns";
-import { apiInfoColumns } from "src/actions/info_columns";
-import { Box, Button, Checkbox, LinearProgress, linearProgressClasses, Rating, Typography } from "@mui/material";
-import { progress } from "src/theme/core/components/progress";
+
 import { varAlpha } from "src/theme/styles/utils";
+import { apiTemplates } from "src/actions/templates";
+import { apiInfoColumns } from "src/actions/info_columns";
+import { apiInfoStudents } from "src/actions/info_students";
+import { progress } from "src/theme/core/components/progress";
+
 import { Label } from "src/components/label";
+import { LoadingScreen } from "src/components/loading-screen";
+import { FullTableWrapper } from "src/components/full-table/view";
+import { InfoStudent, TableConfig } from "src/components/full-table/types";
+
+import { INFO_SUMMARY } from "./columns";
 
 
 

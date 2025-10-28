@@ -72,6 +72,7 @@ export function InitImportFile({oldData}) {
       });
 
       if (data.status === 'success') {
+        console.log('Parsed data:', data);
         setValue('ImportFile', data.data);
       } else {
         toast.error(data.message);
@@ -80,13 +81,16 @@ export function InitImportFile({oldData}) {
 
   };
 
+  const { data, file } = watch('ImportFile') || {};
+
+  
   return (
     <Stack spacing={2}>
-      {watch('ImportFile.data') && (
-        <Alert severity="success">
+      {data?.length ? (
+        <Alert severity="success" data-testid="upload-success-alert">
           העלאת קובץ מאקסל עם נתוני תלמידים בוצעה בהצלחה
         </Alert>
-      )}
+      ) : null}
       {!oldData.length && <TamplateExample typeFile='excel'/>}
       <Upload
         multiple={false}

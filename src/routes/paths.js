@@ -33,7 +33,7 @@ export const paths = {
   },
   // DASHBOARD
   dashboard: {
-    root:`${ROOTS.DASHBOARD}/רשימה`,
+    root:`${ROOTS.DASHBOARD}/סקירה`,
     initialization: `${ROOTS.DASHBOARD}/איתחול`,
     insert: `${ROOTS.DASHBOARD}/הכנסת-נתונים`,
     users: `${ROOTS.DASHBOARD}/הרשאות-משתמשים`,
@@ -45,7 +45,11 @@ export const paths = {
     exceptions: `${ROOTS.DASHBOARD}/אישורים`,
     summary: `${ROOTS.DASHBOARD}/סיכום`,
     uploadScanDocs: `${ROOTS.DASHBOARD}/העלאת-דוחות-רישום`,
-    download: `${ROOTS.DASHBOARD}/הורדת-תבנית`
+    download: `${ROOTS.DASHBOARD}/הורדת-תבנית`,
+    details: `${ROOTS.DASHBOARD}/רישומים`,
+    tests: `${ROOTS.DASHBOARD}/מבחנים`,
+    overview: `${ROOTS.DASHBOARD}/סקירה`,
+    list: `${ROOTS.DASHBOARD}/רשימה`,
 
   },
 };

@@ -13,6 +13,8 @@ import useInsertStore from "../insert-state";
 import { CopyPasteButtons } from "../components/copy-paste-buttons";
 import { InsertFilters } from "../components/filters";
 import { DelayDialog } from "../delays/delays-edit-steps";
+import { ButtonGreen } from "src/components/button-green";
+import { ExceptionDialog } from "src/sections/exceptions/exceptions-edit-steps";
 
 
 
@@ -33,6 +35,7 @@ const FILTER_OPTIONS = [
 // ----------------------------------------------------------------------
 
 interface InsertToolbarProps {
+  delay: string,
   handleDelete: (data: any) => void;
   currentData: any[];
   reset?: (values: any) => void;
@@ -43,6 +46,10 @@ interface InsertToolbarProps {
 }
 
 export function InsertToolbar({
+  summaryMode,
+  exceptionDialog,
+  selectedLabel,
+  dialogDelay,
   handleDelete,
   currentData,
   reset,
@@ -53,12 +60,10 @@ export function InsertToolbar({
 }: InsertToolbarProps) {
   
   const onBack  = useInsertStore(state => state.onBack);
-  const { onCopy, onPaste, previousData } = useInsertStore();
-  
 
   const listActionsMap = [
     {
-      icon: 'solar:trash-bold-duotone',
+      icon: 'solar:trash-bin-trash-bold-duotone',
       label: 'מחק',
       onClick: () => {
         handleDelete(changeBool(currentData))
@@ -70,11 +75,24 @@ export function InsertToolbar({
       onClick: () => {
         // exportToExcel([], 'students_export.xlsx');
       }
+    },
+    {
+      icon: 'solar:copy-bold',
+      label: 'העתק',
+      component: <CopyPasteButtons infoStudents={infoStudents} reset={reset} />
+    },
+    {
+      icon: 'solar:chart-bold-duotone',
+      label: summaryMode ? 'מצב רגיל' : 'מצב סיכום',
+      color: summaryMode ? 'primary' : 'default',
+      onClick: () => {
+        summaryMode.onToggle();
+      }
     }
   ]
 
   const filterDrawer = useBoolean();
-  const dialogDelay = useBoolean();
+  
 
   return (
     <Stack
@@ -84,14 +102,7 @@ export function InsertToolbar({
       sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
     >
       <RegularButton onClick={onBack} icon="solar:arrow-right-bold" data-testid="back-button">חזור</RegularButton>
-      <Button onClick={filterDrawer.onTrue}>סינון</Button>
-      
-      <CopyPasteButtons
-        onCopy={onCopy}
-        onPaste={onPaste}
-        previousData={previousData}
-      />
-      
+      <Button onClick={filterDrawer.onTrue}>סינון</Button>      
       <RegularSelect
         label="סדר לפי"
         onChange={()=>{}}
@@ -122,17 +133,26 @@ export function InsertToolbar({
         filters={filters}
         table={currentData}
       />
+      <ButtonGreen number={1} color="warning" onClick={dialogDelay.onTrue}/>
+      <ButtonGreen number={2} color="default" onClick={exceptionDialog.onTrue}/>
 
       <DelayDialog
         open={dialogDelay.value}
         onClose={dialogDelay.onFalse}
+        delay={selectedLabel}
         onComplete={(data) => {
-          
           dialogDelay.onFalse();
         }}
-        delay={{}}
-
+  
       />
+      <ExceptionDialog
+        open={exceptionDialog.value}
+        onClose={exceptionDialog.onFalse}
+        onComplete={(data) => {
+          exceptionDialog.onFalse();
+        }}
+        column={selectedLabel}
+      /> 
      
     </Stack>
 );

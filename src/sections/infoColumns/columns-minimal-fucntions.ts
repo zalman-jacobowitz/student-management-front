@@ -69,6 +69,7 @@ export function formatColumn(column: InfoColumn) {
 export function getChips(column: InfoColumn){
   const tags = {}
   const formatedColumn = formatColumn(column);
+  // eslint-disable-next-line array-callback-return
   Object.keys(formatedColumn).map((key) => {
     const chip = chips[key];
     if (chip){

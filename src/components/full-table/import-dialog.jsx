@@ -25,27 +25,25 @@ import DialogContent from '@mui/material/DialogContent';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
+import { useSteps } from 'src/hooks/use-stepper';
+import { useBoolean } from 'src/hooks/use-boolean';
 import { useUserDetails } from 'src/hooks/use-user-details';
+
+import { uuidv4 } from 'src/utils/uuidv4';
+import { transformKeys } from 'src/utils/pandas/trans-keys';
+import { generateUniqueIds } from 'src/utils/function-edit';
+import { columnsDetails } from 'src/utils/uinqe_usege/columnsValid';
+import { findDuplicates, findInternalDuplicates } from 'src/utils/pandas/find-duplicates';
 
 import { infoStudentsUpdate } from 'src/actions/info_students.ts';
 
 import { Form } from 'src/components/hook-form';
-
-import { useSteps } from 'src/hooks/use-stepper';
-import { transformKeys } from 'src/utils/pandas/trans-keys';
-import { findDuplicates, findInternalDuplicates } from 'src/utils/pandas/find-duplicates';
-
-import { generateUniqueIds } from 'src/utils/function-edit';
-
 import { StepProvider } from 'src/components/steps-form/style';
+import { StepsProvider } from 'src/components/steps-form/steps-provider';
 import { InitStepper, StepperActions } from 'src/components/steps-form/header-steps';
 
-import { StepsProvider } from 'src/components/steps-form/steps-provider';
-import { columnsDetails } from 'src/utils/uinqe_usege/columnsValid';
-import { InitImportFile, InitColumnNames, CompleteStep } from './import-stpes/steps';
-import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from '../custom-dialog';
-import { uuidv4 } from 'src/utils/uuidv4';
+import { InitImportFile, InitColumnNames, CompleteStep } from './import-stpes/steps';
 
 
 

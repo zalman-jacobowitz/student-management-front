@@ -51,6 +51,7 @@ export async function exportToPDF(tableId, fileName = "export_data.pdf", title =
     const tbody = table.querySelector('tbody');
     const rows = tbody.querySelectorAll('tr');
     
+    // eslint-disable-next-line new-cap
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
@@ -82,7 +83,9 @@ export async function exportToPDF(tableId, fileName = "export_data.pdf", title =
     currentY += headerHeight + 2;
     
     // הוספת שורות
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < rows.length; i++) {
+      // eslint-disable-next-line no-await-in-loop
       const rowCanvas = await html2canvas(rows[i], {
         scale: 2,
         backgroundColor: '#ffffff'
@@ -94,6 +97,7 @@ export async function exportToPDF(tableId, fileName = "export_data.pdf", title =
       // בדיקה אם צריך עמוד חדש
       if (currentY + rowHeight > maxY) {
         pdf.addPage();
+        // eslint-disable-next-line no-plusplus
         pageNum++;
         currentY = 15;
         

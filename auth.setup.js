@@ -9,7 +9,7 @@ export default async function globalSetup() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
-  await page.goto(MAIN_URL);
+  await page.goto(MAIN_URL + '/');
   await page.getByLabel('כתובת מייל').fill('zalmanjacob@gmail.com');
   await page.getByLabel('סיסמה').fill('123456');
   await page.getByRole('button', { name: 'כניסה' }).click();

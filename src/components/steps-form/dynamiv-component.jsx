@@ -22,6 +22,8 @@ export function MultiField({fields, ...other}) {
               checkbox={field.checkbox}
               chip={field.chip}
               helperText={field.helperText}
+              id={field.id}
+              defaultValue={field.defaultValue}
               {...other}
             />
           );

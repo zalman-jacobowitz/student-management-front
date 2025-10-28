@@ -1,12 +1,14 @@
 import { queryOptions } from '@tanstack/react-query';
+import useInsertStore from 'src/sections/insert/insert-state';
 
 import { apiFetch } from "src/utils/manager-fetch";
 
-export function apiDataStudentsEvent(tamplateData, cache={}) {
-    const postData = { table_name: 'data_students', mode: 'select', data: tamplateData };
-    return queryOptions({
-      enabled: !!tamplateData.length,
-      queryKey: ['data_students', tamplateData],
+export function apiDataStudentsEvent(eventDetailsOverride = null) {
+  const eventDetails = eventDetailsOverride || useInsertStore.getState().selectedEvent;
+  console.log({eventDetails})
+  const postData = { table_name: 'data_students', mode: 'select', data: eventDetails };
+  return queryOptions({
+      queryKey: ['data_students', eventDetails],
       queryFn: async () => {
         const res =  await apiFetch('all', postData);
         console.log('res: ', res)
@@ -16,9 +18,12 @@ export function apiDataStudentsEvent(tamplateData, cache={}) {
     });
   }
 
-  export const dataStudentsEventUpdate = ({queryClient})=>({
-    mutationKey: ['data_students'],
-  
+  export const dataStudentsEventUpdate = ({queryClient, tamplateData})=>{
+    const cache = useInsertStore.getState().selectedEvent;
+    console.log({cache})
+    return ({
+    mutationKey: ['data_students', {day: cache.day, event: cache.event}],
+
     // Same signature as above
     mutationFn: async ({data, mode='update'}) => {
       const res = await apiFetch('all', {
@@ -31,8 +36,27 @@ export function apiDataStudentsEvent(tamplateData, cache={}) {
     },
   
     // Have access to queryClient via 4th arg
-    onSuccess: (data, _variables, _ctx) => {
-      queryClient.invalidateQueries({ queryKey: ['data_students'] });
-      queryClient.cancelQueries({ queryKey: ['list_of_events'] });
-    },
+    onSuccess: async () => {
+    // מסמן את הקוורי כלא-עדכניs
+    await queryClient.invalidateQueries({ queryKey: ['data_students', {day: cache.day, event: cache.event}] });
+    // ואם אתה רוצה לראות מיד את הדאטה החדש בלי לחכות לפוקוס/רימאונט:
+    await queryClient.refetchQueries({ queryKey: ['data_students', {day: cache.day, event: cache.event}] });
+  },
   })
+}
+
+
+export function apiLastEvents() {
+  const eventDetails = useInsertStore.getState().selectedEvent;
+  const postData = { table_name: 'last_events', mode: 'select', data: eventDetails };
+  return queryOptions({
+      queryKey: ['last_events', eventDetails],
+      queryFn: async () => {
+        const res =  await apiFetch('all', postData);
+        console.log('res: ', res)
+        const data = res?.data?.map(e=> ({...e, data: Number(e.data)})) ?? null;
+        return data;
+      }
+    });
+  }
+

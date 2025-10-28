@@ -1,18 +1,30 @@
 
+import jsPDF from 'jspdf';
+import { head } from 'lodash';
+import html2canvas from 'html2canvas';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+
 import { Box, Button, Card, Checkbox, IconButton, TableCell, TextField } from '@mui/material';
+import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
+
+import { updateData } from 'src/hooks/use-update';
+
+import { int } from 'src/utils/format-number';
+import { getElul } from 'src/utils/hebrew/getter';
+
+import { apiTemplates } from 'src/actions/templates';
+import { apiInfoStudents } from 'src/actions/info_students';
+import { info_columns, info_students } from 'src/actions/moks/mokes';
+import { dataStudentsEventUpdate } from 'src/actions/data_students_event';
 
 import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { InfoStudent } from 'src/components/full-table/types';
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
-import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
-import { head } from 'lodash';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { apiTemplates } from 'src/actions/templates';
-import { getElul } from 'src/utils/hebrew/getter';
-import { info_columns, info_students } from 'src/actions/moks/mokes';
+
 import { descriptionColumns } from '../insert/functions';
 
 
@@ -74,6 +86,7 @@ function mergeWithStudents(infoStudents, summaryData, infoColumns) {
   const mergedData = summaryData.map(summary => {
     const student = infoStudents.find(item => item.student_id === summary.id);
     return {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     'primary': getDesc(student, primary),
       ...summary
   }
@@ -218,7 +231,7 @@ const mockData = [
 
 function getEventName(eventId, templates) {
 
-    const event = templates.find(event => event.event_id === eventId);
+    const event = templates.find(e => e.event_id === eventId);
     return event ? event.event_name : 'לא ידוע';
 }
 function CustomToolbar() {
@@ -280,12 +293,6 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import { apiInfoStudents } from 'src/actions/info_students';
-import { InfoStudent } from 'src/components/full-table/types';
-import { dataStudentsEventUpdate } from 'src/actions/data_students_event';
-import { updateData } from 'src/hooks/use-update';
 
 const mockDataJson = {
     "fileName": "סריקה 3.png",
@@ -432,7 +439,7 @@ function generateTableStructure(fields) {
               groupedByDay[day] = [];
           }
           allFields[field] = {
-              day: getElul(parseInt(day)).day,
+              day: getElul(int(day)).day,
               event
           };
 
@@ -445,11 +452,11 @@ function generateTableStructure(fields) {
   
   // המרה למבנה הנדרש
   const groupedColumns = Object.keys(groupedByDay)
-      .sort((a, b) => parseInt(a) - parseInt(b))
+      .sort((a, b) => int(a) - int(b))
       .map(day => ({
-          groupName: getElul(parseInt(day)).full,
-          groupId: getElul(parseInt(day)).day,
-          columns: groupedByDay[day].sort((a, b) => parseInt(a.event) - parseInt(b.event))
+          groupName: getElul(int(day)).full,
+          groupId: getElul(int(day)).day,
+          columns: groupedByDay[day].sort((a, b) => int(a.event) - int(b.event))
       }));
   
   return {
@@ -493,6 +500,7 @@ export function UploadTableView({dataJson}) {
                 field: col.field,
                 headerName: `${getEventName(col.event, templates.data)}`,
                 editable: true,
+                width: 75,
                 type: 'boolean',
                 renderCell: (params) => <Checkbox checked={params.value} />,
             }))
@@ -511,6 +519,7 @@ export function UploadTableView({dataJson}) {
         const canvas = await html2canvas(element, { scale: 2 });
         
         const imgData = canvas.toDataURL('image/png');
+        // eslint-disable-next-line new-cap
         const pdf = new jsPDF('p', 'mm', 'a4');
         
         const pageWidth = 210;
@@ -569,7 +578,7 @@ export function UploadTableView({dataJson}) {
     }
 
     return (
-        <>
+        <Card sx={{ p: 2, mb: 2 }}>
             <Button onClick={() => handleTableAction('update', rows)}>עידכון</Button>
             <div id='content'>
                 <DataGrid
@@ -595,7 +604,7 @@ export function UploadTableView({dataJson}) {
                     processRowUpdate={handleRowUpdate}
                 />
             </div>
-        </>
+        </Card>
     );
 }
 

@@ -28,11 +28,9 @@ import { Field } from "src/components/hook-form";
 import useInsertStore from "../insert-state.ts";
 import { SelectStudents } from "./select-students";
 
-function delayDataServerFormat(data) {
-  const eventDetails = useInsertStore.getState().selectedEvent
-
-  const delay_id = uuidv4()
-  const { arrival_time, students } = data
+function delayDataServerFormat(data, eventDetails, delay) {
+  const delay_id = delay.delay ? delay.delay : uuidv4();
+  const { arrival_time, students } = data;
 
   const listDelays = []
 
@@ -46,27 +44,25 @@ function delayDataServerFormat(data) {
     listDelays.push({
       delay_id,
       arrival_time,
-      student_id: student.student_id,
+      student_id: student,
       percent: attendancePercentage.toString(),
-      minutes: latenessMinutes
+      delay_minutes: latenessMinutes
     })
   })
 
   return listDelays
 }
 
-function useDelayDefinition() {
+function useDelayDefinition(delay) {
   const queryClient = useQueryClient();
-  const setDelays = useInsertStore((state) => state.setDelays)
-
-  const mutate = useMutation(delaysUpdate({queryClient}))
+  const eventDetails = useInsertStore.getState().selectedEvent
+  const mutate = useMutation(delaysUpdate({queryClient, eventDetails}))
   
-  const onSubmit = useCallback(async (data) => {
+  const onSubmit = useCallback(async (data, mode='update') => {
     try {
-      const delayData = delayDataServerFormat(data)
-      console.log('delayData: ', delayData)
-      setDelays(delayData)
-      const promise = mutate.mutateAsync({data: delayData, mode: 'update'})
+      const delayData = delayDataServerFormat(data, eventDetails, delay)
+      const promise = mutate.mutateAsync({data: {eventDetails, delayData}, mode})
+      console.log('eventDetails: ', {eventDetails, delayData})
 
       toast.promise(promise, {
         loading: 'עידכון איחורים...',
@@ -77,12 +73,12 @@ function useDelayDefinition() {
       await promise;
 
 
-      console.log(delayData)
+      console.log(delayData);
     } catch (error) {
       console.error('Error saving delay:', error);
       toast.error('שגיאה בשמירת האיחור');
     }
-  }, [mutate, setDelays]);
+  }, [mutate, delay]);
 
   return {
     onSubmit
@@ -90,18 +86,23 @@ function useDelayDefinition() {
 }
 
 export function DelayDefinitionStep({ onComplete, delay }) {
+
+  
   const studentsData = useSuspenseQuery(apiInfoStudents());
+  
   const columnsData = useSuspenseQuery(apiInfoColumns());
+  
   const eventDetails = useInsertStore((state) => state.selectedEvent);
 
   const students = studentsData.data || [];
   const columns = columnsData.data || [];
 
   const [delayInfo, setDelayInfo] = useState({ latenessMinutes: 0, attendancePercentage: 100 });
-  
+
+  console.log('delay: ', delay);
   const initialValues = {
     arrival_time: delay?.arrival_time || eventDetails.event_start || '08:00',
-    students: delay?.students || []
+    students: delay?.students?.map(s => s.student_id) || []
   }
 
   const DelaySchema = z.object({
@@ -113,9 +114,8 @@ export function DelayDefinitionStep({ onComplete, delay }) {
       }, {
         message: `זמן הגעה חייב להיות בין ${eventDetails.event_start} ל-${eventDetails.event_end}`
       }),
-    students: z.array(z.object({
-      student_id: z.string()
-    })).min(1, 'יש לבחור לפחות תלמיד אחד')
+    students: z.array(z.string()).min(1, 'יש לבחור לפחות תלמיד אחד')
+
   });
 
   const methods = useForm({
@@ -124,10 +124,11 @@ export function DelayDefinitionStep({ onComplete, delay }) {
   });
 
   const { handleSubmit, watch } = methods;
-  const { onSubmit: handleDelaySubmit } = useDelayDefinition();
+  const { onSubmit: handleDelaySubmit } = useDelayDefinition(delay);
 
-  const onSubmit = async (data) => {
-    await handleDelaySubmit(data);
+  const onSubmit = async (data, mode) => {
+    console.log('data submitted: ', data);
+    await handleDelaySubmit(data, mode);
     if (onComplete) {
       onComplete(data);
     }
@@ -202,8 +203,15 @@ export function DelayDefinitionStep({ onComplete, delay }) {
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button
               variant="contained"
+              color="error"
+              onClick={handleSubmit((data) => onSubmit(data, 'delete'))}
+            >
+              מחק
+            </Button>
+            <Button
+              variant="contained"
               color="primary"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit((data) => onSubmit(data, 'update'))}
             >
               שמירת איחור
             </Button>
@@ -217,7 +225,7 @@ export function DelayDefinitionStep({ onComplete, delay }) {
 
 
 // דיאלוג להצגת טופס איחור
-export function DelayDialog({ open, onClose, onComplete, delay }) {
+export function DelayDialog({ open, onClose, onComplete, delay, editMode=false }) {
 
   const handleFormComplete = (data) => {
     if (onComplete) {
@@ -228,14 +236,10 @@ export function DelayDialog({ open, onClose, onComplete, delay }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-
-
-        <DelayDefinitionStep
-          delay={delay}
-          onComplete={handleFormComplete}
-        />
-
-
+      <DelayDefinitionStep
+        delay={delay}
+        onComplete={handleFormComplete}
+      />
     </Dialog>
   );
 }

@@ -1,0 +1,44 @@
+{
+  "nodes": [
+    {
+      "type": "conversation",
+      "prompt": "מה שם המוצר שברצונך לבדוק?",
+      "name": "ask-product",
+      "isStart": true,
+      "variableExtractionPlan": {
+        "schema": {
+          "type": "string",
+          "title": "product_name"
+        }
+      }
+    },
+    {
+      "type": "apiRequest",
+      "name": "check-price",
+      "url": "https://your-api.com/product-price",
+      "method": "POST",
+      "body": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          }
+        },
+        "required": ["product"]
+      },
+      "variableExtractionPlan": {
+        "schema": {
+          "type": "number",
+          "title": "product_price"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "ask-product",
+      "to": "check-price"
+    }
+  ],
+  "name": "Product Price Checker"
+}

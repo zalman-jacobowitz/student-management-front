@@ -7,18 +7,16 @@ import { Box, Button } from "@mui/material";
 
 import { updateData } from "src/hooks/use-update";
 
+import { inHebrew } from "src/utils/hebrew/getter";
+
 import { dataStudentsEventUpdate } from "src/actions/data_students_event";
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
 
-import useInsertStore from "../insert-state";
-import { newApplyFilters } from "../components/filters";
-import { getDesc, descriptionColumns } from "../functions";
-import { inHebrew } from "src/utils/hebrew/getter";
-
 interface InsertListProps {
   methods: any;
+  // eslint-disable-next-line react/no-unused-prop-types
   infoColumns: any[];
   currentData: any[];
   filters: {
@@ -106,7 +104,7 @@ export function ProfileListView({currentData}) {
   
   useEffect(() => {
       reset(formValues(currentData))
-  }, [currentData])
+  }, [currentData, reset])
 
   const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
     await updateData({

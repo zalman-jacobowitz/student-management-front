@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
-export function useWalktour({ steps, defaultRun }) {
+export function useWalktour({ steps, defaultRun=true }) {
   const helpers = useRef();
 
   const [run, setRun] = useState(!!defaultRun);

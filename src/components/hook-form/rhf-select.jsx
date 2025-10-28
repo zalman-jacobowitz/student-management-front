@@ -20,19 +20,22 @@ export function RHFSelect({
   helperText,
   inputProps,
   InputLabelProps,
+  id,
   ...other
 }) {
   const { control } = useFormContext();
 
-  const labelId = `${name}-select-label`;
+  const labelId = id || `${name}-select-label`;
 
   return (
     <Controller
       name={name}
+      
       control={control}
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}
+          
           select
           fullWidth
           SelectProps={{
@@ -43,6 +46,7 @@ export function RHFSelect({
           InputLabelProps={{ htmlFor: labelId, ...InputLabelProps }}
           inputProps={{ id: labelId, ...inputProps }}
           error={!!error}
+          id={id}
           helperText={error ? error?.message : helperText}
           {...other}
         >

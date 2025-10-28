@@ -97,7 +97,7 @@ export  const CustomStepIconRoot = styled('div')(({ theme, ownerState }) => ({
             {alertHelper.text}
         </Alert>
       )}
-    <Scrollbar sx={{ height: 300 }}>
+    <Scrollbar sx={{ height: 400 }}>
       {children}
     </Scrollbar>
   </Box>

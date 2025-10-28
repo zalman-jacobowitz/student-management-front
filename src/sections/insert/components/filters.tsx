@@ -215,7 +215,7 @@ const getDefaultFilters = (infoColumns: any[]) => {
 
 // החלה של הפילטרים לפי הגדרת הסוג שלהם.
 
-export function newApplyFilters(data: any[], filters: any, infoColumns: any[]) {
+export function newApplyFilters(data: any[], filters: any) {
   if (Object.keys(filters).length === 0 || data.length === 0) {
     return data
   }

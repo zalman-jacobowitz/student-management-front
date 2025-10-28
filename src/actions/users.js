@@ -36,18 +36,3 @@ export const usersUpdate = ({queryClient})=>({
     queryClient.cancelQueries({ queryKey: ['users'] });
   },
 })
-
-export const createInitialUser = async ({ userId, email, firstName, lastName, country }) => {
-
-  alert(JSON.stringify(adminUserBlank))
-  /*
-   * const res = await apiFetch('all', {
-   *   table_name: 'users',
-   *   mode: 'insert',
-   *   data: [userData]
-   * });
-   * 
-   * return res?.data ??
-   */
-  return null;
-};

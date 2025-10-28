@@ -14,25 +14,24 @@ import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
 import { templatesUpdate } from "src/actions/templates";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uuidv4 } from "src/utils/uuidv4";
+import { shortId, uuidv4 } from "src/utils/uuidv4";
 
 
 
 // שלב 3: בחירת אירועים
 export function EventsSelectionStep() {
   const { control } = useFormContext();
+  
+  
   const { fields, append, remove } = useFieldArray({
     control,
     name: "events",
   });
 
+  const [shortId, setShortId] = useState(String(fields.length + 1));
+
   return (
     <Stack spacing={3}>
-      <Alert severity="info">
-        <Typography variant="body2">
-          הוסף או הסר אירועים עבור תבנית זו.
-        </Typography>
-      </Alert>
       <Scrollbar sx={{ maxHeight: { xs: 100, sm: 200, md: 260 } }}>
         <Stack spacing={2}>
           {fields.map((item, index) => (
@@ -66,7 +65,7 @@ export function EventsSelectionStep() {
         type="button"
         variant="outlined"
         startIcon={<Iconify icon="mdi:plus" />}
-        onClick={() => append({ event_name: '', event_id: '', event_start: '', event_end: '' })}
+        onClick={() => append({ event_name: '', event_id: shortId, event_start: '', event_end: '' , new: true})}
       >
         הוסף אירוע
       </Button>
@@ -75,53 +74,6 @@ export function EventsSelectionStep() {
 }
 
 
-function templateDataServerFromat(data) {
-  const template_id = uuidv4()
-  const { events, template_name } = data
-
-  const listEvents = []
-
-  data.events.map(event => listEvents.push({
-    template_id,
-    template_name,
-    event_name: event.event_name,
-    event_id: uuidv4(),
-    event_start: event.event_start,
-    event_end: event.event_end
-  }))
-
-  return listEvents
-}
-
-function useTemplateDefinition({ template }) {
-
-  const queryClient = useQueryClient();
-
-  const updateTemplate = useMutation(templatesUpdate({ queryClient }))
-
-  const onSubmit = useCallback(async (data) => {
-    try {
-      console.log('template data: ', data)
-
-      const templateData = templateDataServerFromat(data)
-
-      const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  "update" })
-      toast.promise(promiseTemplate, {
-        loading: 'שומר תבנית...',
-        success: 'תבנית נשמרה בהצלחה',
-        error: 'שגיאה בשמירת התבנית'
-      });
-
-      console.log(templateData)
-    } catch (error) {
-      console.error('Error saving template:', error);
-    }
-  }, [updateTemplate]);
-
-  return {
-    onSubmit
-  }
-}
 
 /*
 [
@@ -172,9 +124,10 @@ function useTemplateDefinition({ template }) {
     }
 ]
 */
-export function TemplateDefinitionStep({ onComplete, template }) {
+export function TemplateDefinitionStep({onSubmit, onComplete, template }) {
   console.log('TEMPLATES: ', template)
 
+  // ערכים בהתאם לנתונים קיימים או חדשים
   const initialValues = {
 
     template_id: template?.template_id || '',
@@ -188,7 +141,8 @@ export function TemplateDefinitionStep({ onComplete, template }) {
     events: z.array(z.object({
       event_name: z.string().min(1, 'שם אירוע נדרש'),
       event_start: z.string(),
-      event_end: z.string()
+      event_end: z.string(),
+      event_id: z.string().optional(),
     })).optional(),
   });
 
@@ -223,7 +177,7 @@ export function TemplateDefinitionStep({ onComplete, template }) {
       name: 'basicTemplateDetails'
     },
     {
-      label: 'פרטי אירוع',
+      label: 'פרטי אירועים',
       component: <MasterStep fields={fileds} number={2} />,
       icon: "mdi:calendar-multiple",
       name: 'eventsSelection'
@@ -234,15 +188,15 @@ export function TemplateDefinitionStep({ onComplete, template }) {
     }
   ]
 
-  const { onSubmit } = useTemplateDefinition({ template });
 
   return (
     <StepsProvider
       steps={steps}
       defaultValues={initialValues}
       WizardSchema={WizardSchema}
-      onSubmit={onSubmit}
+      onSubmit={(data) => onSubmit(data, "update")}
     />
+
   );
 }
 
@@ -251,7 +205,7 @@ export function TemplateDefinitionStep({ onComplete, template }) {
 
 
 // דיאלוג להצגת אשף הגדרת תבנית
-export function TemplateDialog({ open, onClose, onComplete, column }) {
+export function TemplateDialog({ onSubmit, open, onClose, onComplete, column }) {
   const handleWizardComplete = (data) => {
     if (onComplete) {
       onComplete(data); // קריאה ל-callback שהועבר מהקומפוננטה המשתמשת
@@ -260,8 +214,9 @@ export function TemplateDialog({ open, onClose, onComplete, column }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth="sm" maxWidth="sm">
       <TemplateDefinitionStep
+        onSubmit={onSubmit}
         template={column} // העברת התבנית הנוכחית לאשף
         onComplete={handleWizardComplete} // מטפל בסיום האשף
       />

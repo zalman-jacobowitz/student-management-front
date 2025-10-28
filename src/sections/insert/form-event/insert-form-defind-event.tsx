@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from "react-hook-form";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { LoadingButton } from '@mui/lab';
@@ -9,6 +9,7 @@ import { Card, Stack, Button, MenuItem, CardHeader, Typography, CardActions, Car
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { apiTemplates } from 'src/actions/templates';
 import { apiEventsToday } from 'src/actions/events_today';
 
 import { Form, Field } from 'src/components/hook-form';
@@ -16,14 +17,10 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { ComponentContainer } from 'src/components/blanks/component-block';
 
 import useInsertStore from '../insert-state';
-import { get_students_ids } from '../functions';
-import { InsertFormPastEvents } from './insert-form-past-events';
-import { apiTemplates } from 'src/actions/templates';
 
-type InsertFormProps = {
-  infoStudents: any[];
-  infoColumns: any[];
-}
+import { InsertFormPastEvents } from './insert-form-past-events';
+import { apiListEvents } from 'src/actions/list_of_events';
+
 
 
 const today = new Date().toISOString().split('T')[0]
@@ -35,10 +32,21 @@ const EventSchema = zod.object({
   day: zod.string().min(1, { message: 'חובה להכניס יום' })
 });
 
+function mergeCurrentWithPastEvents(currentData, pastEvent, today) {
+  const newData = [...currentData, ...pastEvent.filter((event) => event.day === today)];
+  
+  // drop duplicates based on event_id
 
-function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] = []) {
- 
-  // form methods
+  const uniqueData = Array.from(new Map(newData.map(item => [item.event_id, item])).values());
+
+  return uniqueData;
+}
+
+function useInsertForm() {
+
+  const { setEventDetails } = useInsertStore();
+  
+  // טופס לבחירה של סדר מסויים לביצוע רישום
   const methods = useForm({
     mode: 'onChange',
     resolver: zodResolver(EventSchema),
@@ -52,47 +60,45 @@ function useInsertForm(changeEvent: (data: any) => void, students_ids: string[] 
     watch,
     formState: { isSubmitting },
   } = methods;
-   
-  const eventsToday = useQuery(apiTemplates());
-  console.log('eventsToday: ', eventsToday.data);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const options = (eventsToday?.data || []) as any[]
-  
-  const onSubmit = handleSubmit(async (selectedDay) => {
-        // move to the students page
-        const moreDetails = options.find((option) => option.event_id === selectedDay.event)
+  const listOfTimes = useSuspenseQuery(apiListEvents())
+  // קריאה לסדרים של היום לפי סוגי הזמנים - מקבל יום ומחזיר את הסדרים היום.
+  const currentEvent = useQuery(apiEventsToday(watch('day'))).data || [];
 
-        changeEvent( {...selectedDay,  ...moreDetails})
+  const eventsToday = useMemo(() => mergeCurrentWithPastEvents(currentEvent, listOfTimes.data, watch('day')), [watch('day'), currentEvent, listOfTimes.data]);
+  console.log('eventsToday:', eventsToday)
+  const onSubmit = handleSubmit(async (data) => {
+        // מוצא את פרטי ה event
+        const moreDetails = eventsToday.find((option) => option.event_id === data.event)
+        setEventDetails( {...moreDetails, ...data})
   })
   useEffect(()=>{
-    if (options.length > 0){
-    setValue('event', options[0].event_name)
+    if (eventsToday.length > 0){
+      // כאן צריך להיות חישוב של איזה סדר שייך לעכשיו
+      setValue('event', eventsToday[0].event_id)
     }
-  }, [options, setValue])
-  console.log('options: ', options)  
-
+  }, [eventsToday, setValue])
+  
   return {
     methods,
     onSubmit,
-    options,
+    eventsToday,
     isSubmitting,
-    reset
+    reset,
+    listOfTimes
   };
 }
 
-export function InsertForm({infoStudents, infoColumns}: InsertFormProps) {
-
-  const { setEventDetails } = useInsertStore();
-  const students_ids = get_students_ids(infoStudents);
-
+export function InsertForm() {
+  
   const {
     methods,
     onSubmit,
     reset,
-    options,
-    isSubmitting
-  } = useInsertForm(setEventDetails, students_ids);
+    eventsToday,
+    isSubmitting,
+    listOfTimes
+  } = useInsertForm();
 
   const dialogPrevEvents = useBoolean(false);
 
@@ -106,7 +112,7 @@ export function InsertForm({infoStudents, infoColumns}: InsertFormProps) {
 
   const renderSelectEvent = (
     <Field.Select
-      defaultValue={options.length? options[0].event_id: ''} 
+      defaultValue={eventsToday.length? eventsToday[0].event_id: ''} 
       fullWidth
       name="event"
       label="אירוע"
@@ -118,7 +124,7 @@ export function InsertForm({infoStudents, infoColumns}: InsertFormProps) {
       helperText=""
       inputProps={{}}
     >
-    {options.map((option) => (
+    {eventsToday.map((option) => (
       <MenuItem
         key={option.event_id}
         value={option.event_id}
@@ -170,7 +176,7 @@ export function InsertForm({infoStudents, infoColumns}: InsertFormProps) {
 
            content={
             <InsertFormPastEvents
-                students_ids={students_ids}
+                listOfTimes={listOfTimes}
                 dialogPrevEvents={dialogPrevEvents}
                 methods={methods}
                 reset={reset}

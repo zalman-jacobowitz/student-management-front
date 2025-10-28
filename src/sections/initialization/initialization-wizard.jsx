@@ -5,18 +5,20 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useRouter } from 'src/routes/hooks';
 
+// eslint-disable-next-line import/extensions
 import { shortId, uuidv4 } from 'src/utils/uuidv4.js';
 
 import { initUpdate } from 'src/actions/init.ts';
 
 import { StepsProvider } from 'src/components/steps-form';
 
-import { CompletionStep } from './components/completion-step';
+import { CompletionStep } from './components/completion-step.jsx';
 import useInitializationStore from './initialization-state.ts';
-import { ColumnSelectionStep } from './components/column-selection-step';
-import { StudentFileUploadStep } from './components/student-file-upload-step';
-import { TemplateDefinitionStep } from './components/template-definition-step';
-import { InitializationColumnsView } from './components/initialization-columns-view';
+import { ColumnSelectionStep } from './components/column-selection-step.jsx';
+import { StudentFileUploadStep } from './components/student-file-upload-step.jsx';
+import { TemplateDefinitionStep } from './components/template-definition-step.jsx';
+import { InitializationColumnsView } from './components/initialization-columns-view.jsx';
+import { Welcome } from './components/welcome.jsx';
 
 
 
@@ -81,6 +83,7 @@ function formatTemplates(table){
     event_start: item.event_start,
     event_end: item.event_end,
     template_name: 'רגיל',
+    active: 1,
     template_id
   }));
 
@@ -88,39 +91,88 @@ function formatTemplates(table){
 }
 
 // --------------------------------------------------------------------
+/*
+type InitForm = {
+  studentFile: File | null;
+  templateData: {
+    events: Array<{
+      event_name: string;
+      event_start: string;
+      event_end: string;
+    }>;
+  };
+  columnSelection: {
+    nameColumn: string;
+    familyColumn: string;
+    accessibleColumn: string;
+    filterColumns: string[];
+    duplicateColumns: string[];
+  };
+};
+git config user.name "Your Name"
+git config user.email "zalmanjacob@gmail.com"
+
+*/
 
 export function InitializationWizard() {
+
+  // ראוטר לצורך הפניה למסך התלמידים לאחר העידכון
   const router = useRouter();
 
   const defaultValues = useMemo(() => ({
+    // הנתונים של התלמידים מהקובץ שהועלה
     studentFile: null,
+    // רשימה של הסדרים וזמניהם
     templateData: {
-      events: []
+      events: [
+        {
+          event_name: '',
+          event_start: '',
+          event_end: ''
+        }
+      ]
     },
+    // הגדרת סוג העמודות אם הוא ייחודי
     columnSelection: {
+      // עמודה המייצגת את השם הפרטי
       nameColumn: "",
+      // עמודה המייצגת את שם המשפחה
       familyColumn: "",
+      // עמודה נגישה
       accessibleColumn: "",
+      // עמודות לצורך סינון הנתונים
       filterColumns: [],
+      // עמודות לצורך מציאת כפילויות
       duplicateColumns: [],
     }
   }), []);
 
   const steps = useMemo(() => [
     {
+      // הצגת הודעת ברוכים הבאים- וכפתור ההדרכה
+      name: 'welcome',
+      label: 'ברוכים הבאים',
+      icon: "solar:hand-wave-bold-duotone",
+      component: <Welcome />,
+    },
+    {
+      // שלב העלאת קובץ התלמידים
       name: 'studentUpload',
       label: 'העלאת תלמידים',
+      maxWidth: 'lg',
       icon: "solar:users-group-rounded-bold-duotone",
       component: <StudentFileUploadStep />,
       alertHelper: 'העלה קובץ Excel או CSV עם פרטי התלמידים'
     },
     {
+      // שלב הגדרת הסדרים
       name: 'templates',
       label: 'הגדרת תבניות',
       icon: "solar:clipboard-list-bold-duotone",
       component: <TemplateDefinitionStep />,
     },
     {
+      // הגדרה של עמודות השם משפחה כפיליות ועוד
       name: 'columnSelection',
       label: 'בחירת עמודות',
       icon: "solar:list-check-bold-duotone",
@@ -128,6 +180,7 @@ export function InitializationWizard() {
       alertHelper: 'בחר את העמודות הנדרשות לניהול התלמידים'
     },
     {
+      // הגדרת העמודות עצמם
       name: 'columns',
       label: 'הגדרת עמודות',
       icon: "solar:settings-bold-duotone",
@@ -135,6 +188,7 @@ export function InitializationWizard() {
       alertHelper: 'ערוך את הגדרות העמודות לפי הצורך'
     },
     {
+      // הודעת סיום במקרה של הצלחה
       name: 'complete',
       label: 'השלמת איתחול',
       icon: "solar:check-circle-bold-duotone",
@@ -142,8 +196,13 @@ export function InitializationWizard() {
     }
   ], []);
 
+  // סטייט של האיתחול: לשמירה של הנתונים על התלמידים העמודות וכיוב 
+  // בפורמט המתאים לשרת - גם בשלבי העריכה של הטופס
   const store = useInitializationStore()
+
+  // הפונקצייה לשליחת הנתונים לאיתחול המערכת
   const queryClient = useQueryClient();
+  
   const mutate = useMutation(initUpdate({queryClient}))
 
   const handleSubmit = async (data) => {
@@ -157,6 +216,8 @@ export function InitializationWizard() {
           info_columns: newFormattedColumns,
           templates: formatTemplates(data.templateData.events)
         }
+      console.log('formattedTables:', formattedTables);
+      
       console.log('Formatted Tables:', formattedTables);
       
       const promise =   mutate.mutateAsync({data: formattedTables, mode: 'update'});
@@ -182,6 +243,7 @@ export function InitializationWizard() {
     }
   };
 
+  // החזרה של הטופס איתחול
   return (
     <StepsProvider
       steps={steps}

@@ -8,10 +8,17 @@ import { inHebrew } from "src/utils/hebrew/getter";
 import { Iconify } from "../iconify";
 import { usePopover } from "../custom-popover";
 import { HebrewDateCal } from "../hebrew-calendar/hebrew-date-picker";
+import { RHFTextField } from "./rhf-text-field";
 
+function defaultDateToday(defaultDate){
+   const date = defaultDate? new Date(defaultDate) : new Date()
+   return inHebrew(date.toISOString().split('T')[0])
+}
 
 export function RHFHebrewDatePicker({
     name='hebrewDatePicker',
+    defaultValue='',
+    time='',
     label = 'תאריך עברי',
     error = false,
     helperText = '',
@@ -20,13 +27,13 @@ export function RHFHebrewDatePicker({
     inputProps = {},
 }) {
     // day format: 01-01-2024
-    const defaultDate = inHebrew(new Date().toISOString().split('T')[0])
-
-    const [selectedDate, setSelectedDate] = useState(defaultDate);
 
     const { control, watch } = useFormContext();
-
+    
     const values = watch();
+
+    const defaultDate = defaultDateToday(values[name])
+    const [selectedDate, setSelectedDate] = useState(defaultDate);
 
     useEffect(()=>{
       if (values.day){
@@ -42,35 +49,36 @@ export function RHFHebrewDatePicker({
             control={control}
             render={({ field }) => (
             <Box>
-        <TextField
-            {...field}
-            label={label}
-            data-testid="hebrew-date-picker"
-            value={`${selectedDate['יום_בשבוע']} ${selectedDate['יום_עברי']} ${selectedDate['חודש_עברי']} ${selectedDate['שנה_עברית']}`}
-            fullWidth
-            variant="outlined"
-            onClick={popover.onOpen}
-            error={error}
-            helperText={helperText}
-            disabled={disabled}
-            required={required}
-            sx={{ direction: 'rtl' }}
-            inputProps={{
-              dir: 'rtl',
-            }}
-            InputProps={{
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={popover.onOpen} edge="end" disabled={disabled}>
-                    <Iconify icon="eva:calendar-outline" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              ...inputProps,
-            }}
-          />
-          
+            <TextField
+                {...field}
+                
+                label={label}
+                data-testid="hebrew-date-picker"
+                value={`${selectedDate['יום_בשבוע']} ${selectedDate['יום_עברי']} ${selectedDate['חודש_עברי']} ${selectedDate['שנה_עברית']}`}
+                fullWidth
+                variant="outlined"
+                onClick={popover.onOpen}
+                error={error}
+                helperText={helperText}
+                disabled={disabled}
+                required={required}
+                sx={{ direction: 'rtl' }}
+                inputProps={{
+                dir: 'rtl',
+                }}
+                InputProps={{
+                readOnly: true,
+                endAdornment: (
+                    <InputAdornment position="end">
+                    <IconButton onClick={popover.onOpen} edge="end" disabled={disabled}>
+                        <Iconify icon="eva:calendar-outline" />
+                    </IconButton>
+                    </InputAdornment>
+                ),
+                ...inputProps,
+                }}
+            />
+            
     
           <Popover
             id={name}
@@ -95,6 +103,9 @@ export function RHFHebrewDatePicker({
                 <HebrewDateCal selectedDate={selectedDate} setSelectedDate={setSelectedDate} onClose={popover.onClose} name={name} />
             </Box>
           </Popover>
+            { 
+                time && <RHFTextField type='time'/>
+            }
         </Box>
             )}
         />

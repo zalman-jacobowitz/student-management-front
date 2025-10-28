@@ -73,6 +73,7 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
   
   const onSubmit = handleSubmit(async (data) => {
 
+
     if (!student.student_id){
       data.student_id = shortId()
     }
@@ -87,11 +88,12 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
       });
 
       await promise;
+
       onClose();
 
     } catch (error) {
       console.error('Submission error:', error);
-      toast.error('שגיאה בשליחת הטופס');
+      toast.error('שגיאה בשליחת הטופס');  
     }
   });
 

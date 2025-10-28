@@ -2,8 +2,10 @@
 Table exceptions {
 student_id varchar
   exception_id varchar
-  start varchar
-  end varchar
+  from_day varchar
+  from_hour varchar
+  to_day varchar
+  to_hour varchar
   reason varchar
 }
 */
@@ -15,47 +17,48 @@ export const INFO_EXCEPTIONS = [
         group_name: "primary",
         hidden: "",
         label: "תלמיד",
-        name: "student_id",
+        name: "students",
         required: "",
-        sorting: "0.0",
+        width: 250,
+        sorting: 1,
         table_name: "exceptions",
         type: "text",
     },
-    {
+      {
         client: "kg_gdola",
         filters: "",
-        group_name: "primary",
-        hidden: "",
+        group_name: "",
+        hidden: "1",
         label: "מזהה אישור",
         name: "exception_id",
-        required: "",
-        sorting: "0.0",
+        required: "true",
+        sorting: 10,
         table_name: "exceptions",
         type: "text",
     },
     {
         client: "kg_gdola",
         filters: "",
-        group_name: "primary",
+        group_name: "",
         hidden: "",
         label: "תחילת אישור",
         name: "start",
         required: "true",
-        sorting: "1.0",
+        sorting: 3,
         table_name: "exceptions",
-        type: "date",
+        type: "text",
     },
     {
         client: "kg_gdola",
         filters: "",
-        group_name: "primary",
+        group_name: "",
         hidden: "",
         label: "סיום אישור",
         name: "end",
         required: "true",
-        sorting: "2.0",
+        sorting: 4,
         table_name: "exceptions",
-        type: "date",
+        type: "text",
     },
     {
         client: "kg_gdola",
@@ -65,7 +68,7 @@ export const INFO_EXCEPTIONS = [
         label: "סיבה",
         name: "reason",
         required: "true",
-        sorting: "3.0",
+        sorting: 5,
         table_name: "exceptions",
         type: "text",
     }

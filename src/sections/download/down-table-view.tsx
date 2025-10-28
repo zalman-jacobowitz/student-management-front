@@ -1,20 +1,28 @@
 
+import jsPDF from 'jspdf';
+import { head } from 'lodash';
+import html2canvas from 'html2canvas';
 import React, { Suspense } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Checkbox, IconButton, TableCell, TextField, Typography } from '@mui/material';
+
+import { getElul } from 'src/utils/hebrew/getter';
+
+import { apiTemplates } from 'src/actions/templates';
+import { apiInfoColumns } from 'src/actions/info_columns';
+import { apiInfoStudents } from 'src/actions/info_students';
+import { info_columns, info_students } from 'src/actions/moks/mokes';
 
 import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { LoadingScreen } from 'src/components/loading-screen';
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
-import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
-import { head } from 'lodash';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { apiTemplates } from 'src/actions/templates';
-import { getElul } from 'src/utils/hebrew/getter';
-import { info_columns, info_students } from 'src/actions/moks/mokes';
+
 import { descriptionColumns, getDesc } from '../insert/functions';
-import { generateScanId, uuidv4 } from 'src/utils/uuidv4';
 
 
 const templatesMock = [
@@ -97,14 +105,6 @@ const mockData = Array.from({ length: 10 }, (_, i) => ({
     }))
 
 
-
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import { apiInfoStudents } from 'src/actions/info_students';
-import { apiInfoColumns } from 'src/actions/info_columns';
-import { LoadingScreen } from 'src/components/loading-screen';
-
-
 export function DownTableView() {
     const templates = useSuspenseQuery(apiTemplates())
     console.log({ data: templates.data })
@@ -152,6 +152,7 @@ export function DownTableView() {
   
   
     const imgData = canvas.toDataURL('image/png');
+    // eslint-disable-next-line new-cap
     const pdf = new jsPDF('p', 'mm', 'a4');
   
   // גדלי דף A4 portrait
@@ -245,6 +246,7 @@ export function DownTableView() {
       const pageImgHeight = (tempCanvas.height * finalWidth) / canvas.width;
       
       pdf.addImage(pageImgData, 'PNG', margin, margin, finalWidth, pageImgHeight);
+      // eslint-disable-next-line no-plusplus
       pageNumber++;
     }
   }

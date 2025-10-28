@@ -13,7 +13,7 @@ export function SupabaseVerifyView() {
       <FormHead
         icon={<EmailInboxIcon />}
         title="בדוק את האימייל שלך!"
-        description={`שלחנו לך קוד אישור בן 6 ספרות בדוא"ל. \nאנא הזן את הקוד בתיבה למטה כדי לאמת את כתובת הדוא"ל שלך.`}
+        description={`לחץ על כפתור האימות במייל שנשלח אליך - ותחזור למערכת`}
       />
 
       <FormReturnLink href={paths.auth.supabase.signIn} sx={{ mt: 0 }} />

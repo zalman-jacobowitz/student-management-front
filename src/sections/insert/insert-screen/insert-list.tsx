@@ -1,5 +1,5 @@
 
-import { Box, Button } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography } from "@mui/material";
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
@@ -7,11 +7,21 @@ import { ButtonGreen } from "src/components/button-green";
 import useInsertStore from "../insert-state";
 import { getDesc, descriptionColumns } from "../functions";
 import { newApplyFilters } from "../components/filters";
+import { useCallback } from "react";
+import { ProgressBar } from "src/components/progress-bar";
+import { RenderCell } from "src/sections/summary/summary-datagrid-view";
+import { Label } from "src/components/label";
+import { Iconify } from "src/components/iconify/iconify";
+import { IconButton } from "yet-another-react-lightbox";
+import { GridMoreVertIcon } from "@mui/x-data-grid";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { apiDataStudentsEvent } from "src/actions/data_students_event";
+import { apiListEvents } from "src/actions/list_of_events";
+import { inHebrew } from "src/utils/hebrew/getter";
+import { stat } from "fs";
 
 interface InsertListProps {
   methods: any;
-  infoColumns: any[];
-  currentData: any[];
   filters: {
     [key: string]: any;
   };
@@ -36,8 +46,8 @@ const checkByType = (value: any, filterValue: string) => {
 }
 
 
-const applyFilters = (data: any[], filters: { [key: string]: any }) => 
-  data.filter((student) => 
+const applyFilters = (data: any[], filters: { [key: string]: any }) =>
+  data.filter((student) =>
     Object.entries(filters).every(([key, value]) => {
       if (value) {
         return checkByType(student[key], value);
@@ -51,13 +61,18 @@ function enhanceStudentData(student) {
   let label = '';
   let icon = '';
   let tooltip = '';
+  let type = ''
 
   if (student.delay) {
+    type = 'delay'
     color = 'warning';
-    label = 'איחור';
+    label = `${student.delay_minutes} דק'`;
     icon = 'solar:alarm-bold-duotone';
     tooltip = student.arrival_time || '';
-  } else if (student.exception) {
+
+
+  } else if (student.reason) {
+    type = 'exception'
     color = 'default';
     label = 'אישור';
     icon = 'solar:clipboard-check-bold-duotone';
@@ -69,42 +84,256 @@ function enhanceStudentData(student) {
     color,
     label,
     icon,
-    tooltip
+    tooltip,
+    type
   };
 }
 
+  const colorMap = {
+    true: 'success',
+    false: 'error',
+    delayed: 'warning',
+    exceptional: 'default',
+  };
 
 
+  const text = {
+    exceptional: 'נעדר באישור',
+    delayed: 'איחר',
+    true: 'היה',
+    false: 'חיסר',
+  }
 
-export function InsertList({ methods, infoColumns, currentData, handleUpdate, filters }: InsertListProps) {
+
+function CountShows({ count }: {}) {
+  /*
+  מציג את האירועים עם צבע אייקון לפי מצב נוכחות
+  בזה אחר זה ללא כיתוב של האירוע אלא רק הTOLLTIP
+  לדוגמה:
+  const count = {
+    'event1': true,
+    'event2': false,
+    'event3': 'delayed',
+    ... 
+  }
+  */
+  const iconMap = {
+    exceptional: 'solar:alert-circle-bold-duotone',
+    delayed: 'solar:check-circle-bold-duotone',
+    true: 'solar:check-circle-bold-duotone',
+    false: 'solar:check-circle-bold-duotone',
+  };
+
+  return <>
+      {Object.entries(count).map(([eventName, status]) => (
+        <Tooltip title={eventName.split(' | ')[1]} key={eventName}>
+            <Chip
+              key={eventName}
+              size="small"
+              label={`${text[status]} ב${eventName.split(' | ')[0]}`}
+              tooltip={eventName}
+              color={colorMap[status as keyof typeof colorMap]}
+              variant="soft"
+              sx={{ m: 0.3, p:0 }}
+            />
+            
+        </Tooltip>
+
+      ))}
+  </>
+}
+
+
+const getColorByStatus = (student) => {
+  
+  if (student.delay) {
+    return {color: 'warning', label: 'איחר', icon: 'solar:check-circle-bold-duotone', type: 'delay', tooltip: 'התלמיד איחר'};
+  }
+  if (student.reason) {
+    return {color: 'default', label: 'נעדר באישור', icon: 'solar:check-circle-bold-duotone', type: 'exceptional', tooltip: 'התלמיד נעדר באישור'};
+  }
+  if (Number(student.data)) {
+    return {color: 'success', label: 'היה', icon: 'solar:check-circle-bold-duotone', type: 'present', tooltip: 'התלמיד היה נוכח'};
+  }
+  return {color: 'error', label: 'חיסר', icon: 'solar:check-circle-bold-duotone', type: 'absent', tooltip: 'התלמיד היה חסר'};
+};
+
+function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [] }: { children: React.ReactNode }) {
+  const { color, label, icon, tooltip } = getColorByStatus(student);
+  const SLabel =  (
+    <Tooltip title={tooltip}>
+      <Label
+        color={color || 'default'}
+        variant='filled'
+        sx={{
+          bottom: -10,
+          px: 0.5,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          height: 20,
+          position: 'absolute',
+          borderRadius: 1,
+          opacity: 0.7,
+        }}
+      >
+        <Iconify icon={icon} />
+        {label}
+      </Label>
+    </Tooltip>
+  );
+
+  return (
+    <Card variant="outlined" sx={{bgcolor: 'background.neutral'}}>
+      <CardHeader
+
+        title={<Typography variant="h6">{student.primary}</Typography>}
+        avatar={
+          
+          <Box sx={{ position: 'relative' }}>
+            <Avatar color={color}  src="" alt="" sx={{ width: 48, height: 48, opacity: 0.7 }}  />
+            {SLabel}
+          </Box>}
+
+        subheader={<Typography>{student.secondary}</Typography>}
+        subheaderTypographyProps={{color: 'success'}}
+        sx={{ alignContent: 'center', bgcolor: 'background.neutral' }}
+      >
+
+      </CardHeader>
+      <CardContent>
+        <Box sx={{ mb: 2, p: 1 }}>
+        <CountShows count={events} />
+        </Box>
+        <Box sx={{ mb: 2, p: 1 }}>
+        <CountShows count={days} />
+        </Box>
+      </CardContent>
+
+    </Card>
+  );
+}
+
+
+function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) {
+  /*
+  הופכת את נתוני ה-API לפורמט המתאים ל-CountShows
+  מחזירה אובייקט בו כל student_id ממופה לאובייקט עם שם אירוע ומצבו
+  לדוגמה:
+  {
+    '2207-J': {
+      'גמרא': 'exceptional',  // יש אישור
+      'מנחה': 'exception',    // נוכחות עם אישור
+      'סדר א': false          // עדר
+    }
+  }
+  */
+  const result: Record<string, Record<string, any>> = {};
+
+
+  Object.entries(allEventsData).forEach(([eventName, students]) => {
+    students.forEach((student: any) => {
+      if (!result[student.student_id]) {
+        result[student.student_id] = {};
+      }
+
+      // קביעת המצב לפי הנתונים
+      let status: any = false;
+      if (student.delay_id || student.delay) {
+          // יש איחור
+          status = 'delayed';
+      } 
+      else if (student.data === 1) {
+        // נוכחות
+        status = true;
+      }
+      else if (student.data === 0) {
+      // עדר
+        status = false;
+      }
+    
+      if (student.exception_id || student.exception) {
+          // יש אישור
+          status = 'exceptional';
+        }
+      
+
+      result[student.student_id][eventName] = status;
+    });
+  });
+
+  return result;
+}
+
+function useLastEventsData() {
+  const { selectedEvent } = useInsertStore(state => state);
+
+  const lastEvents = useSuspenseQuery(apiListEvents());
+  const allEventsData = {}
+  const allDaysData = {}
+  // 4 limit
+  lastEvents.data.slice(0, 3).forEach((event) => {
+    console.log('event: ', event);
+        event.event = event.event_id; 
+    const eventData = useSuspenseQuery(apiDataStudentsEvent(event)).data;
+
+
+    if (event.event_id === selectedEvent.event_id) {
+      const textLabel = ` ${inHebrew(event.day, false, true)} | ${selectedEvent.event_name}`;
+      allDaysData[textLabel] = [...eventData];
+      allDaysData[textLabel].push(event);
+    }
+    allEventsData[`${event.event_name} | ${inHebrew(event.day, false, true)}`] = [...eventData];
+  });
+
+  return  {
+    event: transformEventsDataForCountShows(allEventsData),
+    day: transformEventsDataForCountShows(allDaysData)
+  };
+}
+
+export function InsertList({ summaryMode, selectLabel, exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
 
-  const selectedEvent = useInsertStore(state => state.selectedEvent);
-
+  const { selectedEvent } = useInsertStore(state => state);
 
   const { handleSubmit } = methods;
 
   const onSubmit = (values: any) => {
-
     // כאן תוכל לשלוח את הערכים לשרת או להמשיך הלאה
     const toServer = Object.entries(values).map(([student_id, data]) => ({
-        student_id,
-        exception: currentData.find((item) => item.student_id === student_id)?.exception_id || '',
-        data: Number(data),
-        event: selectedEvent.event,
-        day: selectedEvent.day,
-        delay: currentData.find((item) => item.student_id === student_id)?.delay || ''
+      student_id,
+      exception: currentData.find((item) => item.student_id === student_id)?.exception_id || '',
+      data: Number(data),
+      event: selectedEvent.event,
+      day: selectedEvent.day,
+      delay: currentData.find((item) => item.student_id === student_id)?.delay || ''
 
     }));
-    console.table(toServer.map(e=>({נוכחות: e.data, איחור: e.delay, אישור: e.exception, student_id: e.student_id})))
+    console.table(toServer.map(e => ({ נוכחות: e.data, איחור: e.delay, אישור: e.exception, student_id: e.student_id })))
     // if there is data from server.
-    
+
     handleUpdate(toServer, 'update')
   };
 
-  const dataFiltered = newApplyFilters(currentData, filters, infoColumns)
-  console.log('dataFiltered', dataFiltered)
-  const { primary, secondary } = descriptionColumns(infoColumns)
+  const handleOnClick = useCallback((type, details) => {
+
+    if (type === 'exception') {
+      console.log('details: ', details)
+      selectLabel(details)
+      exceptionDialog.onTrue()
+    }
+    if (type === 'delay') {
+      selectLabel({ ...details, students: [details] })
+      dialogDelay.onTrue()
+
+    }
+  }, [])
+
+
+  const lastEventsData = useLastEventsData();
+  
+
+  const dataFiltered = newApplyFilters(currentData, filters)
 
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -118,9 +347,10 @@ export function InsertList({ methods, infoColumns, currentData, handleUpdate, fi
           md: 'repeat(3, 1fr)',
         }}
       >
-        {dataFiltered.map((student) => {
+        {currentData.map((student) => {
           const enhancedStudent = enhanceStudentData(student);
-          return (
+          return !summaryMode ? (
+
             <Field.BoolianList
               key={student.student_id}
               name={student.student_id}
@@ -128,12 +358,19 @@ export function InsertList({ methods, infoColumns, currentData, handleUpdate, fi
               icon={enhancedStudent.icon}
               label={enhancedStudent.label}
               tooltip={enhancedStudent.tooltip}
-              primary={getDesc(student, primary)}
-              secondary={getDesc(student, secondary)}
+              onClick={() => handleOnClick(enhancedStudent.type, student)}
+              primary={student.primary}
+              secondary={student.secondary}
             />
-          );
-        })}
-        <ButtonGreen type="submit" data-testid="update-button" sx={{ mt: 2 }} onClick={() => {}} />
+
+          ) : <SummaryMode
+                key={student.student_id}
+                student={student}
+                enhancedStudent={enhancedStudent}
+                events={lastEventsData.event[student.student_id]}
+                days={lastEventsData.day[student.student_id]} />;
+            })}
+        <ButtonGreen type="submit" data-testid="update-button" sx={{ mt: 2 }} onClick={() => { }} />
 
       </Box>
     </Form>

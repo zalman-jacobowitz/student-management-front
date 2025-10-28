@@ -44,17 +44,19 @@ export function ProfileView({ student_id }) {
 -*/
 
 import { Suspense, useEffect, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { Alert, Box, Chip, Stack, Typography } from "@mui/material";
 
 import { useGetTable } from "src/actions/table";
+// eslint-disable-next-line import/extensions
+import { apiInfoStudents } from "src/actions/info_students";
 
 import { LoadingScreen } from "src/components/loading-screen";
 
 import useInsertStore from "src/sections/insert/insert-state.ts";
 
 import { ProfileViewScreen } from "../profile-screen";
-import { apiInfoStudents } from "src/actions/info_students";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Alert, Box, Chip, Stack, Typography } from "@mui/material";
 
 
 
