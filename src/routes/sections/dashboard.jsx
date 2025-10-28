@@ -89,7 +89,6 @@ export const dashboardRoutes = [
       { path: 'העלאת-דוחות-רישום', element: <UploadReportsPage /> },
       { path: 'הורדת-תבנית', element: <DownloadTemplateReportsPage /> },
       { path: 'רישומים', element: <DetailsPage /> },
-      { path: 'מבחנים', element: <TestsPage /> },
       { path: 'סקירה', element: <OverviewPage /> }
     ],
   },
