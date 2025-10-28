@@ -40,8 +40,7 @@ const UploadReportsPage = lazy(() => import('src/pages/dashboard/uploadReports')
 const DownloadTemplateReportsPage = lazy(() => import('src/pages/dashboard/download'));
 // DetailsPage
 const DetailsPage = lazy(() => import('src/pages/dashboard/details'));
-// tests:
-const TestsPage = lazy(() => import('src/pages/dashboard/tests'));
+
 // overview:
 const OverviewPage = lazy(() => import('src/pages/dashboard/overview'));
 
