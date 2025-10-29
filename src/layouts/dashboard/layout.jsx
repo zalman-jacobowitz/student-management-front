@@ -26,6 +26,7 @@ import { screenOptions, navData as dashboardNavData } from '../config-nav-dashbo
 
 // ----------------------------------------------------------------------
 
+/*
 const groups = {
   'ניהול נתונים': ['info', 'users'],
   'ניהול נוכחות': ['manager', 'export', 'scan', 'download','exceptions'],
@@ -34,7 +35,12 @@ const groups = {
   'סיכומים': ['profile', 'insert', 'summary', 'details', 'overview'],
   'הגדרות': ['settings', 'inialize', 'userPermissions', 'initialization'],
 };
-
+*/
+const groups = {
+  'ניהול נוכחות': ['insert', 'exceptions'],
+  'ניהול נתונים': ['info', 'profile'],
+  'ניהול זמנים': ['templates', 'days'],
+};
 function screensFormat(data) {
   // const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
   const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])

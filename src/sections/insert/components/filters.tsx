@@ -215,14 +215,14 @@ const getDefaultFilters = (infoColumns: any[]) => {
 
 // החלה של הפילטרים לפי הגדרת הסוג שלהם.
 
-export function newApplyFilters(data: any[], filters: any) {
+export function newApplyFilters(data: any[], filters: any, infoColumns: any[]) {
   if (Object.keys(filters).length === 0 || data.length === 0) {
     return data
   }
   
   let filteredData = data
 
-  demoInfoColumns.forEach(col => {
+  infoColumns.forEach(col => {
     if (filters[col.name] !== '') {
       if (col.filter_type === 'multiple') {
         filteredData = filteredData.filter((student: any) => filters[col.name].includes(student[col.name]))

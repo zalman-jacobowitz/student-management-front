@@ -291,7 +291,7 @@ function useLastEventsData() {
   };
 }
 
-export function InsertList({ summaryMode, selectLabel, exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
+export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
 
   const { selectedEvent } = useInsertStore(state => state);
@@ -333,7 +333,7 @@ export function InsertList({ summaryMode, selectLabel, exceptionDialog, dialogDe
   const lastEventsData = useLastEventsData();
   
 
-  const dataFiltered = newApplyFilters(currentData, filters)
+  const dataFiltered = newApplyFilters(currentData, filters, infoColumns)
 
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -347,7 +347,7 @@ export function InsertList({ summaryMode, selectLabel, exceptionDialog, dialogDe
           md: 'repeat(3, 1fr)',
         }}
       >
-        {currentData.map((student) => {
+        {dataFiltered.map((student) => {
           const enhancedStudent = enhanceStudentData(student);
           return !summaryMode ? (
 

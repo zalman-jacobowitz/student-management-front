@@ -130,6 +130,7 @@ export function InsertListView({}) {
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
       
       <InsertList
+        infoColumns={infoColumns}
         summaryMode={summaryMode.value}
         selectLabel={selectLabel}
         dialogDelay={dialogDelay}
