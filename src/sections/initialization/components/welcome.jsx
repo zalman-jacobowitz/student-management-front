@@ -54,7 +54,7 @@ export function Welcome() {
         </Grid>
         <Grid item xs={12} md={6} sx={{ display: 'flex', mb: 5, flexDirection: 'column', alignItems: 'center' }}>
         <AnimateText
-          className='suez-one-regular'
+
           text={TEXTS.welcome}
           variants={varFade().in}
           component="h3"
@@ -64,7 +64,7 @@ export function Welcome() {
         />
         <AnimateText
           color='primary'
-          className='suez-one-regular'
+          
           text={'ניהול תלמידים'}
           variants={varBounce().inUp}
           sx={{
@@ -81,7 +81,6 @@ export function Welcome() {
         />
 
           <AnimateText
-            className='suez-one-regular'
             text={TEXTS.subwelcome}
              sx={{
               textAlign: 'center',
