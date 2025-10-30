@@ -36,19 +36,20 @@ interface InsertListHeaderProps {
 export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
   const selectedEvent = useInsertStore(state => state.selectedEvent);
 
-  const hebDay = inHebrew(selectedEvent.day)
+  const hebDay = inHebrew(selectedEvent.day, 'Dms')
   const data = Object.values(watch());
   console.log('selectedEvent.day:', selectedEvent.day)
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
       <PageTitle
         primary={selectedEvent.event_name}
-        secondary={`${hebDay.יום_עברי} ${hebDay.חודש_עברי}`}
+        secondary={`יום ${hebDay}`}
       />
+      {/*
       <LabelSummary
         labels_summary={LABEL_SUMMARY}
         data={data}
-      />
+      />*/}
     </Box>
   );
 }

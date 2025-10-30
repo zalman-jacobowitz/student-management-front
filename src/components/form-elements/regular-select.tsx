@@ -1,8 +1,11 @@
-import { Select, MenuItem, InputLabel, FormControl, OutlinedInput } from "@mui/material";
+import { Select, MenuItem, InputLabel, FormControl, OutlinedInput, Box, Stack } from "@mui/material";
+import { Iconify } from "src/components/iconify";
 
 interface SelectOption {
   value: any;
   label: string;
+  icon?: string;
+  color?: 'success' | 'error' | 'warning' | 'info' | 'default';
 }
 
 interface RegularSelectProps {
@@ -30,14 +33,22 @@ export function RegularSelect({
       input={<OutlinedInput label={label} />}
       renderValue={(selected) => {
         const option = options.find(opt => opt.value === selected);
-        return option?.label || '';
+        return (
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {option?.icon && <Iconify icon={option.icon} width={20} sx={{ color: `${option.color}.main` }} />}
+            <span>{option?.label || ''}</span>
+          </Stack>
+        );
       }}
       inputProps={{ id: 'user-filter-role-select-label' }}
       MenuProps={{ PaperProps: { sx: { maxHeight: 240 } } }}
     >
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>
-          {option.label}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {option.icon && <Iconify icon={option.icon} width={20} sx={{ color: `${option.color}.main` }} />}
+            <span>{option.label}</span>
+          </Stack>
         </MenuItem>
       ))}
     </Select>

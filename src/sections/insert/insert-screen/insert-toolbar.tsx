@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Fab, IconButton } from "@mui/material";
 
 import { useBoolean } from "src/hooks/use-boolean";
 
@@ -15,21 +15,22 @@ import { InsertFilters } from "../components/filters";
 import { DelayDialog } from "../delays/delays-edit-steps";
 import { ButtonGreen } from "src/components/button-green";
 import { ExceptionDialog } from "src/sections/exceptions/exceptions-edit-steps";
+import { Iconify } from "src/components/iconify/iconify";
 
 
 
 // ----------------------------------------------------------------------
 
 const SORT_OPTIONS = [
-  { label: 'סדר עולה', value: 'עולה' },
-  { label: 'סדר יורד', value: 'יורד' },
-  { label: 'שם פרטי', value: 'שם' },
+  { label: 'סדר עולה', value: 'עולה', icon: 'solar:arrow-up-bold-duotone' },
+  { label: 'סדר יורד', value: 'יורד', icon: 'solar:arrow-down-bold-duotone' },
+  { label: 'שם פרטי', value: 'שם', icon: 'solar:user-bold-duotone' },
 ];
 const FILTER_OPTIONS = [
-{ label: 'נוכחים', value: 'true' },
-{ label: 'חסרים', value: 'false' },
-{ label: 'מאחרים', value: 'late' },
-{ label: 'הכל', value: 'all' },
+{ label: 'נוכחים', value: 'true', icon: 'solar:check-circle-bold-duotone', color: 'success' },
+{ label: 'חסרים', value: 'false', icon: 'solar:close-circle-bold-duotone', color: 'error' },
+{ label: 'מאחרים', value: 'late', icon: 'solar:clock-circle-bold-duotone', color: 'warning' },
+{ label: 'הכל', value: 'all', icon: 'solar:list-bold-duotone', color: 'default' },
 ];
 
 // ----------------------------------------------------------------------
@@ -101,11 +102,24 @@ export function InsertToolbar({
       direction={{ xs: 'column', md: 'row' }}
       sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
     >
-      <RegularButton onClick={onBack} icon="solar:arrow-right-bold" data-testid="back-button">חזור</RegularButton>
-      <Button onClick={filterDrawer.onTrue}>סינון</Button>      
+      <IconButton
+        onClick={onBack}
+        color="default"
+        data-testid="back-button"
+        variant="extended"
+      >
+        <Iconify icon="solar:arrow-right-bold-duotone" width={24} />
+      </IconButton>
+            <IconButton
+        onClick={filterDrawer.onTrue}
+        color="default"
+        variant="extended"
+      >
+        <Iconify icon="solar:filter-bold-duotone" width={24} />
+      </IconButton>      
       <RegularSelect
         label="סדר לפי"
-        onChange={()=>{}}
+        onChange={() => {}}
         options={SORT_OPTIONS}
         data-testid="sort-select"
       />
