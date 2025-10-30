@@ -1,6 +1,10 @@
-import { Box, Button, Typography } from "@mui/material";
-import { MotionContainer, varFade } from "src/components/animate";
+import { Box, Button, Typography, Fab, Tooltip } from "@mui/material";
+import { MotionContainer, varFade, varBounce, AnimateText } from "src/components/animate";
 import { useWalktour, Walktour } from "src/components/walktour";
+import { Iconify } from "src/components/iconify";
+import { TEXTS } from "../explantions";
+import { textGradient } from "src/theme/styles";
+import { useTheme } from "@emotion/react";
 
 export function Welcome() {
     const walktourSteps = [
@@ -23,27 +27,50 @@ export function Welcome() {
 
     const walktour = useWalktour({
         steps: walktourSteps,
-        defaultRun: true
+        defaultRun: false
     });
-
-  return (
+  
+    const theme = useTheme();
+  
+    return (
     <MotionContainer>
-      <Box sx={{ p: 3 }}>
-        <Typography
-          variant="h5"
+      <Box sx={{ p: 3, mb: 3 }}>
+ <AnimateText
+          color='dray'
+          className='suez-one-regular'
+          text={TEXTS.welcome}
+          variants={varBounce().in}
+          component="h3"
+          sx={{opacity: .5, textAlign: 'center'}}
+          variant="h3"
           gutterBottom
-          component={varFade().inDown.component}
-        >
-          ברוכים הבאים לאיתחול המערכת!
-        </Typography>
+        />
+        <AnimateText
+          color='primary'
+          className='suez-one-regular'
+          text={'ניהול תלמידים'}
+          variants={varBounce().in}
+          sx={{
+            textAlign: 'center',
+            typography: 'h1',
+            ...textGradient(
+              `to right, ${theme.vars.palette.warning.light}, ${theme.vars.palette.primary.main}`
+            ),
+          }}
+          component="h3"
+          variant="h3"
+          gutterBottom
+        />
 
-        <Typography
-          variant="body1"
+        <AnimateText
+          className='suez-one-regular'
+          text={TEXTS.subwelcome}
+          sx={{textAlign: 'center', mt: 2}}
+          variants={varBounce().in}
+          component="h6"
+          variant="h6"
           gutterBottom
-          component={varFade().inUp.component}
-        >
-          לחץ על הבא כדי להתחיל.
-        </Typography>
+        />
         
       </Box>
       <Walktour
@@ -56,6 +83,8 @@ export function Welcome() {
                 skip: 'דלג'
               }}
             />
+      
+     
     </MotionContainer>
   );
 }

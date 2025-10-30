@@ -1,6 +1,7 @@
-import { Step, StepLabel, Stepper as MuiStepper, Box, Button } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { Step, StepLabel, Stepper as MuiStepper } from '@mui/material';
 import { CustomConnector, CustomStepIcon } from './style';
+import { SpecialButtonActions } from './special-button-actions';
+import { RegularButtonActions } from './regular-button-actions';
 
 export function InitStepper({ steps, activeStep }) {
     const withoutComplete = steps.filter(step => step.name !== 'complete');
@@ -17,25 +18,28 @@ export function InitStepper({ steps, activeStep }) {
     );
   }
   
-export function StepperActions({steps, activeStep, handleNext, handleBack, isSubmitting}){
+export function StepperActions({steps, activeStep, handleNext, handleBack, isSubmitting, hasSpecialButtonDesign=false}){
+    
+    // Use special design if enabled, otherwise use regular design
+    if (hasSpecialButtonDesign) {
+      return (
+        <SpecialButtonActions
+          steps={steps}
+          activeStep={activeStep}
+          handleNext={handleNext}
+          handleBack={handleBack}
+          isSubmitting={isSubmitting}
+        />
+      );
+    }
+
     return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-    {activeStep > 0 && <Button onClick={handleBack}>הקודם</Button>}
-    <Box sx={{ flex: '1 1 auto' }} />
-        {activeStep < steps.length - 2 && (
-          <Button variant="contained" id='next-button' onClick={() => handleNext()}>
-            הבא
-          </Button>
-        )}
-        {activeStep === steps.length - 2 && (
-          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-            שמור שינויים
-          </LoadingButton>
-        )}
-        {activeStep === steps.length - 1 && (
-          <Button variant="contained">
-            סיום
-          </Button>
-        )}
-      </Box>)
+      <RegularButtonActions
+        steps={steps}
+        activeStep={activeStep}
+        handleNext={handleNext}
+        handleBack={handleBack}
+        isSubmitting={isSubmitting}
+      />
+    );
 }
