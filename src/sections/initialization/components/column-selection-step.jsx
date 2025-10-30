@@ -6,6 +6,7 @@ import { Field } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { MasterStep } from 'src/components/steps-form';
 import { Walktour, useWalktour } from 'src/components/walktour';
+import { responsiveFontSizes } from 'src/theme/styles';
 import useInitializationStore from '../initialization-state.ts';
 
 // ----------------------------------------------------------------------
@@ -34,8 +35,13 @@ function primaryText(level) {
 const DemoItem = ({level=1, text=''}) => {
   
    return (
-    <Box sx={{padding: 2}}>
-    <Typography padding={2}>כעת אתה מגדיר את ה{text}</Typography>
+    <Box sx={{padding: { sm: 1, md: 1.5, lg: 2 } }}>
+    <Typography 
+      padding={{ sm: 1, md: 1.5, lg: 2 }}
+      sx={responsiveFontSizes({ sm: 13, md: 14, lg: 14 })}
+    >
+      כעת אתה מגדיר את ה{text}
+    </Typography>
     <Card>
       <ListItem>
         <ListItemAvatar>
@@ -163,8 +169,8 @@ const walktourSteps = [
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <MasterStep fields={fields} number={1} spacing={3} />
+    <Box sx={{ p: { sm: 2, md: 3, lg: 4 } }}>
+      <MasterStep fields={fields} number={1} spacing={{ sm: 2, md: 2.5, lg: 3 }} />
       <Walktour {...useWalktour({ steps: walktourSteps })} />
     </Box>
   );

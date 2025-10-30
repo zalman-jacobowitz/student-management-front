@@ -13,6 +13,7 @@ import { Iconify } from 'src/components/iconify';
 import { Field } from 'src/components/hook-form';
 import { Scrollbar } from 'src/components/scrollbar';
 import { useWalktour, Walktour } from 'src/components/walktour';
+import { responsiveFontSizes } from 'src/theme/styles';
 
 // ----------------------------------------------------------------------
 
@@ -94,16 +95,16 @@ export function TemplateDefinitionStep() {
   } = useTamplatesStep()
 
   return (
-    <Box sx={{ p: 0 }}>
-      <Stack spacing={3}>
+    <Box sx={{ p: { sm: 1.5, md: 2, lg: 2.5 } }}>
+      <Stack spacing={{ sm: 1, md: 1.25, lg: 1.5 }}>
         <Box>
-          <Scrollbar sx={{ maxHeight: 400 }}>
-            <Stack spacing={2}>
+          <Scrollbar sx={{ maxHeight: { sm: 300, md: 400, lg: 500 } }}>
+            <Stack spacing={{ sm: 0.75, md: 1, lg: 1.25 }}>
               {fields.map((item, index) => (
                 <Box
                   key={item.id}
                   sx={{
-                    p: 2,
+                    p: 1,
                     border: '1px solid',
                     borderColor: 'divider',
                     borderRadius: 1,
@@ -120,7 +121,7 @@ export function TemplateDefinitionStep() {
                     <Iconify icon="mdi:delete" width={16} />
                   </IconButton>
 
-                  <Stack spacing={2}>
+                  <Stack spacing={1}>
                     <Field.Text
                       name={`templateData.events[${index}].event_name`}
                       label="שם האירוע"
@@ -128,9 +129,17 @@ export function TemplateDefinitionStep() {
                       placeholder="לדוגמה: שיעור ראשון"
                       variant="filled"
                       fullWidth
+                      sx={{
+                        '& .MuiInputBase-input': {
+                          ...responsiveFontSizes({ sm: 13, md: 14, lg: 14 })
+                        }
+                      }}
                     />
 
-                    <Stack direction="row" spacing={2}>
+                    <Stack 
+                      direction={{ sm: 'column', md: 'row' }} 
+                      spacing={{ sm: 0.75, md: 1, lg: 1.25 }}
+                    >
                       <Field.Text
                         id='event-start'
                         name={`templateData.events[${index}].event_start`}
@@ -163,7 +172,10 @@ export function TemplateDefinitionStep() {
             id='add-event'
             startIcon={<Iconify icon="mdi:plus" />}
             onClick={handleAddEvent}
-            sx={{ mt: 2 }}
+            sx={{ 
+              mt: { sm: 1, md: 1.25, lg: 1.5 },
+              fontSize: { sm: '0.813rem', md: '0.875rem', lg: '0.875rem' }
+            }}
             fullWidth
           >
             הוסף אירוע חדש
@@ -171,8 +183,16 @@ export function TemplateDefinitionStep() {
         </Box>
 
         {watchedTemplate?.template_name && fields.length > 0 && (
-          <Box sx={{ p: 2, bgcolor: 'success.lighter', borderRadius: 1 }}>
-            <Typography variant="body2" color="success.dark">
+          <Box sx={{ 
+            p: { sm: 1, md: 1.25, lg: 1.5 }, 
+            bgcolor: 'success.lighter', 
+            borderRadius: 1 
+          }}>
+            <Typography 
+              variant="body2" 
+              color="success.dark"
+              sx={responsiveFontSizes({ sm: 12, md: 13, lg: 14 })}
+            >
               התבנית &quot;{watchedTemplate.template_name}&quot; מכילה {fields.length} אירועים
             </Typography>
           </Box>
