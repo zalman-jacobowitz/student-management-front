@@ -38,7 +38,7 @@ export function Welcome() {
       <Grid container spacing={3} alignItems="center">
         <Grid item xs={12} md={6}  sx={{ display: 'flex', mt:'5', justifyContent: 'center' }}>
           <Box
-            padding={4}  
+            padding={3}
             component="img"
             src={`${CONFIG.assetsDir}/assets/illustrations/illustration-dashboard.webp`}
             sx={{

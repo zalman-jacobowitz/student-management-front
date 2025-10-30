@@ -153,6 +153,7 @@ export function InitializationWizard() {
       name: 'welcome',
       label: 'ברוכים הבאים',
       icon: "solar:user-hand-up-bold-duotone",
+      maxWidth: 'xl',
       component: <Welcome />,
     },
     {

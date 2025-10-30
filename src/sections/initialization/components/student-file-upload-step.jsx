@@ -197,7 +197,7 @@ export function StudentFileUploadStep() {
       { !watchedFile && renderUpload }
       { watchedFile && renderTemplatesViewer }
       
-      <Walktour {...useWalktour({steps: walktourSteps})} />
+      <Walktour {...useWalktour({steps: walktourSteps, defaultRun: false})} />
     </Box>
   );
 }

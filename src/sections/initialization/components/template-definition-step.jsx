@@ -178,7 +178,7 @@ export function TemplateDefinitionStep() {
           </Box>
         )}
       </Stack>
-      <Walktour {...useWalktour({ steps: walktourSteps })} />
+      <Walktour {...useWalktour({ steps: walktourSteps, defaultRun: false })} />
     </Box>
   );
 }

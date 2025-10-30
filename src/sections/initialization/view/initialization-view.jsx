@@ -19,22 +19,6 @@ export function InitializationView() {
         minHeight: '100vh',
       }}
     >
-      {/* Animated Background Layer */}
-      <Box
-        component={m.div}
-        {...varBgKenburns({ duration: 20, ease: 'easeInOut' }).right}
-        sx={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: `url(${CONFIG.assetsDir}/assets/background/background-3-blur.webp)`,
-          opacity: 0.2,
-          zIndex: -1,
-
-        }}
-      />
 
       {/* Content */}
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
