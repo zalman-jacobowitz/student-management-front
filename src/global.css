@@ -1,29 +1,6 @@
 /** **************************************
 * Fonts: app
 *************************************** */
-.suez-one-regular {
-  font-family: "Suez One", serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.rubik-regular {
-  font-family: "Rubik", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.alef-regular {
-  font-family: "Alef", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.varela-round-regular {
-  font-family: "Varela Round", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
 
 
 /** **************************************
@@ -58,24 +35,6 @@ body,
   flex: 1 1 auto;
   min-height: 100%;
   flex-direction: column;
-  position: relative;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/assets/background/background-3-blur.webp');
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.1;
-  z-index: -1;
-  pointer-events: none;
 }
 img {
   max-width: 100%;
