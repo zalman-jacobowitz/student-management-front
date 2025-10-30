@@ -95,7 +95,7 @@ export const dashboardRoutes = [
   },
   {
     path: 'ניהול/איתחול',
-    element: CONFIG.auth.skip ? <>{nothingLayoutContent}</> : <AuthGuard>{nothingLayoutContent}</AuthGuard>,
+    element: CONFIG.auth.skip ? <>{simpleLayoutContent}</> : <AuthGuard>{nothingLayoutContent}</AuthGuard>,
     children: [
       { element: <InitializationPage />, index: true },
     ],

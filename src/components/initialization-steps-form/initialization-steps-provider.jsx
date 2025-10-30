@@ -31,7 +31,7 @@ export function InitializationStepsProvider({
     watch(methods.getValues());
   }, [watchValue, watch, methods]);
 
-  const { alertHelper, component, maxWidth = 'sm' } = steps[activeStep];
+  const { alertHelper, component, maxWidth = 'xl' } = steps[activeStep];
 
   const submit = handleSubmit(async (data) => {
     const result = await onSubmit(data);
