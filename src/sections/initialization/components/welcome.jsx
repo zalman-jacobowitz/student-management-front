@@ -36,8 +36,9 @@ export function Welcome() {
     return (
     <MotionContainer>
       <Grid container spacing={3} alignItems="center">
-        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Grid item xs={12} md={6}  sx={{ display: 'flex', mt:'5', justifyContent: 'center' }}>
           <Box
+            padding={4}  
             component="img"
             src={`${CONFIG.assetsDir}/assets/illustrations/illustration-dashboard.webp`}
             sx={{
@@ -51,7 +52,7 @@ export function Welcome() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', mb: 5, flexDirection: 'column', alignItems: 'center' }}>
         <AnimateText
           className='suez-one-regular'
           text={TEXTS.welcome}
