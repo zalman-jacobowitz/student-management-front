@@ -333,7 +333,6 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const lastEventsData = useLastEventsData();
   
 
-  const dataFiltered = newApplyFilters(currentData, filters, infoColumns)
 
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -347,7 +346,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           md: 'repeat(3, 1fr)',
         }}
       >
-        {dataFiltered.map((student) => {
+        {currentData.map((student) => {
           const enhancedStudent = enhanceStudentData(student);
           return !summaryMode ? (
 

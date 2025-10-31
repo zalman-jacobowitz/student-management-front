@@ -22,14 +22,14 @@ import { Iconify } from "src/components/iconify/iconify";
 // ----------------------------------------------------------------------
 
 const SORT_OPTIONS = [
-  { label: 'סדר עולה', value: 'עולה', icon: 'solar:arrow-up-bold-duotone' },
-  { label: 'סדר יורד', value: 'יורד', icon: 'solar:arrow-down-bold-duotone' },
-  { label: 'שם פרטי', value: 'שם', icon: 'solar:user-bold-duotone' },
+  { label: 'סדר עולה', value: 'up', icon: 'solar:arrow-up-bold-duotone' },
+  { label: 'סדר יורד', value: 'down', icon: 'solar:arrow-down-bold-duotone' },
+  { label: 'שם פרטי', value: 'name', icon: 'solar:user-bold-duotone' },
 ];
 const FILTER_OPTIONS = [
 { label: 'נוכחים', value: 'true', icon: 'solar:check-circle-bold-duotone', color: 'success' },
 { label: 'חסרים', value: 'false', icon: 'solar:close-circle-bold-duotone', color: 'error' },
-{ label: 'מאחרים', value: 'late', icon: 'solar:clock-circle-bold-duotone', color: 'warning' },
+{ label: 'מאחרים', value: 'delayed', icon: 'solar:clock-circle-bold-duotone', color: 'warning' },
 { label: 'הכל', value: 'all', icon: 'solar:list-bold-duotone', color: 'default' },
 ];
 
@@ -48,6 +48,7 @@ interface InsertToolbarProps {
 
 export function InsertToolbar({
   summaryMode,
+  setSortBy,
   exceptionDialog,
   selectedLabel,
   dialogDelay,
@@ -110,16 +111,18 @@ export function InsertToolbar({
       >
         <Iconify icon="solar:arrow-right-bold-duotone" width={24} />
       </IconButton>
-            <IconButton
+      
+      <IconButton
         onClick={filterDrawer.onTrue}
         color="default"
         variant="extended"
       >
         <Iconify icon="solar:filter-bold-duotone" width={24} />
       </IconButton>      
+      
       <RegularSelect
         label="סדר לפי"
-        onChange={() => {}}
+        onChange={(e) => setSortBy(e)}
         options={SORT_OPTIONS}
         data-testid="sort-select"
       />
@@ -127,7 +130,8 @@ export function InsertToolbar({
       <RegularSelect
         label="הצג רק"
         onChange={(e)=> {
-          handleFilter({...filters, data: e})
+          console.log('filter value:', e)
+          handleFilter('data', e)
         }}
         options={FILTER_OPTIONS}
         data-testid="filter-select"

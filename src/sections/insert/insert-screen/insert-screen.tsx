@@ -85,8 +85,6 @@ export function InsertListView({}) {
   const {
     methods,
     handleUpdate,
-    handleFilter,
-    filters,
     infoColumns,
     infoStudents,
     currentData,
@@ -108,6 +106,15 @@ export function InsertListView({}) {
   }
   }, [dialogDelay.value])
 
+  const [sortBy, setSortBy] = useState<string | null>(null);
+
+  const [filters, setFilters] = useState<{ [key: string]: any }>({});
+  
+  const handleFilters = useCallback((key: string, value: any) => {
+    setFilters((prev) => ({...prev, [key]: value}));
+  }, []);
+
+
   return (
     <DashboardContent sx={{}} disablePadding={false}>
 
@@ -119,8 +126,9 @@ export function InsertListView({}) {
         dialogDelay={dialogDelay} 
         handleDelete={(data: any)=> handleUpdate(data, 'delete')}
         currentData={currentData}
+        setSortBy={setSortBy}
         reset={reset}
-        handleFilter={handleFilter}
+        handleFilter={handleFilters}
         filters={filters}
         summaryMode={summaryMode}
         infoColumns={infoColumns}
@@ -135,11 +143,42 @@ export function InsertListView({}) {
         selectLabel={selectLabel}
         dialogDelay={dialogDelay}
         exceptionDialog={exceptionDialog}
-        currentData={currentData}
+        currentData={applyFilters(currentData, filters, sortBy)}
         methods={methods}
         handleUpdate={handleUpdate}
         filters={filters}
       />
     </DashboardContent>
 );
+}
+
+
+function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: string | null) {
+  
+  const { data } = filters;
+  let filteredData = [...oldData];
+  console.log('applying filters:', filters);
+  if (data) {
+
+    filteredData = filteredData.filter((item) => {
+      if (data === 'all') return true;
+      if (data === 'true') return item.data === 1;
+      if (data === 'false') return item.data === 0;
+      if (data === 'delayed') return item.delay;
+      if (data === 'exception') return item.exception;
+      return true;
+    });
+  }
+  if (sortBy) {
+    if (sortBy === 'up') {
+      filteredData.sort((a, b) => a.primary.localeCompare(b.primary));
+    } else if (sortBy === 'down') {
+      filteredData.sort((a, b) => b.primary.localeCompare(a.primary));
+    } else if (sortBy === 'name') {
+      filteredData.sort((a, b) => a.primary.localeCompare(b.primary));
+    }
+  }
+
+  return filteredData;
+  
 }

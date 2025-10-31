@@ -7,7 +7,6 @@ import { readFile } from 'src/utils/files/read-file';
 import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
 
 import { Upload } from 'src/components/upload';
-import { responsiveFontSizes } from 'src/theme/styles';
 
 import useInitializationStore from '../initialization-state.ts';
 import { useBoolean } from 'src/hooks/use-boolean.js';
@@ -118,30 +117,16 @@ export function StudentFileUploadStep() {
   
   
   const renderTemplatesDownload = (
-    <Container maxWidth={{ sm: 'sm', md: 'sm', lg: 'sm' }}>
-      <Box sx={{ p: 1 }} id='download-template'>
-        <Typography 
-          variant="subtitle2" 
-          sx={{ 
-            mb: { sm: 0.5, md: 0.75, lg: 0.75 },
-            ...responsiveFontSizes({ sm: 13, md: 14, lg: 14 })
-          }}
-        >
+    <Container maxWidth="sm">
+      <Box id='download-template'>
+        <Typography variant="subtitle2">
           הורד תבנית קובץ:
         </Typography>
-        <Stack 
-          direction={{ sm: 'column', md: 'row' }}
-          spacing={1}
-          sx={{ mb: { sm: 1, md: 1.25, lg: 1.5 } }}
-        >
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
             variant="outlined"
             size="small"
             onClick={() => handleDownloadTemplate('excel')}
-            sx={{
-              mb: 1,
-              fontSize: {  sm: '0.75rem', lg: '0.875rem' }
-            }}
           >
             הורד תבנית Excel
           </Button>
@@ -149,9 +134,6 @@ export function StudentFileUploadStep() {
             variant="outlined" 
             size="small"
             onClick={() => handleDownloadTemplate('csv')}
-            sx={{
-              fontSize: { sm: '0.75rem', md: '0.813rem', lg: '0.875rem' }
-            }}
           >
             הורד תבנית CSV
           </Button>
@@ -169,7 +151,7 @@ export function StudentFileUploadStep() {
 
 
   const renderUpload = (
-    <Container maxWidth={{ sm: 'sm', md: 'sm', lg: 'sm' }}>
+    <Container maxWidth="sm">
       <Box id='upload-file'>
         <Upload
           multiple={false}
@@ -183,33 +165,21 @@ export function StudentFileUploadStep() {
           }}
           maxSize={5000000}
           placeholder={
-            <Box sx={{ textAlign: 'center', py: { sm: 2, md: 2, lg: 3 } }}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mb: { sm: 0.25, md: 0.5, lg: 0.75 },
-                  ...responsiveFontSizes({ sm: 16, md: 18, lg: 20 })
-                }}
-              >
+            <Box sx={{ textAlign: 'center', py: 3 }}>
+              <Typography variant="h6">
                 גרור את הקובץ לכאן או
               </Typography>
               <Link 
                 variant="body1" 
                 underline="hover" 
-                sx={{ 
-                  cursor: 'pointer',
-                  ...responsiveFontSizes({ sm: 13, md: 14, lg: 14 })
-                }}
+                sx={{ cursor: 'pointer' }}
               >
                 בחר קובץ מהמחשב
               </Link>
               <Typography 
                 variant="body2" 
                 color="text.secondary" 
-                sx={{ 
-                  mt: { sm: 0.25, md: 0.5, lg: 0.75 },
-                  ...responsiveFontSizes({ sm: 12, md: 13, lg: 13 })
-                }}
+                sx={{ mt: 1 }}
               >
                 נתמכים: Excel (.xlsx, .xls) ו-CSV (עד 5MB)
               </Typography>
@@ -230,7 +200,7 @@ export function StudentFileUploadStep() {
   );
 
   return (
-    <Box sx={{ p: { sm: 1.5, md: 2, lg: 2.5 } }}>
+    <Box sx={{ p: 2 }}>
       { !watchedFile && renderTemplatesDownload}
       { !watchedFile && renderUpload }
       { watchedFile && renderTemplatesViewer }

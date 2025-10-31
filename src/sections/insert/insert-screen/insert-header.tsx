@@ -45,11 +45,10 @@ export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
         primary={selectedEvent.event_name}
         secondary={`יום ${hebDay}`}
       />
-      {/*
       <LabelSummary
         labels_summary={LABEL_SUMMARY}
         data={data}
-      />*/}
+      />
     </Box>
   );
 }
