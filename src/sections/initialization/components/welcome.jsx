@@ -8,28 +8,9 @@ import { useTheme } from "@emotion/react";
 import { CONFIG } from "src/config-global";
 
 export function Welcome() {
-    const walktourSteps = [
-    {
-      target: '#start',
-      title: 'עקוב אחרי השלבים להתחלת עבודה',
-      content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
-      placement: 'bottom',
-      disableBeacon: true
-    },
-    {
-        target: '#next-button',
-      title: 'לחץ כאן כדי להתחיל לארגן את המוסד שלך',
-      content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
-      placement: 'bottom',
-            disableBeacon: true
-    },
-    
-  ];
 
-    const walktour = useWalktour({
-        steps: walktourSteps,
-        defaultRun: false
-    });
+
+
   
     const theme = useTheme();
   
@@ -134,16 +115,6 @@ export function Welcome() {
           />
         </Grid>
       </Grid>
-      <Walktour
-        {...walktour}
-        locale={{
-          back: 'הקודם',
-          close: 'סגור',
-          last: 'סיום',
-          next: 'הבא',
-          skip: 'דלג'
-        }}
-      />
     </MotionContainer>
   );
 }

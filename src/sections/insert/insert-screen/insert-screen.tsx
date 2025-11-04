@@ -30,7 +30,7 @@ function useInsertForm() {
   const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
   const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
   // מקבל את נתוני הרישום - ואת פרטי הסדר
-  const {  selectedEvent } = useInsertStore();
+  const { selectedEvent } = useInsertStore();
   
   // פונקציית עידכון התלמידים
   const queryClient = useQueryClient();
@@ -157,7 +157,7 @@ function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: s
   
   const { data } = filters;
   let filteredData = [...oldData];
-  console.log('applying filters:', filters);
+  
   if (data) {
 
     filteredData = filteredData.filter((item) => {

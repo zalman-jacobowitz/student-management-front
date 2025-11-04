@@ -1,5 +1,5 @@
 
-import { Box } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 
 import { PageTitle } from "src/components/layout";
 import { LabelSummary } from "src/components/display";
@@ -41,14 +41,24 @@ export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
   console.log('selectedEvent.day:', selectedEvent.day)
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
-      <PageTitle
-        primary={selectedEvent.event_name}
-        secondary={`יום ${hebDay}`}
-      />
-      <LabelSummary
-        labels_summary={LABEL_SUMMARY}
-        data={data}
-      />
+      <Grid container spacing={2} alignItems="center" justifyContent="center">
+        <Grid size={8} item>
+          <Button onClick={() => {}}>הקודם</Button>
+        </Grid>
+        <Grid item>
+          <PageTitle
+            primary={selectedEvent.event_name}
+            secondary={`יום ${hebDay}`}
+          />
+          <LabelSummary
+            labels_summary={LABEL_SUMMARY}
+            data={data}
+          />
+        </Grid>
+        <Grid item>
+          <Button onClick={() => {}}>הבא</Button>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

@@ -17,7 +17,7 @@ import { Walktour } from 'src/components/walktour/walktour.jsx';
 
 // ----------------------------------------------------------------------
 
-      const walktourSteps = [
+  const walktourSteps = [
       {
           target: '#download-template',
         title: 'לחץ על אחד הכפתורים להורדה של דוגמא לקובץ פרטי תלמידים',

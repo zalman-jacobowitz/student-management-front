@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 import {
@@ -6,7 +6,8 @@ import {
   Stack,
   Button,
   Typography,
-  IconButton
+  IconButton,
+  Tooltip
 } from '@mui/material';
 
 import { Iconify } from 'src/components/iconify';
@@ -62,6 +63,8 @@ function useTamplatesStep() {
     name: 'templateData.events',
   });
 
+  const [showWalktour, setShowWalktour] = useState(false);
+
   const handleAddEvent = () => {
     append({
       event_name: '',
@@ -74,11 +77,18 @@ function useTamplatesStep() {
     remove(index);
   };
 
+  const handleStartTour = () => {
+    setShowWalktour(true);
+  };
+
   return {
     fields,
     handleRemoveEvent,
     handleAddEvent,
-    watchedTemplate
+    watchedTemplate,
+    showWalktour,
+    setShowWalktour,
+    handleStartTour
   }
 }
 
@@ -90,13 +100,39 @@ export function TemplateDefinitionStep() {
     fields,
     handleRemoveEvent,
     handleAddEvent,
-    watchedTemplate
+    watchedTemplate,
+    showWalktour,
+    setShowWalktour,
+    handleStartTour
 
   } = useTamplatesStep()
+
+  const walktourConfig = useWalktour({ 
+    steps: walktourSteps, 
+    defaultRun: false 
+  });
+
+  useEffect(() => {
+    if (showWalktour) {
+      walktourConfig.setRun(true);
+    }
+  }, [showWalktour, walktourConfig]);
 
   return (
     <Box sx={{ p: { sm: 1.5, md: 2, lg: 2.5 } }}>
       <Stack spacing={{ sm: 1, md: 1.25, lg: 1.5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+          <Tooltip title="הצג הדרכה">
+            <IconButton 
+              onClick={handleStartTour}
+              color="primary"
+              size="small"
+            >
+              <Iconify icon="mdi:help-circle" width={24} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        
         <Box>
           <Scrollbar sx={{ maxHeight: { sm: 300, md: 400, lg: 500 } }}>
             <Stack spacing={{ sm: 0.75, md: 1, lg: 1.25 }}>
@@ -198,7 +234,7 @@ export function TemplateDefinitionStep() {
           </Box>
         )}
       </Stack>
-      <Walktour {...useWalktour({ steps: walktourSteps, defaultRun: false })} />
+      <Walktour {...walktourConfig} />
     </Box>
   );
 }
