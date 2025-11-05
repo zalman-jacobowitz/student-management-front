@@ -39,12 +39,8 @@ export function SelectOptionsStep() {
           {fields.map((item, index) => (
             <Stack key={item.id} direction="row" spacing={2} alignItems="center">
               <Field.Text
-                name={`options[${index}].value`} // שונה
+                name={`options[${index}].value`}
                 placeholder="ערך האפשרות"
-                fullWidth />
-              <Field.Text
-                name={`options[${index}].label`} // שונה
-                placeholder="תווית האפשרות"
                 fullWidth />
               <IconButton onClick={() => remove(index)} color="error">
                 <Iconify icon="mdi:delete" />
@@ -57,7 +53,7 @@ export function SelectOptionsStep() {
         type="button"
         variant="outlined"
         startIcon={<Iconify icon="mdi:plus" />}
-        onClick={() => append({ value: '', label: '' })}
+        onClick={() => append({ value: '' })}
       >
         הוסף אפשרות
       </Button>
@@ -75,8 +71,6 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
 
   const onSubmit = useCallback(async (data) => {
     try {
-      console.log('Column edit data: ', data)
-
       // שמירה על כל השדות הקיימים ועדכון רק השדות שנערכו
       const columnNewDetails = {
         "client": column.client || 0,
@@ -92,7 +86,7 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
         "options": data.options || []
       }
       
-      console.log('Updated column details: ', columnNewDetails)
+     
 
       // עדכון אפשרויות בחירה רק אם הסוג הוא select
       if (data.type === 'select') {
@@ -101,13 +95,12 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
           name: data.name, // שימוש בשם החדש אם השתנה
           client: column.client,
           value: option.value,
-          label: option.label
+          label: option.value
         }));
       }
 
       // אם במצב איתחול - החזר את הנתונים ללא שמירה בשרת
       if (isInitializationMode) {
-        console.log('Initialization mode - returning data to parent:', columnNewDetails)
         if (onComplete) {
           onComplete(columnNewDetails);
         }
@@ -167,7 +160,6 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
     type: z.string().min(1, "סוג נתונים נדרש"),
     options: z.array(z.object({
       value: z.string().min(1, "ערך האפשרות נדרש"),
-      label: z.string().min(1, "תווית האפשרות נדרשת"),
     })).optional(),
     hidden: z.boolean().optional(),
   });

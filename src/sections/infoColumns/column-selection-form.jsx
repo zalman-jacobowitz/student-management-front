@@ -5,8 +5,8 @@ import { z } from "zod";
 import { MenuItem, Typography } from "@mui/material";
 
 import { useInfoColumns } from "src/actions/columns_with_select";
-import { infoColumnsUpdate } from "src/actions/info_columns";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiInfoColumns, infoColumnsUpdate } from "src/actions/info_columns";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Field } from "src/components/hook-form";
 import { Iconify } from "src/components/iconify";
 import { StepsProvider } from "src/components/steps-form/steps-provider";
@@ -28,9 +28,9 @@ function useColumnSelection({ infoColumns }) {
       console.log('Current infoColumns:', infoColumns);
       
       // Validate that all required fields are selected
-      const { nameColumn, familyColumn, accessibleColumn, filterColumns, duplicateColumns } = data;
-      
-      if (!nameColumn || !familyColumn || !accessibleColumn) {
+      const { nameColumn, familyColumn, accessibleColumn, filterColumns, duplicateColumns, hiddenColumns } = data;
+
+      if (!nameColumn || !familyColumn || !accessibleColumn || !hiddenColumns) {
         toast.error('יש למלא את כל השדות הנדרשים');
         return;
       }
@@ -57,6 +57,7 @@ function useColumnSelection({ infoColumns }) {
         // Reset group_name and filters for all columns first
         updatedColumn.group_name = "";
         updatedColumn.filters = "";
+        updatedColumn.hidden = hiddenColumns.includes(column.name) ? 1 : 0;
         
         // Apply updates based on user selections
         if (column.name === nameColumn || column.name === familyColumn) {
@@ -73,13 +74,12 @@ function useColumnSelection({ infoColumns }) {
           // עמודות פילטר: עדכון filters ל-"extra"
           updatedColumn.filters = "extra";
         }
-        /*
+        
 
         if (duplicateColumns.includes(column.name)) {
-          // עמודות ייחודיות: עדכון filters ל-"unique"
-          updatedColumn.filters = "unique";
+          // עמודות ייחודיות: עדכון unique ל-1
+          updatedColumn.unique = 1;
         }
-          */
         
         return updatedColumn;
       });
@@ -95,9 +95,10 @@ function useColumnSelection({ infoColumns }) {
         label: column.label,
         name: column.name,
         required: column.required,
-        sorting: String(column.sorting),
+        sorting: String(column.sorting) || '0',
         table_name: column.table_name,
-        type: column.type
+        type: column.type,
+        unique: column.unique
       }));
       
       console.log('Sending batch update:', columnsUpdateData);
@@ -127,20 +128,23 @@ function useColumnSelection({ infoColumns }) {
   }
 }
 
+
 // Main form component similar to ColumnDefinitionStep
 export function ColumnSelectionStep({ onComplete }) {
   
-  // Use hook to get columns data directly
-  const infoStudents = useInfoColumns('info_students');
+  // הנתונים על העמודות
+  const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
+
+  console.table(infoColumns);
 
   const initialValues = {
-    nameColumn: "",
-    familyColumn: "",
-    accessibleColumn: "",
-    filterColumns: [],
-    duplicateColumns: [],
+    nameColumn: infoColumns.filter(col => col.group_name === 'primary')[0]?.name || "",
+    familyColumn: infoColumns.filter(col => col.group_name === 'primary')[1]?.name || "",
+    accessibleColumn: infoColumns.find(col => col.group_name === 'secondary')?.name || "",
+    filterColumns: infoColumns.filter(col => col.filters === 'extra').map(col => col.name) || [],
+    duplicateColumns: infoColumns.filter(col => col.unique).map(col => col.name) || [],
+    hiddenColumns: infoColumns.filter(col => col.hidden).map(col => col.name) || []
   }
-
   // Validation schema
   const ColumnSelectionSchema = z.object({
     nameColumn: z.string().min(1, "יש לבחור עמודת שם"),
@@ -148,6 +152,7 @@ export function ColumnSelectionStep({ onComplete }) {
     accessibleColumn: z.string().min(1, "יש לבחור עמודה נגישה"),
     filterColumns: z.array(z.string()).max(2, "ניתן לבחור עד 2 עמודות לפילטרים נגישים").min(1, "יש לבחור לפחות עמודה אחת"),
     duplicateColumns: z.array(z.string()).min(1, "יש לבחור לפחות עמודה אחת למציאת כפילויות"),
+    hiddenColumns: z.array(z.string()).min(1, "יש לבחור לפחות עמודה אחת מוסתרת"),
   });
 
   // Fields array similar to column-edit-steps.jsx
@@ -160,9 +165,9 @@ export function ColumnSelectionStep({ onComplete }) {
       InputLabelProps: { shrink: true },
       type: "text",
       helperText: "בחר את העמודה המכילה שמות פרטיים",
-      children: infoStudents.newData?.map((column) => (
+      children: infoColumns.map((column) => (
         <MenuItem key={column.name} value={column.name}>
-          <Iconify icon="solar:user-bold" width={20} sx={{ mr: 1 }} />
+          <Iconify icon="solar:users-group-two-rounded-bold" width={20} sx={{ mr: 1 }} />
           <Typography variant="body2">{column.label}</Typography>
         </MenuItem>
       )),
@@ -176,7 +181,23 @@ export function ColumnSelectionStep({ onComplete }) {
       InputLabelProps: { shrink: true },
       type: "text",
       helperText: "בחר את העמודה המכילה שמות משפחה",
-      children: infoStudents.newData?.map((column) => (
+      children: infoColumns.map((column) => (
+        <MenuItem key={column.name} value={column.name}>
+          <Iconify icon="solar:users-group-two-rounded-bold" width={20} sx={{ mr: 1 }} />
+          <Typography variant="body2">{column.label}</Typography>
+        </MenuItem>
+      )),
+      component: Field.Select
+    },
+    {
+      step: 1,
+      name: "accessibleColumn",
+      label: "בחר עמודה נגישה",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "text",
+      helperText: "בחר עמודה שתהיה נגישה במהירות",
+      children: infoColumns.map((column) => (
         <MenuItem key={column.name} value={column.name}>
           <Iconify icon="solar:users-group-two-rounded-bold" width={20} sx={{ mr: 1 }} />
           <Typography variant="body2">{column.label}</Typography>
@@ -186,29 +207,29 @@ export function ColumnSelectionStep({ onComplete }) {
     },
     {
       step: 2,
-      name: "accessibleColumn",
-      label: "בחר עמודה נגישה",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "text",
-      helperText: "בחר עמודה שתהיה נגישה במהירות",
-      children: infoStudents.newData?.map((column) => (
-        <MenuItem key={column.name} value={column.name}>
-          <Iconify icon="solar:verified-check-bold" width={20} sx={{ mr: 1 }} />
-          <Typography variant="body2">{column.label}</Typography>
-        </MenuItem>
-      )),
-      component: Field.Select
-    },
-    {
-      step: 3,
       name: "filterColumns",
       label: "בחירת עמודות לפילטרים נגישים (מוגבל ל-2)",
       variant: "filled",
       InputLabelProps: { shrink: true },
       type: "text",
       helperText: "בחר עד 2 עמודות שישמשו לפילטור מהיר",
-      options: infoStudents.newData?.map((column) => ({
+      options: infoColumns.map((column) => ({
+        value: column.name,
+        label: column.label
+      })) || [],
+      checkbox: true,
+      chip: true,
+      component: Field.MultiSelect
+    },
+    {
+      step: 2,
+      name: "duplicateColumns",
+      label: "בחירת עמודות למציאת כפילויות",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "text",
+      helperText: "בחר עמודות שישמשו לזיהוי רשומות כפולות",
+      options: infoColumns.map((column) => ({
         value: column.name,
         label: column.label
       })) || [],
@@ -218,20 +239,21 @@ export function ColumnSelectionStep({ onComplete }) {
     },
     {
       step: 3,
-      name: "duplicateColumns",
-      label: "בחירת עמודות למציאת כפילויות",
+      name: "hiddenColumns",
+      label: "בחירת עמודות מוסתרות",
       variant: "filled",
       InputLabelProps: { shrink: true },
       type: "text",
-      helperText: "בחר עמודות שישמשו לזיהוי רשומות כפולות",
-      options: infoStudents.newData?.map((column) => ({
+      helperText: "בחר עמודות שיישארו מוסתרות כברירת מחדל",
+      options: infoColumns.map((column) => ({
         value: column.name,
         label: column.label
       })) || [],
       checkbox: true,
       chip: true,
-      component: Field.MultiSelect
-    }
+      component: Field.MultiSwitch
+    },
+    
   ]
 
   // Steps configuration similar to column-edit-steps.jsx
@@ -243,24 +265,25 @@ export function ColumnSelectionStep({ onComplete }) {
       name: 'basicColumns'
     },
     {
-      label: 'עמודה נגישה',
-      component: <MasterStep fields={fields} number={2} />,
-      icon: "solar:verified-check-bold",
-      name: 'accessibleColumn'
-    },
-    {
       label: 'פילטרים וכפילויות',
-      component: <MasterStep fields={fields} number={3} />,
+      component: <MasterStep fields={fields} number={2} />,
       icon: "solar:filter-bold",
       name: 'filtersAndDuplicates'
+    },
+    {
+      label: 'עמודות מוסתרות',
+      component: <MasterStep fields={fields} number={3} />,
+      icon: "solar:eye-bold",
+      name: 'hiddenColumns'
     },
     {
       name: 'complete',
       component: <></>
     }
+
   ]
 
-  const { onSubmit } = useColumnSelection({ infoColumns: infoStudents.newData });
+  const { onSubmit } = useColumnSelection({ infoColumns: infoColumns });
 
   return (
     <StepsProvider
