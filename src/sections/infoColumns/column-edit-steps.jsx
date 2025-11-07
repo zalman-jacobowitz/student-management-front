@@ -76,7 +76,7 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
         "client": column.client || 0,
         "filters": column.filters || 0, // שמירה על הערך הקיים
         "group_name": column.group_name || 0, // שמירה על הערך הקיים
-        "hidden": data.hidden ? 1 : 0, // עדכון לפי הטופס
+        "hidden": data.hidden,
         "label": column.label || '', // שמירה על הערך הקיים
         "name": data.name || '', // עדכון לפי הטופס
         "required": column.required || 0, // שמירה על הערך הקיים
@@ -126,8 +126,7 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
         });
       }
 
-      console.log('Final column data:', columnNewDetails)
-    } catch (error) {
+      } catch (error) {
       console.error('Error saving column settings:', error);
       toast.error('שגיאה בשמירת הגדרות העמודה');
     }
@@ -160,8 +159,7 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
     type: z.string().min(1, "סוג נתונים נדרש"),
     options: z.array(z.object({
       value: z.string().min(1, "ערך האפשרות נדרש"),
-    })).optional(),
-    hidden: z.boolean().optional(),
+    })).optional()
   });
 
   const fileds = [
@@ -191,13 +189,6 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
         )
       ),
       component: Field.Select
-    },
-    {
-      step: 1,
-      name: 'hidden',
-      label: 'העמודה מוסתרת',
-      icon: 'mdi:eye-off-outline',
-      component: Field.Switch
     },
     {
       step: 2,
@@ -232,7 +223,6 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
   const [steps, setSteps] = useState(stepsSelect(false))
 
   const addSelectOptionsStep = useCallback((data) => {
-    console.log('data: ', data)
     setSteps(stepsSelect(data.type === 'select'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

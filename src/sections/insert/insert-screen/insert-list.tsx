@@ -272,7 +272,6 @@ function useLastEventsData() {
   const allDaysData = {}
   // 4 limit
   lastEvents.data.slice(0, 3).forEach((event) => {
-    console.log('event: ', event);
         event.event = event.event_id; 
     const eventData = useSuspenseQuery(apiDataStudentsEvent(event)).data;
 
@@ -309,7 +308,6 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
       delay: currentData.find((item) => item.student_id === student_id)?.delay || ''
 
     }));
-    console.table(toServer.map(e => ({ נוכחות: e.data, איחור: e.delay, אישור: e.exception, student_id: e.student_id })))
     // if there is data from server.
 
     handleUpdate(toServer, 'update')
@@ -318,7 +316,6 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const handleOnClick = useCallback((type, details) => {
 
     if (type === 'exception') {
-      console.log('details: ', details)
       selectLabel(details)
       exceptionDialog.onTrue()
     }

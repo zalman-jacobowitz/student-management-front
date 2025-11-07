@@ -1,5 +1,5 @@
 
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Grid, Typography, ListItemButton } from "@mui/material";
 
 import { PageTitle } from "src/components/layout";
 import { LabelSummary } from "src/components/display";
@@ -34,29 +34,72 @@ interface InsertListHeaderProps {
 }
 
 export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
-  const selectedEvent = useInsertStore(state => state.selectedEvent);
+  const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent } = useInsertStore(state => state);
 
+  // @ts-expect-error - inHebrew accepts string format parameters
   const hebDay = inHebrew(selectedEvent.day, 'Dms')
   const data = Object.values(watch());
-  console.log('selectedEvent.day:', selectedEvent.day)
+  
+  // קבלת שם האירוע הקודם
+  const prevEventName = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.event_name : '';
+  const prevEventDay = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.day : '';
+  
+  // קבלת שם האירוע הבא
+  const nextEventName = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.event_name : '';
+  const nextEventDay = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.day : '';
+  
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
-        <Grid size={8} item>
-          <Button onClick={() => {}}>הקודם</Button>
+        <Grid xs={4}>
+          <ListItemButton 
+            onClick={prevEvent}
+            disabled={currentEventIndex === 0 || allEvents.length === 0}
+            sx={{ textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}
+          >
+            <Box sx={{ textAlign: 'center', width: '100%' }}>
+              <Box sx={{ fontSize: '0.85rem' }}>הקודם</Box>
+              {prevEventName && (
+                <>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                  {prevEventName}
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                  {/* @ts-expect-error - inHebrew accepts string format parameters */}
+                  {inHebrew(prevEventDay, 'Dms')}
+                </Typography>
+              </>
+              )}
+            </Box>
+          </ListItemButton>
         </Grid>
-        <Grid item>
+        <Grid xs={4}>
           <PageTitle
             primary={selectedEvent.event_name}
             secondary={`יום ${hebDay}`}
           />
-          <LabelSummary
-            labels_summary={LABEL_SUMMARY}
-            data={data}
-          />
         </Grid>
-        <Grid item>
-          <Button onClick={() => {}}>הבא</Button>
+        <Grid xs={4}>
+          <ListItemButton 
+            onClick={nextEvent}
+            disabled={currentEventIndex === allEvents.length - 1 || allEvents.length === 0}
+            sx={{ textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}
+          >
+            <Box sx={{ textAlign: 'center', width: '100%' }}>
+              <Box sx={{ fontSize: '0.85rem' }}>הבא</Box>
+              {nextEventName && (
+                <>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                  {nextEventName}
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                  {/* @ts-expect-error - inHebrew accepts string format parameters */}
+                  {inHebrew(nextEventDay, 'Dms')}
+                </Typography>
+              </>
+              )}
+            </Box>
+          </ListItemButton>
         </Grid>
       </Grid>
     </Box>

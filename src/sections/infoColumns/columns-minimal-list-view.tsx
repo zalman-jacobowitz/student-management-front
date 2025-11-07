@@ -103,7 +103,6 @@ function ColumnsMinimalListView() {
           selectOptions={[]} // TODO: Add select options if needed
           onComplete={() => {
             // Refresh data after edit
-            console.log('Column updated');
           }}
         />
       )
@@ -113,7 +112,6 @@ function ColumnsMinimalListView() {
         open={generalSettings.value}
         onClose={generalSettings.onFalse}
         onComplete={() => {
-          console.log('General settings updated');
         }}
       />
   )

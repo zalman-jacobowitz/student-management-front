@@ -11,6 +11,8 @@ import { Field } from "src/components/hook-form";
 import { Iconify } from "src/components/iconify";
 import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
+import { SortableContainer } from "src/components/dnd/sortable-container";
+import { useFormContext } from "react-hook-form";
 
 // ----------------------------------------------------------------------
 
@@ -24,11 +26,9 @@ function useColumnSelection({ infoColumns }) {
   
   const onSubmit = useCallback(async (data) => {
     try {
-      console.log('Column selection data:', data);
-      console.log('Current infoColumns:', infoColumns);
       
       // Validate that all required fields are selected
-      const { nameColumn, familyColumn, accessibleColumn, filterColumns, duplicateColumns, hiddenColumns } = data;
+      const { nameColumn, familyColumn, accessibleColumn, filterColumns, duplicateColumns, hiddenColumns, columnOrder } = data;
 
       if (!nameColumn || !familyColumn || !accessibleColumn || !hiddenColumns) {
         toast.error('יש למלא את כל השדות הנדרשים');
@@ -84,8 +84,6 @@ function useColumnSelection({ infoColumns }) {
         return updatedColumn;
       });
       
-      console.table(updatedColumns);
-      
       // Prepare data for batch update - send all columns together
       const columnsUpdateData = updatedColumns.map(column => ({
         client: column.client,
@@ -95,14 +93,13 @@ function useColumnSelection({ infoColumns }) {
         label: column.label,
         name: column.name,
         required: column.required,
-        sorting: String(column.sorting) || '0',
+        sorting: String(columnOrder.indexOf(column.name) + 1), // update sorting based on user-defined order
         table_name: column.table_name,
         type: column.type,
         unique: column.unique
       }));
       
-      console.log('Sending batch update:', columnsUpdateData);
-      
+
       // Execute batch update - send all columns at once
       const updatePromise = updateInfoColumns.mutateAsync({
         data: columnsUpdateData,
@@ -129,13 +126,40 @@ function useColumnSelection({ infoColumns }) {
 }
 
 
+
+
+function ColumnOrder() {
+  // using DND library to implement column ordering UI
+  const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
+  const { setValue } = useFormContext();
+  
+  const onOrderChange = useCallback((newOrder) => {
+    setValue('columnOrder', newOrder);
+  }, [setValue]);
+
+  return (
+    <SortableContainer 
+      items={infoColumns.map(col => col.name)}
+      swap={false}
+      layout="vertical"
+      onItemsChange={onOrderChange}
+      size="small"
+      showAddButton={false}  // Hide the button
+    />
+  );
+}
+
+
+
+
+
+
+
 // Main form component similar to ColumnDefinitionStep
 export function ColumnSelectionStep({ onComplete }) {
   
   // הנתונים על העמודות
   const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
-
-  console.table(infoColumns);
 
   const initialValues = {
     nameColumn: infoColumns.filter(col => col.group_name === 'primary')[0]?.name || "",
@@ -143,7 +167,8 @@ export function ColumnSelectionStep({ onComplete }) {
     accessibleColumn: infoColumns.find(col => col.group_name === 'secondary')?.name || "",
     filterColumns: infoColumns.filter(col => col.filters === 'extra').map(col => col.name) || [],
     duplicateColumns: infoColumns.filter(col => col.unique).map(col => col.name) || [],
-    hiddenColumns: infoColumns.filter(col => col.hidden).map(col => col.name) || []
+    hiddenColumns: infoColumns.filter(col => col.hidden).map(col => col.name) || [],
+    columnOrder: infoColumns.map(col => col.name) || []
   }
   // Validation schema
   const ColumnSelectionSchema = z.object({
@@ -153,6 +178,7 @@ export function ColumnSelectionStep({ onComplete }) {
     filterColumns: z.array(z.string()).max(2, "ניתן לבחור עד 2 עמודות לפילטרים נגישים").min(1, "יש לבחור לפחות עמודה אחת"),
     duplicateColumns: z.array(z.string()).min(1, "יש לבחור לפחות עמודה אחת למציאת כפילויות"),
     hiddenColumns: z.array(z.string()).min(1, "יש לבחור לפחות עמודה אחת מוסתרת"),
+    columnOrder: z.array(z.string())
   });
 
   // Fields array similar to column-edit-steps.jsx
@@ -253,7 +279,13 @@ export function ColumnSelectionStep({ onComplete }) {
       chip: true,
       component: Field.MultiSwitch
     },
-    
+    {
+      step: 4,
+      name: "columnOrder",
+      label: "סדר עמודות",
+      component: ColumnOrder,
+      
+    }
   ]
 
   // Steps configuration similar to column-edit-steps.jsx
@@ -275,6 +307,12 @@ export function ColumnSelectionStep({ onComplete }) {
       component: <MasterStep fields={fields} number={3} />,
       icon: "solar:eye-bold",
       name: 'hiddenColumns'
+    },
+    {
+      label: 'סדר עמודות',
+      component: <MasterStep fields={fields} number={4} />,
+      icon: "solar:sort-bold",
+      name: 'columnOrder'
     },
     {
       name: 'complete',

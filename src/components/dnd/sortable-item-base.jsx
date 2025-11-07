@@ -58,7 +58,7 @@ export const StyledItem = styled(Stack)(({ theme }) => ({
   },
 }));
 
-const ItemBase = forwardRef(({ item, stateProps, onRemove, sx, ...other }, ref) => {
+const ItemBase = forwardRef(({ item, stateProps, onRemove, size = 'medium', sx, ...other }, ref) => {
   useEffect(() => {
     if (!stateProps?.dragOverlay) {
       return;
@@ -86,6 +86,18 @@ const ItemBase = forwardRef(({ item, stateProps, onRemove, sx, ...other }, ref) 
       ''
   );
 
+  const sizeStyles = {
+    small: {
+      padding: 1,
+      fontSize: '0.875rem',
+    },
+    medium: {},
+    large: {
+      padding: 6,
+      fontSize: '1.25rem',
+    },
+  };
+
   return (
     <StyledItemWrap
       ref={ref}
@@ -101,7 +113,12 @@ const ItemBase = forwardRef(({ item, stateProps, onRemove, sx, ...other }, ref) 
         }),
       }}
     >
-      <StyledItem className={itemClassName} data-cypress="draggable-item" sx={sx} {...other}>
+      <StyledItem 
+        className={itemClassName} 
+        data-cypress="draggable-item" 
+        sx={{ ...sizeStyles[size], ...sx }} 
+        {...other}
+      >
         {item}
 
         <Stack
@@ -117,7 +134,7 @@ const ItemBase = forwardRef(({ item, stateProps, onRemove, sx, ...other }, ref) 
             disableRipple
             disableFocusRipple
             disableTouchRipple
-            size="small"
+            size={size === 'small' ? 'small' : 'medium'}
             onClick={onRemove}
             className={itemClasses.removeBtn}
           >
@@ -128,9 +145,9 @@ const ItemBase = forwardRef(({ item, stateProps, onRemove, sx, ...other }, ref) 
             disableRipple
             disableFocusRipple
             disableTouchRipple
+            size={size === 'small' ? 'small' : 'medium'}
             {...stateProps?.handleProps}
             {...stateProps?.listeners}
-            size="small"
           >
             <Iconify icon="nimbus:drag-dots" />
           </IconButton>

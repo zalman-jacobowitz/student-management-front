@@ -41,12 +41,10 @@ function useInsertForm() {
   const { reset, watch } = methods;
 
   const crnt = useSuspenseQuery(apiDataStudentsEvent());
-  console.log('crnt.data in useInsertForm: ', crnt.data);
   const currentData = mergeWithStudents(infoStudents, crnt.data, infoColumns);
-  console.log('currentData in useInsertForm: ', currentData);
   useEffect(() => {
     reset(formValues(crnt.data))
-  }, [selectedEvent]);
+  }, [selectedEvent, crnt.data, reset]);
 
   const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
     await updateData({
@@ -54,7 +52,7 @@ function useInsertForm() {
       mode,
       mutateAsync
     })
-  }, [mutateAsync])
+  }, [mutateAsync, selectedEvent])
 
 
   // פילטרים לתצוגת התלמידים
