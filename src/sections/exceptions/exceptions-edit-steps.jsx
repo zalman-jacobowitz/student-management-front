@@ -1,50 +1,53 @@
 import { toast } from "sonner";
-import { useState, useCallback } from "react";
-import { useFormContext } from "react-hook-form";
+import { useCallback, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 
-import { Alert, Stack, Dialog, Typography, Chip, Box } from "@mui/material";
+import { Alert, Stack, Dialog, Typography, Box, Button, MenuItem, Divider, Grid } from "@mui/material";
 import { Field } from "src/components/hook-form";
 
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { StepsProvider } from "src/components/steps-form/steps-provider";
-import { MasterStep } from "src/components/steps-form/dynamiv-component";
 import { exceptionsUpdate } from "src/actions/exceptions";
 import { apiInfoStudents } from "src/actions/info_students.ts";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { uuidv4 } from "src/utils/uuidv4";
-import { description } from "../insert/functions.ts";
 import { SelectStudents } from "../insert/delays/select-students.jsx";
-import { inHebrew } from "src/utils/hebrew/getter.js";
 import { fCurrentTime, today } from "src/utils/format-time.js";
+import { Scrollbar } from "src/components/scrollbar/scrollbar.tsx";
+import useInsertStore from "../insert/insert-state";
+import { inHebrew } from "src/utils/hebrew/getter.js";
 
-function StudentsSelectionStep() {
-  const { control, watch, setValue } = useFormContext();
-  const studentsData = useSuspenseQuery(apiInfoStudents());
-  const selectedStudents = watch("students") || [];
 
-  const students = studentsData.data || [];
-  
-  const handleStudentToggle = (studentId) => {
-    const currentStudents = selectedStudents;
-    const isSelected = currentStudents.includes(studentId);
-    
-    if (isSelected) {
-      setValue("students", currentStudents.filter(id => id !== studentId));
-    } else {
-      setValue("students", [...currentStudents, studentId]);
-    }
-  };
-
-  return (
-    <Stack spacing={3}>
-      <SelectStudents
-        multiple
-        name="students"
-        placeholder="הוסף תלמידים"
-      />
-    </Stack>
-  );
+function getExceptionTypeOptions(selectedEvent) {
+  return [
+    {
+      value: 'day',
+      label: `אישור ל${inHebrew(selectedEvent.day, 'Dms')}`,
+      secondary: inHebrew(selectedEvent.day, '', true)
+    },
+    {
+      value: 'past_event',
+      label: `אישור לסדר ${selectedEvent.event_name} ב${inHebrew(selectedEvent.day, 'Dm')}`,
+      secondary: inHebrew(selectedEvent.day, '', true)
+    },
+    { divider: true },
+    {
+      value: 'today',
+      label: `אישור להיום`,
+      secondary: inHebrew(today('YYYY-MM-DD'), 'Dms')
+    },
+    {
+      value: 'event',
+      label: `אישור להיום ב${selectedEvent.event_name}`,
+      secondary: `${inHebrew(today('YYYY-MM-DD'), 'Dms')} ${selectedEvent.event_start} - ${selectedEvent.event_end}`
+    },
+    { divider: true },
+    {
+      value: 'custom',
+      label: 'מותאם אישית',
+    },
+  ];
 }
 
 function exceptionsDataServerFromat(data) {
@@ -71,7 +74,7 @@ function useExceptionDefinition({ exception }) {
   const queryClient = useQueryClient();
   const updateException = useMutation(exceptionsUpdate({ queryClient }));
 
-  const onSubmit = useCallback(async (data) => {
+  const onSubmit = useCallback(async (data, mode = 'update') => {
     try {
       console.log('exception data: ', data);
       
@@ -82,7 +85,7 @@ function useExceptionDefinition({ exception }) {
 
       const promiseException = updateException.mutateAsync({ 
         data: exceptionData, 
-        mode:  "update"
+        mode
       });
       
       toast.promise(promiseException, {
@@ -91,9 +94,12 @@ function useExceptionDefinition({ exception }) {
         error: 'שגיאה בשמירת האישור'
       });
 
+      await promiseException;
+
       console.log('exception', exceptionData);
     } catch (error) {
       console.error('Error saving exception:', error);
+      toast.error('שגיאה בשמירת האישור');
     }
   }, [updateException]);
 
@@ -102,41 +108,29 @@ function useExceptionDefinition({ exception }) {
   };
 }
 
-/*
-function ExceptionInfoBeforeSave() {
-  const { watch } = useFormContext();
-  const exception = watch();
-  const students = exception?.students?.length ? exception.students :  [];
-  return (
-    <Box sx={{ mt: 2 }}>
-      <Typography variant="subtitle1">פרטי האישור:</Typography>
-      <Typography variant="body2">סיבה: {exception.reason}</Typography>
-      <Typography variant="body2">מ{inHebrew(exception.from_day, '', true)} בשעה {exception.from_hour}</Typography>
-      <Typography variant="body2">עד {inHebrew(exception.to_day, '', true)} בשעה {exception.to_hour}</Typography>
-      <Typography variant="body2" sx={{ mt: 1 }}>תלמידים:</Typography>
-    </Box>
-  );
-}
-*/
 
+export function ExceptionDefinitionStep({ onComplete, exception, editMode = false }) {
+  const studentsData = useSuspenseQuery(apiInfoStudents());
+  const { selectedEvent } = useInsertStore();
+  
+  const students = studentsData.data || [];
 
-export function ExceptionDefinitionStep({ onComplete, exception, editMode=false }) {
-
-
-  const students = exception?.students?.length ? exception.students :  [];
+  const studentsList = exception?.students?.length ? exception.students : [];
 
   const initialValues = {
     exception_id: exception?.exception_id || '',
+    exception_type: exception?.exception_type || 'custom',
     from_day: exception?.from_day || today('YYYY-MM-DD'),
     from_hour: exception?.from_hour || fCurrentTime(),
     to_day: exception?.to_day || today('YYYY-MM-DD'),
     to_hour: exception?.to_hour || fCurrentTime(),
     reason: exception?.reason || '',
-    students: students.map(student => student.student_id) || [],
+    students: studentsList.map(student => student.student_id) || [],
   };
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),
+    exception_type: z.enum(['today', 'event', 'custom']),
     from_day: z.string().min(1, 'תאריך התחלה נדרש'),
     from_hour: z.string().min(1, 'שעת התחלה נדרשת'),
     to_day: z.string().min(1, 'תאריך סיום נדרש'),
@@ -145,85 +139,171 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode=false 
     students: z.array(z.string()).min(1, 'יש לבחור לפחות תלמיד אחד'),
   });
 
-  const fields = [
-        {
-      step: 1,
-      name: "students",
-      label: "בחירת תלמידים",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      component: StudentsSelectionStep
-    },
-      {
-      step: 1,
-      name: "reason",
-      label: "סיבה",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "text",
-      component: Field.Text
-    },
-    {
-      step: 1,
-      name: "from_day",
-      label: "תאריך התחלה",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "date",
-      component: Field.HebrewDatePicker
-    },
-    {
-      step: 1,
-      name: "from_hour",
-      label: "שעת התחלה",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "time",
-      component: Field.Text
-    },
-    {
-      step: 1,
-      name: "to_day",
-      label: "תאריך סיום",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "date",
-      component: Field.HebrewDatePicker
-    },
-    {
-      step: 1,
-      name: "to_hour",
-      label: "שעת סיום",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "time",
-      component: Field.Text
+  const methods = useForm({
+    resolver: zodResolver(WizardSchema),
+    defaultValues: initialValues
+  });
+
+  const { handleSubmit, watch, setValue } = methods;
+  const { onSubmit: handleExceptionSubmit } = useExceptionDefinition({ exception });
+  
+  const exceptionType = watch('exception_type');
+
+  // Update time fields based on exception type
+  useEffect(() => {
+    if (exceptionType === 'day') {
+      setValue('from_day', selectedEvent.day);
+      setValue('to_day', selectedEvent.day);
     }
-
-  ];
-
-  const steps = [
-      {
-      label: 'בחירת תלמידים',
-      component: <MasterStep fields={fields} number={1} />,
-      icon: "mdi:account-multiple",
-      name: 'studentsSelection'
-    },
-    {
-      name: 'complete',
-      component: <></>
+    if (exceptionType === 'past_event' && selectedEvent?.day) {
+      setValue('from_day', selectedEvent.day);
+      setValue('to_day', selectedEvent.day);
+      if (selectedEvent.event_start) {
+        setValue('from_hour', selectedEvent.event_start);
+      }
+      if (selectedEvent.event_end) {
+        setValue('to_hour', selectedEvent.event_end);
+      }
     }
-  ];
+    if (exceptionType === 'today') {
+      setValue('from_day', today('YYYY-MM-DD'));
+      setValue('to_day', today('YYYY-MM-DD'));
+      setValue('from_hour', fCurrentTime());
+      setValue('to_hour', fCurrentTime());
+    } else if (exceptionType === 'event' && selectedEvent?.day) {
+      setValue('from_day', selectedEvent.day);
+      setValue('to_day', selectedEvent.day);
+      if (selectedEvent.event_start) {
+        setValue('from_hour', selectedEvent.event_start);
+      }
+      if (selectedEvent.event_end) {
+        setValue('to_hour', selectedEvent.event_end);
+      }
+    }
+  }, [exceptionType, selectedEvent, setValue]);
 
-  const { onSubmit } = useExceptionDefinition({ exception });
+  const onSubmit = async (data, mode = 'update') => {
+    console.log('data submitted: ', data);
+    await handleExceptionSubmit(data, mode);
+    if (onComplete) {
+      onComplete(data);
+    }
+  };
 
   return (
-    <StepsProvider
-      steps={steps}
-      defaultValues={initialValues}
-      WizardSchema={WizardSchema}
-      onSubmit={onSubmit}
-    />
+    <Box sx={{ p: 3 }}>
+      <FormProvider {...methods}>
+       
+        <Stack spacing={3}>
+          <Typography variant="h6" gutterBottom>
+            הגדרת אישור
+          </Typography>
+          <SelectStudents
+            infoStudents={students}
+            label="בחירת תלמידים"
+          />
+
+          <Field.Text
+            name="reason"
+            label="סיבה"
+            variant="outlined"
+            fullWidth
+          />
+
+          <Field.Select
+            name="exception_type"
+            label="סוג האישור"
+          >
+            {getExceptionTypeOptions(selectedEvent).map((option) =>
+              option.divider ? (
+                <Divider key={Math.random()} sx={{ my: 1 }} />
+              ) : (
+                <MenuItem key={option.value} value={option.value}>
+                  <Stack>
+                    <Typography variant="body2">{option.label}</Typography>
+                    {option.secondary && (
+                      <Typography variant="caption" color="text.secondary">
+                        {option.secondary}
+                      </Typography>
+                    )}
+                  </Stack>
+                </MenuItem>
+              )
+            )}
+          </Field.Select>
+                     
+          {
+            exceptionType === 'custom' && (
+              <>
+               <Divider />
+              <Stack spacing={2} >
+                <Stack direction="row" spacing={2}>
+                  <Box sx={{ flex: 2 }}>
+                    <Field.HebrewDatePicker
+                      disabled={exceptionType !== 'custom'}
+                  name="from_day"
+                  label="תאריך התחלה"
+                />
+              </Box>
+
+              <Box sx={{ flex: 1 }}>
+                <Field.Text
+                disabled={exceptionType !== 'custom'}
+                  name="from_hour"
+                  label="שעת התחלה"
+                  type="time"
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Box>
+            </Stack>
+
+            <Stack direction="row" spacing={2}>
+              <Box sx={{ flex: 2 }}>
+                <Field.HebrewDatePicker
+                disabled={exceptionType !== 'custom'}
+                  name="to_day"
+                  label="תאריך סיום"
+                />
+              </Box>
+
+              <Box sx={{ flex: 1 }}>
+                <Field.Text
+                  name="to_hour"
+                  disabled={exceptionType !== 'custom'}
+                  label="שעת סיום"
+                  type="time"
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Box>
+            </Stack>
+
+          </Stack>
+          </>
+            )
+          }
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Button
+              variant="soft"
+              color="error"
+              onClick={handleSubmit((data) => onSubmit(data, 'delete'))}
+            >
+              מחק
+            </Button>
+            <Button
+              variant="soft"
+              color="success"
+              onClick={handleSubmit((data) => onSubmit(data, 'update'))}
+            >
+              שמירת אישור
+            </Button>
+          </Stack>
+        </Stack>
+      </FormProvider>
+    </Box>
   );
 }
 
@@ -236,7 +316,7 @@ export function ExceptionDialog({ open, onClose, onComplete, column, editMode=fa
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <ExceptionDefinitionStep
         exception={column}
         onComplete={handleWizardComplete}

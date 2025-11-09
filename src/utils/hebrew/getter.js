@@ -80,6 +80,12 @@ function describeHebrew(day){
 
 
 export function inHebrew(day, full=false, desc=false) {
+    /**
+     * @param {string} day - date in format YYYY-MM-DD
+     * @return {Object|string|null} - Hebrew date information or formatted string
+     * if full is 'Dm' returns "יום_עברי חודש_עברי"
+     * if full is 'Dms' returns "יום_בשבוע יום_עברי חודש_עברי"
+     */
     const hebrewJson = readHebrewJson(day);
     if (desc){
         return describeHebrew(day);
