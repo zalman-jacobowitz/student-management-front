@@ -1,7 +1,8 @@
 
 import { useState } from "react";
 
-import { Button, Stack, Fab, IconButton, Divider, Typography, Grid } from "@mui/material";
+import { Button, Stack, Fab, IconButton, Divider, Typography, Grid, useTheme } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useBoolean } from "src/hooks/use-boolean";
 
@@ -42,6 +43,11 @@ const FILTER_OPTIONS = [
 ];
 
 // Reusable FAB Button Component with Logic Separation
+// Display modes:
+// xs: icon only
+// sm: text only (vertical)
+// md: text with icon (horizontal)
+// lg+: full display with subLabel
 interface FabButtonProps {
   icon: string;
   label: string;
@@ -51,10 +57,11 @@ interface FabButtonProps {
   onClick: () => void;
   testId?: string;
   showSubLabel?: boolean;
-  sizeMultiplier?: number; // 1 for normal, 2 for double size
+  sizeMultiplier?: number;
+  iconAfter?: boolean;
 }
 
-const FabButton = ({
+export const FabButton = ({
   icon,
   label,
   subLabel,
@@ -64,13 +71,81 @@ const FabButton = ({
   onClick,
   testId,
   showSubLabel = false,
-  sizeMultiplier = 1.7,
+  sizeMultiplier = 1,
+  children = () => null,
 }: FabButtonProps) => {
-  const showVertical = showSubLabel && subLabel;
-  const baseWidth = 15; // 15% base width
+  const theme = useTheme();
+  
+  // Responsive breakpoints
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isLg = useMediaQuery(theme.breakpoints.up('lg'));
+  
+  const baseWidth = 15;
   const width = `${baseWidth * sizeMultiplier}%`;
 
-  if (showVertical) {
+  // Mode 1: Icon only (xs)
+  if (isXs) {
+    return (
+      <Fab
+        color={color as any}
+        onClick={onClick}
+        variant="softExtended"
+        sx={{ padding: 1.5, borderRadius: 1, width: 48, minWidth: 48, height: 48 }}
+        data-testid={testId}
+      >
+        <Iconify icon={icon} width={24} />
+      </Fab>
+    );
+  }
+
+  // Mode 2: Text only (sm)
+  if (isSm) {
+    return (
+      <Fab
+        color={color as any}
+        onClick={onClick}
+        variant="softExtended"
+        sx={{ padding: 1, borderRadius: 1, width, minWidth: width, height: 'auto', py: 1 }}
+        data-testid={testId}
+      >
+        <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
+          {label}
+        </Typography>
+      </Fab>
+    );
+  }
+
+  // Mode 3: Icon + Text horizontal (md)
+  if (isMd) {
+    return (
+      <Fab
+        color={color as any}
+        variant="softExtended"
+        onClick={onClick}
+        sx={{ 
+          pr: 2, 
+          pl: 1, 
+          borderRadius: 1, 
+          width, 
+          minWidth: width, 
+          height: 'auto',
+          gap: 1,
+        }}
+        data-testid={testId}
+      >
+        {!iconAfter && icon && <Iconify icon={icon} width={20} />}
+        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+          {label}
+        </Typography>
+        {iconAfter && icon && <Iconify icon={icon} width={20} />}
+      </Fab>
+    );
+  }
+
+  // Mode 4: Full display with subLabel (lg+)
+  if (isLg && showSubLabel && subLabel) {
     return (
       <Fab
         color={color as any}
@@ -80,28 +155,41 @@ const FabButton = ({
         data-testid={testId}
       >
         {!iconAfter ? <Iconify icon={icon} width={24} /> : null}
+        {!iconAfter && children}
         <Stack direction="column" spacing={0} alignItems="center">
-          
           <Typography variant="caption" color="text.secondary">
             {subLabel}
           </Typography>
           <Typography variant="body2">{label}</Typography>
         </Stack>
         {iconAfter ? <Iconify icon={icon} width={24} /> : null}
+        {iconAfter && children}
       </Fab>
     );
   }
 
+  // Fallback: Regular extended button
   return (
     <Fab
       color={color as any}
-      variant={variant}
+      variant="extended"
       onClick={onClick}
-      sx={{ padding: 3, borderRadius: 1, width, minWidth: width }}
+      sx={{ 
+        pr: 2, 
+        pl: 1, 
+        borderRadius: 1, 
+        width, 
+        minWidth: width, 
+        height: 'auto',
+        gap: 1,
+      }}
       data-testid={testId}
     >
-      <Iconify icon={icon} width={24} />
-      {label}
+      {!iconAfter && icon && <Iconify icon={icon} width={20} />}
+      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+        {label}
+      </Typography>
+      {iconAfter && icon && <Iconify icon={icon} width={20} />}
     </Fab>
   );
 };
@@ -124,6 +212,7 @@ interface InsertToolbarProps {
 }
 
 export function InsertToolbar({
+  header,
   summaryMode,
   setSortBy,
   exceptionDialog,
@@ -139,18 +228,6 @@ export function InsertToolbar({
 }: InsertToolbarProps) {
 
 
-  const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent, onBack } = useInsertStore(state => state);
-
-
-  
-  // קבלת שם האירוע הקודם
-  const prevEventName = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.event_name : '';
-  const prevEventDay = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.day : '';
-  
-  // קבלת שם האירוע הבא
-  const nextEventName = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.event_name : '';
-  const nextEventDay = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.day : '';
-  
 
   const [sortIndex, setSortIndex] = useState(0);
   const [filterIndex, setFilterIndex] = useState(3); // Start with 'הכל'
@@ -202,6 +279,8 @@ export function InsertToolbar({
 
   const filterDrawer = useBoolean();
 
+  const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent, onBack } = useInsertStore(state => state);
+
   return (
     <>
       <Stack
@@ -213,10 +292,9 @@ export function InsertToolbar({
 
         <Stack 
           direction={{ xs: 'column', md: 'row' }} 
-          spacing={1} 
-          alignItems="center"
-          justifyContent="center"
-          sx={{ flex: 1 }}
+          spacing={.8} 
+
+
         >
            <FabButton
             icon="solar:round-alt-arrow-right-bold-duotone"
@@ -233,17 +311,18 @@ export function InsertToolbar({
             label="סנן"
             subLabel="הוסף"
             color="default"
-            variant="softExtended"
+            variant="outlinedExtended"
             onClick={filterDrawer.onTrue}
             testId="filter-drawer-fab"
             showSubLabel
           />
-          <FabButton
+                              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } , ml: .5, mr: .5 }} />
+<FabButton
             icon={SORT_OPTIONS[sortIndex].icon}
             subLabel="מיין"
             label={SORT_OPTIONS[sortIndex].label}
             color="default"
-            variant="softExtended"
+            variant="outlinedExtended"
             onClick={handleSortClick}
             testId="sort-fab"
             showSubLabel={true}
@@ -253,72 +332,30 @@ export function InsertToolbar({
             subLabel="תצוגה"
             label={summaryMode.value ? 'פירוט' : 'פשוט'}
             color="default"
-            variant="softExtended"
+            variant={!summaryMode.value ? "outlinedExtended" : "softExtended"}
             onClick={() => {summaryMode.onToggle()}}
             testId="sort-fab"
             showSubLabel={true}
           />
-        </Stack>
-        <Divider orientation="vertical" sx={{ml: 1, mr: 1}} flexItem />
 
-        <Stack 
-          direction={{ xs: 'column', md: 'row' }} 
-          spacing={1} 
-          alignItems="center"
-          justifyContent="center"
-          sx={{ flex: 1 }}
-        >
-          <FabButton
-            icon="solar:round-alt-arrow-right-bold-duotone"
-            label={prevEventName}
-            subLabel={inHebrew(prevEventDay, 'Dm')}
-            color="default"
-            variant="softExtended"
-            onClick={prevEvent}
-            testId="prev-event-fab"
-            showSubLabel
-            sizeMultiplier={3}
-          />
-
-          <FabButton
-            icon="solar:round-alt-arrow-left-bold-duotone"
-            iconAfter={true}
-            label={nextEventName}
-            subLabel={inHebrew(nextEventDay, 'Dm')}
-            color="default"
-            variant="softExtended"
-            onClick={nextEvent}
-            testId="next-event-fab"
-            showSubLabel
-            sizeMultiplier={3}
-          />
-        </Stack>
-        <Divider orientation="vertical" sx={{ml: 1, mr: 1}} flexItem />
-        
-        <Stack 
-          direction={{ xs: 'column', md: 'row' }} 
-          spacing={1} 
-          alignItems="center"
-          justifyContent="center"
-          sx={{ flex: 1 }}
-        >
           <FabButton
             icon={FILTER_OPTIONS[filterIndex].icon}
             label={FILTER_OPTIONS[filterIndex].label}
             subLabel="מציג"
             color={FILTER_OPTIONS[filterIndex].color}
-            variant="softExtended"
+            variant="outlinedExtended"
             onClick={handleFilterClick}
             testId="filter-fab"
             showSubLabel={true}
           />
+                    <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } , ml: .5, mr: .5 }} />
 
           <FabButton
             icon="solar:clock-circle-bold-duotone"
             label="איחור"
             subLabel="הוסף"
             color="warning"
-            variant="softExtended"
+            variant="outlinedExtended"
             onClick={dialogDelay.onTrue}
             testId="delay-fab"
             showSubLabel={true}
@@ -328,7 +365,7 @@ export function InsertToolbar({
             label="אישור"
             subLabel="הוסף"
             color="default"
-            variant="softExtended"
+            variant="outlinedExtended"
             onClick={exceptionDialog.onTrue}
             testId="exception-fab"
             showSubLabel={true}
@@ -338,7 +375,7 @@ export function InsertToolbar({
             label="סדר"
             subLabel="מחק"
             color="error"
-            variant="softExtended"
+            variant="outlinedExtended"
             onClick={exceptionDialog.onTrue}
             testId="exception-fab"
             showSubLabel={true}

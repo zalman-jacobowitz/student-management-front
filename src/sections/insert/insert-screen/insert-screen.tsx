@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useCallback, useState } from "react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
-import { Box, Button, Card } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, Divider, Stack, Typography } from "@mui/material";
 
 import { updateData } from "src/hooks/use-update";
 import { useBoolean } from "src/hooks/use-boolean";
@@ -14,7 +14,7 @@ import { EmptyContent } from "src/components/empty-content";
 
 import { InsertList } from "./insert-list";
 import useInsertStore from "../insert-state";
-import { InsertToolbar } from "./insert-toolbar";
+import { FabButton, InsertToolbar } from "./insert-toolbar";
 import { InsertListHeader } from "./insert-header";
 import { InsertFilters } from "../components/filters";
 import { formValues, insertTamplate } from "../functions";
@@ -22,6 +22,9 @@ import { useLoadCurrentData } from "./functions-insert-load-data";
 import { apiInfoStudents } from "src/actions/info_students";
 import { apiInfoColumns } from "src/actions/info_columns";
 import { mergeWithStudents } from "src/sections/exceptions/utils";
+import { inHebrew } from "src/utils/hebrew/getter";
+import { IconButton } from "yet-another-react-lightbox";
+import { Iconify } from "src/components/iconify";
 
 
 
@@ -113,12 +116,82 @@ export function InsertListView({}) {
   }, []);
 
 
+  const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent, onBack } = useInsertStore(state => state);
+
+
+  
+  // קבלת שם האירוע הקודם
+  const prevEventName = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.event_name : '';
+  const prevEventDay = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.day : '';
+  
+  // קבלת שם האירוע הבא
+  const nextEventName = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.event_name : '';
+  const nextEventDay = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.day : '';
+  
+
   return (
     <DashboardContent sx={{}} disablePadding={false} >
+      <Card>
+        {/* Three-Section Header Layout */}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 2fr 1fr',
+            gap: 2,
+            pt: 3,
+            pl: 2,
+            pr: 2,
+            alignItems: 'center',
+            justifyItems: 'center',
+          }}
+        >
+          {/* Left Section - Previous Event Button */}
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <FabButton
+              icon=""
+              
+              subLabel={<Typography variant="h5" color="text.primary">סדר {prevEventName}</Typography>}
+              label={<Typography variant="body2">{inHebrew(prevEventDay, 'Dm')}</Typography>}
+              color="default"
+              variant="outlinedExtended"
+              onClick={prevEvent}
+              testId="prev-event-fab"
+              showSubLabel
+              sizeMultiplier={7}
+            >
+              <Iconify icon="solar:alt-arrow-right-bold" width={24} sx={{ mr: 1, color: 'text.disabled' }} />
+            </FabButton>
+          </Box>
 
+          {/* Center Section - Event Title and Date */}
+          <Box sx={{ textAlign: 'center', width: '100%' }}>
+            <Typography variant="h3" sx={{ mb: 0 }}>
+              סדר {selectedEvent.event_name}
+            </Typography>
+            <Typography variant="h6" color='text.secondary'>
+              {inHebrew(selectedEvent.day, 'Dms')}
+            </Typography>
+          </Box>
 
-      <InsertListHeader currentData={currentData} watch={watch}/>
-
+          {/* Right Section - Next Event Button */}
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <FabButton
+              icon=""
+              iconAfter
+              subLabel={<Typography variant="h5" color="text.primary">סדר {nextEventName}</Typography>}
+              label={<Typography variant="body2">{inHebrew(nextEventDay, 'Dm')}</Typography>}
+              color="default"
+              variant="outlinedExtended"
+              onClick={nextEvent}
+              testId="next-event-fab"
+              showSubLabel
+              sizeMultiplier={7}
+            >
+              <Iconify icon="solar:alt-arrow-left-bold" width={24} sx={{ ml: 1, color: 'text.disabled' }} onClick={onBack} />
+          
+              </FabButton>
+            </Box>
+        </Box>
 
       <InsertToolbar
         exceptionDialog={exceptionDialog}
@@ -129,12 +202,14 @@ export function InsertListView({}) {
         setSortBy={setSortBy}
         reset={reset}
         handleFilter={handleFilters}
+  
         filters={filters}
         summaryMode={summaryMode}
         infoColumns={infoColumns}
         infoStudents={infoStudents}
       />
-
+      <Divider />
+<CardContent>
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
 
       <InsertList
@@ -148,6 +223,8 @@ export function InsertListView({}) {
         handleUpdate={handleUpdate}
         filters={filters}
       />
+      </CardContent>
+      </Card>
 
     </DashboardContent>
 );
