@@ -60,7 +60,9 @@ function describeHebrew(day){
         const diffTime = today - dateToCheck;
         if (diffTime < (1000 * 60 * 60 * 24)) return 'היום';
 
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = parseInt(diffTime / (1000 * 60 * 60 * 24));
+  
+
         if (diffDays === 0) return 'היום';
         if (diffDays === 1) return 'אתמול';
         if (diffDays === 2) return 'לפני יומיים';
