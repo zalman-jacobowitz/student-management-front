@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-import { Button, Stack, Fab, IconButton } from "@mui/material";
+import { Button, Stack, Fab, IconButton, Divider, Typography, Grid } from "@mui/material";
 
 import { useBoolean } from "src/hooks/use-boolean";
 
@@ -16,22 +16,95 @@ import { DelayDialog } from "../delays/delays-edit-steps";
 import { ButtonGreen } from "src/components/button-green";
 import { ExceptionDialog } from "src/sections/exceptions/exceptions-edit-steps";
 import { Iconify } from "src/components/iconify/iconify";
+import { useForm, useFormContext } from "react-hook-form";
+import { inHebrew } from "src/utils/hebrew/getter";
+
 
 
 
 // ----------------------------------------------------------------------
 
+const VIEW_OPTIONS = [
+  { label: 'פשוט', value: 'simple', icon: 'solar:arrow-up-bold-duotone' },
+  { label: 'פירוט', value: 'detailed', icon: 'solar:arrow-down-bold-duotone' },
+];
+
 const SORT_OPTIONS = [
-  { label: 'סדר עולה', value: 'up', icon: 'solar:arrow-up-bold-duotone' },
-  { label: 'סדר יורד', value: 'down', icon: 'solar:arrow-down-bold-duotone' },
-  { label: 'שם פרטי', value: 'name', icon: 'solar:user-bold-duotone' },
+  { label: 'עולה', value: 'up', icon: 'solar:arrow-up-bold-duotone' },
+  { label: 'יורד', value: 'down', icon: 'solar:arrow-down-bold-duotone' },
+  { label: 'שם', value: 'name', icon: 'solar:user-bold-duotone' },
 ];
 const FILTER_OPTIONS = [
-{ label: 'נוכחים', value: 'true', icon: 'solar:check-circle-bold-duotone', color: 'success' },
-{ label: 'חסרים', value: 'false', icon: 'solar:close-circle-bold-duotone', color: 'error' },
-{ label: 'מאחרים', value: 'delayed', icon: 'solar:clock-circle-bold-duotone', color: 'warning' },
-{ label: 'הכל', value: 'all', icon: 'solar:list-bold-duotone', color: 'default' },
+  { label: 'נוכחים', value: 'true', icon: 'solar:check-circle-bold-duotone', color: 'success' },
+  { label: 'חסרים', value: 'false', icon: 'solar:close-circle-bold-duotone', color: 'error' },
+  { label: 'מאחרים', value: 'delayed', icon: 'solar:clock-circle-bold-duotone', color: 'warning' },
+  { label: 'הכל', value: 'all', icon: 'solar:list-bold-duotone', color: 'default' },
 ];
+
+// Reusable FAB Button Component with Logic Separation
+interface FabButtonProps {
+  icon: string;
+  label: string;
+  subLabel?: string;
+  color?: string;
+  variant?: 'softExtended' | 'outlinedExtended' | 'extended';
+  onClick: () => void;
+  testId?: string;
+  showSubLabel?: boolean;
+  sizeMultiplier?: number; // 1 for normal, 2 for double size
+}
+
+const FabButton = ({
+  icon,
+  label,
+  subLabel,
+  iconAfter = false,
+  color = 'default',
+  variant = 'outlinedExtended',
+  onClick,
+  testId,
+  showSubLabel = false,
+  sizeMultiplier = 1.7,
+}: FabButtonProps) => {
+  const showVertical = showSubLabel && subLabel;
+  const baseWidth = 15; // 15% base width
+  const width = `${baseWidth * sizeMultiplier}%`;
+
+  if (showVertical) {
+    return (
+      <Fab
+        color={color as any}
+        variant={variant}
+        onClick={onClick}
+        sx={{ pr: 2, pl: 1, pt: 2, pb: 2, borderRadius: 1, borderColor: 'transparent', height: 'auto', width, minWidth: width }}
+        data-testid={testId}
+      >
+        {!iconAfter ? <Iconify icon={icon} width={24} /> : null}
+        <Stack direction="column" spacing={0} alignItems="center">
+          
+          <Typography variant="caption" color="text.secondary">
+            {subLabel}
+          </Typography>
+          <Typography variant="body2">{label}</Typography>
+        </Stack>
+        {iconAfter ? <Iconify icon={icon} width={24} /> : null}
+      </Fab>
+    );
+  }
+
+  return (
+    <Fab
+      color={color as any}
+      variant={variant}
+      onClick={onClick}
+      sx={{ padding: 3, borderRadius: 1, width, minWidth: width }}
+      data-testid={testId}
+    >
+      <Iconify icon={icon} width={24} />
+      {label}
+    </Fab>
+  );
+};
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +117,10 @@ interface InsertToolbarProps {
   handleFilter: (data: any) => void;
   infoColumns: any[];
   infoStudents: any[];
+  currentEventIndex?: number;
+  allEvents?: any[];
+  prevEvent?: () => void;
+  nextEvent?: () => void;
 }
 
 export function InsertToolbar({
@@ -58,10 +135,40 @@ export function InsertToolbar({
   filters,
   handleFilter,
   infoColumns,
-  infoStudents,
+  infoStudents
 }: InsertToolbarProps) {
+
+
+  const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent, onBack } = useInsertStore(state => state);
+
+
   
-  const onBack  = useInsertStore(state => state.onBack);
+  // קבלת שם האירוע הקודם
+  const prevEventName = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.event_name : '';
+  const prevEventDay = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.day : '';
+  
+  // קבלת שם האירוע הבא
+  const nextEventName = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.event_name : '';
+  const nextEventDay = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.day : '';
+  
+
+  const [sortIndex, setSortIndex] = useState(0);
+  const [filterIndex, setFilterIndex] = useState(3); // Start with 'הכל'
+
+
+  const handleSortClick = () => {
+    const nextIndex = (sortIndex + 1) % SORT_OPTIONS.length;
+    setSortIndex(nextIndex);
+    setSortBy(SORT_OPTIONS[nextIndex].value);
+  };
+
+  const handleFilterClick = () => {
+    const nextIndex = (filterIndex + 1) % FILTER_OPTIONS.length;
+    setFilterIndex(nextIndex);
+    handleFilter('data', FILTER_OPTIONS[nextIndex].value);
+  };
+
+
 
   const listActionsMap = [
     {
@@ -94,58 +201,152 @@ export function InsertToolbar({
   ]
 
   const filterDrawer = useBoolean();
-  
 
   return (
-    <Stack
-      spacing={1}
-      alignItems={{ xs: 'flex-end', md: 'center' }}
-      direction={{ xs: 'column', md: 'row' }}
-      sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
-    >
+    <>
+      <Stack
+        spacing={0}
+        alignItems={{ xs: 'flex-end', md: 'center' }}
+        direction={{ xs: 'column', md: 'row' }}
+        sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
+      >
 
-      <Fab color="default" variant="outlinedExtended" onClick={onBack}
-          sx={{ padding: 3,  borderRadius: 1 }}>
-         <Iconify icon="solar:arrow-right-bold-duotone" width={24} />
-         חזור
-      </Fab>
-      <Fab color="default" variant="outlinedExtended" onClick={filterDrawer.onTrue} sx={{ padding: 3,  borderRadius: 1  }}>
-         <Iconify icon="solar:filter-bold-duotone" width={24} />
-         סנן
-      </Fab>
-      <Fab color="warning" variant="softExtended" onClick={dialogDelay.onTrue} sx={{ padding: 3,  borderRadius: 1  }}>
-        <Iconify icon="solar:clock-circle-bold-duotone"  />
-         איחור
-      </Fab>
-      <Fab color="default" variant="softExtended" onClick={exceptionDialog.onTrue} sx={{ padding: 3, borderRadius: 1 }}>
-        <Iconify icon="solar:user-check-rounded-bold-duotone" width={24}  />
-         אישור
-      </Fab>
+        <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={1} 
+          alignItems="center"
+          justifyContent="center"
+          sx={{ flex: 1 }}
+        >
+           <FabButton
+            icon="solar:round-alt-arrow-right-bold-duotone"
+            label="חזרה"
+            subLabel="לתפריט"
+            color="default"
+            variant="softExtended"
+            onClick={onBack}
+            testId="filter-drawer-fab"
+            showSubLabel
+          />
+          <FabButton
+            icon="solar:filter-bold-duotone"
+            label="סנן"
+            subLabel="הוסף"
+            color="default"
+            variant="softExtended"
+            onClick={filterDrawer.onTrue}
+            testId="filter-drawer-fab"
+            showSubLabel
+          />
+          <FabButton
+            icon={SORT_OPTIONS[sortIndex].icon}
+            subLabel="מיין"
+            label={SORT_OPTIONS[sortIndex].label}
+            color="default"
+            variant="softExtended"
+            onClick={handleSortClick}
+            testId="sort-fab"
+            showSubLabel={true}
+          />
+          <FabButton
+            icon={summaryMode.value ? 'solar:pie-chart-2-bold-duotone' : 'solar:hamburger-menu-bold-duotone'}
+            subLabel="תצוגה"
+            label={summaryMode.value ? 'פירוט' : 'פשוט'}
+            color="default"
+            variant="softExtended"
+            onClick={() => {summaryMode.onToggle()}}
+            testId="sort-fab"
+            showSubLabel={true}
+          />
+        </Stack>
+        <Divider orientation="vertical" sx={{ml: 1, mr: 1}} flexItem />
 
-      {/*
-      <RegularSelect
-        label="סדר לפי"
-        onChange={(e) => setSortBy(e)}
-        options={SORT_OPTIONS}
-        data-testid="sort-select"
-      />
-      
-      <RegularSelect
-        label="הצג רק"
-        onChange={(e)=> {
-          console.log('filter value:', e)
-          handleFilter('data', e)
-        }}
-        options={FILTER_OPTIONS}
-        data-testid="filter-select"
-        />
-      */}
-      <RegularSearch
-        onChange={(e)=>{handleFilter({...filters, search: e})}}
-        data-testid="search-input"
-      />
-      <PopoverActions listActions={listActionsMap} />
-      
+        <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={1} 
+          alignItems="center"
+          justifyContent="center"
+          sx={{ flex: 1 }}
+        >
+          <FabButton
+            icon="solar:round-alt-arrow-right-bold-duotone"
+            label={prevEventName}
+            subLabel={inHebrew(prevEventDay, 'Dm')}
+            color="default"
+            variant="softExtended"
+            onClick={prevEvent}
+            testId="prev-event-fab"
+            showSubLabel
+            sizeMultiplier={3}
+          />
+
+          <FabButton
+            icon="solar:round-alt-arrow-left-bold-duotone"
+            iconAfter={true}
+            label={nextEventName}
+            subLabel={inHebrew(nextEventDay, 'Dm')}
+            color="default"
+            variant="softExtended"
+            onClick={nextEvent}
+            testId="next-event-fab"
+            showSubLabel
+            sizeMultiplier={3}
+          />
+        </Stack>
+        <Divider orientation="vertical" sx={{ml: 1, mr: 1}} flexItem />
+        
+        <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={1} 
+          alignItems="center"
+          justifyContent="center"
+          sx={{ flex: 1 }}
+        >
+          <FabButton
+            icon={FILTER_OPTIONS[filterIndex].icon}
+            label={FILTER_OPTIONS[filterIndex].label}
+            subLabel="מציג"
+            color={FILTER_OPTIONS[filterIndex].color}
+            variant="softExtended"
+            onClick={handleFilterClick}
+            testId="filter-fab"
+            showSubLabel={true}
+          />
+
+          <FabButton
+            icon="solar:clock-circle-bold-duotone"
+            label="איחור"
+            subLabel="הוסף"
+            color="warning"
+            variant="softExtended"
+            onClick={dialogDelay.onTrue}
+            testId="delay-fab"
+            showSubLabel={true}
+          />
+          <FabButton
+            icon="solar:user-check-rounded-bold-duotone"
+            label="אישור"
+            subLabel="הוסף"
+            color="default"
+            variant="softExtended"
+            onClick={exceptionDialog.onTrue}
+            testId="exception-fab"
+            showSubLabel={true}
+          />
+          <FabButton
+            icon="solar:trash-bin-trash-bold-duotone"
+            label="סדר"
+            subLabel="מחק"
+            color="error"
+            variant="softExtended"
+            onClick={exceptionDialog.onTrue}
+            testId="exception-fab"
+            showSubLabel={true}
+          />
+        </Stack>
+
+      </Stack>
+
       <InsertFilters
         open={filterDrawer.value}
         onClose={filterDrawer.onFalse}
@@ -162,7 +363,7 @@ export function InsertToolbar({
         onComplete={(data) => {
           dialogDelay.onFalse();
         }}
-  
+
       />
       <ExceptionDialog
         open={exceptionDialog.value}
@@ -171,8 +372,8 @@ export function InsertToolbar({
           exceptionDialog.onFalse();
         }}
         column={selectedLabel}
-      /> 
-     
-    </Stack>
-);
+      />
+
+    </>
+  );
 }
