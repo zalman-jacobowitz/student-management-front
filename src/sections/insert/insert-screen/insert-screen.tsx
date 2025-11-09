@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useCallback, useState } from "react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
-import { Button } from "@mui/material";
+import { Box, Button, Card } from "@mui/material";
 
 import { updateData } from "src/hooks/use-update";
 import { useBoolean } from "src/hooks/use-boolean";
@@ -114,9 +114,11 @@ export function InsertListView({}) {
 
 
   return (
-    <DashboardContent sx={{}} disablePadding={false}>
+    <DashboardContent sx={{}} disablePadding={false} >
+
 
       <InsertListHeader currentData={currentData} watch={watch}/>
+
 
       <InsertToolbar
         exceptionDialog={exceptionDialog}
@@ -134,7 +136,7 @@ export function InsertListView({}) {
       />
 
       {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
-      
+
       <InsertList
         infoColumns={infoColumns}
         summaryMode={summaryMode.value}
@@ -146,6 +148,7 @@ export function InsertListView({}) {
         handleUpdate={handleUpdate}
         filters={filters}
       />
+
     </DashboardContent>
 );
 }

@@ -15,6 +15,8 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { uuidv4 } from "src/utils/uuidv4";
 import { description } from "../insert/functions.ts";
 import { SelectStudents } from "../insert/delays/select-students.jsx";
+import { inHebrew } from "src/utils/hebrew/getter.js";
+import { fCurrentTime, today } from "src/utils/format-time.js";
 
 function StudentsSelectionStep() {
   const { control, watch, setValue } = useFormContext();
@@ -36,21 +38,11 @@ function StudentsSelectionStep() {
 
   return (
     <Stack spacing={3}>
-      <Alert severity="info">
-        <Typography variant="body2">
-          בחר את התלמידים להם יחול האישור.
-        </Typography>
-      </Alert>
-      
       <SelectStudents
         multiple
         name="students"
         placeholder="הוסף תלמידים"
       />
-      
-      <Typography variant="body2" color="text.secondary">
-        נבחרו {selectedStudents.length} תלמידים
-      </Typography>
     </Stack>
   );
 }
@@ -110,6 +102,23 @@ function useExceptionDefinition({ exception }) {
   };
 }
 
+/*
+function ExceptionInfoBeforeSave() {
+  const { watch } = useFormContext();
+  const exception = watch();
+  const students = exception?.students?.length ? exception.students :  [];
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Typography variant="subtitle1">פרטי האישור:</Typography>
+      <Typography variant="body2">סיבה: {exception.reason}</Typography>
+      <Typography variant="body2">מ{inHebrew(exception.from_day, '', true)} בשעה {exception.from_hour}</Typography>
+      <Typography variant="body2">עד {inHebrew(exception.to_day, '', true)} בשעה {exception.to_hour}</Typography>
+      <Typography variant="body2" sx={{ mt: 1 }}>תלמידים:</Typography>
+    </Box>
+  );
+}
+*/
+
 
 export function ExceptionDefinitionStep({ onComplete, exception, editMode=false }) {
 
@@ -118,10 +127,10 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode=false 
 
   const initialValues = {
     exception_id: exception?.exception_id || '',
-    from_day: exception?.from_day || '',
-    from_hour: exception?.from_hour || '',
-    to_day: exception?.to_day || '',
-    to_hour: exception?.to_hour || '',
+    from_day: exception?.from_day || today('YYYY-MM-DD'),
+    from_hour: exception?.from_hour || fCurrentTime(),
+    to_day: exception?.to_day || today('YYYY-MM-DD'),
+    to_hour: exception?.to_hour || fCurrentTime(),
     reason: exception?.reason || '',
     students: students.map(student => student.student_id) || [],
   };
@@ -137,6 +146,23 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode=false 
   });
 
   const fields = [
+        {
+      step: 1,
+      name: "students",
+      label: "בחירת תלמידים",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      component: StudentsSelectionStep
+    },
+      {
+      step: 1,
+      name: "reason",
+      label: "סיבה",
+      variant: "filled",
+      InputLabelProps: { shrink: true },
+      type: "text",
+      component: Field.Text
+    },
     {
       step: 1,
       name: "from_day",
@@ -172,36 +198,14 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode=false 
       InputLabelProps: { shrink: true },
       type: "time",
       component: Field.Text
-    },
-    {
-      step: 1,
-      name: "reason",
-      label: "סיבה",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      type: "text",
-      component: Field.Text
-    },
-    {
-      step: 2,
-      name: "students",
-      label: "בחירת תלמידים",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      component: StudentsSelectionStep
     }
+
   ];
 
   const steps = [
-    {
-      label: 'פרטי אישור',
-      component: <MasterStep fields={fields} number={1} />,
-      icon: "mdi:file-document-edit-outline",
-      name: 'exceptionDetails'
-    },
-    {
+      {
       label: 'בחירת תלמידים',
-      component: <MasterStep fields={fields} number={2} />,
+      component: <MasterStep fields={fields} number={1} />,
       icon: "mdi:account-multiple",
       name: 'studentsSelection'
     },

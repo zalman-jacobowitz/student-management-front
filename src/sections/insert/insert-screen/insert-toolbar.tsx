@@ -98,28 +98,31 @@ export function InsertToolbar({
 
   return (
     <Stack
-      spacing={2}
+      spacing={1}
       alignItems={{ xs: 'flex-end', md: 'center' }}
       direction={{ xs: 'column', md: 'row' }}
       sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
     >
-      <IconButton
-        onClick={onBack}
-        color="default"
-        data-testid="back-button"
-        variant="extended"
-      >
-        <Iconify icon="solar:arrow-right-bold-duotone" width={24} />
-      </IconButton>
-      
-      <IconButton
-        onClick={filterDrawer.onTrue}
-        color="default"
-        variant="extended"
-      >
-        <Iconify icon="solar:filter-bold-duotone" width={24} />
-      </IconButton>      
-      
+
+      <Fab color="default" variant="outlinedExtended" onClick={onBack}
+          sx={{ padding: 3,  borderRadius: 1 }}>
+         <Iconify icon="solar:arrow-right-bold-duotone" width={24} />
+         חזור
+      </Fab>
+      <Fab color="default" variant="outlinedExtended" onClick={filterDrawer.onTrue} sx={{ padding: 3,  borderRadius: 1  }}>
+         <Iconify icon="solar:filter-bold-duotone" width={24} />
+         סנן
+      </Fab>
+      <Fab color="warning" variant="softExtended" onClick={dialogDelay.onTrue} sx={{ padding: 3,  borderRadius: 1  }}>
+        <Iconify icon="solar:clock-circle-bold-duotone"  />
+         איחור
+      </Fab>
+      <Fab color="default" variant="softExtended" onClick={exceptionDialog.onTrue} sx={{ padding: 3, borderRadius: 1 }}>
+        <Iconify icon="solar:user-check-rounded-bold-duotone" width={24}  />
+         אישור
+      </Fab>
+
+      {/*
       <RegularSelect
         label="סדר לפי"
         onChange={(e) => setSortBy(e)}
@@ -136,7 +139,7 @@ export function InsertToolbar({
         options={FILTER_OPTIONS}
         data-testid="filter-select"
         />
-      
+      */}
       <RegularSearch
         onChange={(e)=>{handleFilter({...filters, search: e})}}
         data-testid="search-input"
@@ -151,8 +154,6 @@ export function InsertToolbar({
         filters={filters}
         table={currentData}
       />
-      <ButtonGreen number={1} color="warning" onClick={dialogDelay.onTrue}/>
-      <ButtonGreen number={2} color="default" onClick={exceptionDialog.onTrue}/>
 
       <DelayDialog
         open={dialogDelay.value}

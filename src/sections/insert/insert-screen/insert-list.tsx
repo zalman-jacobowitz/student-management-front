@@ -366,8 +366,16 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
                 events={lastEventsData.event[student.student_id]}
                 days={lastEventsData.day[student.student_id]} />;
             })}
-        <ButtonGreen type="submit" data-testid="update-button" sx={{ mt: 2 }} onClick={() => { }} />
-
+        
+        <ButtonGreen
+          type="submit"
+          variant="extended"
+          data-testid="update-button"
+          sx={{ mt: 2 }}
+          onClick={() => { }}
+          icon="solar:upload-square-bold-duotone"
+          text="עדכן נוכחות"
+        />
       </Box>
     </Form>
   );

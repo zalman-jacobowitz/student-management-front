@@ -66,6 +66,7 @@ function describeHebrew(day){
         if (diffDays === 2) return 'לפני יומיים';
         if (diffDays === 7) return 'שבוע שעבר';
         if (diffDays <= 7) return `לפני ${diffDays} ימים`;
+        if (diffDays <= 14) return 'לפני שבועיים';
         if (diffDays <= 30) {
             const weeks = Math.ceil(diffDays / 7);
             return `לפני ${weeks} שבועות`;

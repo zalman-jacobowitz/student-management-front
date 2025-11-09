@@ -237,3 +237,12 @@ export function fSub({
 
   return result;
 }
+
+// ----------------------------------------------------------------------
+
+/** output: HH:mm (e.g. 14:30)
+ * Returns the current time in hours and minutes format
+ */
+export function fCurrentTime() {
+  return dayjs(new Date()).format('HH:mm');
+}
