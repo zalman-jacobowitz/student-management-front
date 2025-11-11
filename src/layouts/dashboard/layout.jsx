@@ -37,13 +37,13 @@ const groups = {
 };
 */
 const groups = {
-  'ניהול נוכחות': ['insert', 'exceptions'],
+  'ניהול נוכחות': ['insert', 'exceptions', 'users'],
   'ניהול נתונים': ['info', 'profile'],
   'ניהול זמנים': ['templates', 'days'],
 };
 function screensFormat(data) {
-  // const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
-  const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
+  const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
+  // const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
 
   const screens = []
 

@@ -15,6 +15,9 @@ import { Iconify } from 'src/components/iconify';
 import { useInfoColumns } from 'src/actions/columns_with_select';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersUpdate } from 'src/actions/users';
+import { signUp } from 'src/auth/context/supabase';
+import { useUserDetails } from 'src/hooks/use-user-details';
+
 
 
 const UserDetailsSchema = zod.object({
@@ -58,7 +61,7 @@ const tableOptions = [
     label: "תלמידים"
   },
   {
-    value: "templates", 
+    value: "templates",
     label: "זמנים"
   }
 ];
@@ -149,97 +152,97 @@ const FiltersCard = ({ filters = [], onRemove }) => (
 );
 
 const TableSelect = ({ value, onChange, options }) => (
-<Field.Select
-  name="temp_table"
-  label="בחירת טבלה"
-  variant="outlined"
-  value={value}
-  onChange={onChange}
-  fullWidth
->
-  {options.map(({ label, value: v }) => (
-    <MenuItem key={v} value={v}>
-      {label}
-    </MenuItem>
-  ))}
-</Field.Select>
-);
-
-const ColumnSelect = ({ value, onChange, columns }) => (
-<Field.Select
-  name="temp_column"
-  label="בחירת עמודה"
-  variant="outlined"
-  value={value}
-  onChange={onChange}
-  fullWidth
->
-  <MenuItem value="">בחר עמודה</MenuItem>
-  {columns.map((c) => (
-    <MenuItem key={c.name} value={c.name}>
-      {c.label}
-    </MenuItem>
-  ))}
-</Field.Select>
-);
-
-const OperatorSelect = ({ value, onChange }) => (
-<Field.Select
-  name="temp_operator"
-  label="סוג החיבור"
-  variant="outlined"
-  value={value}
-  onChange={onChange}
-  fullWidth
->
-  <MenuItem value="and">AND (וגם)</MenuItem>
-  <MenuItem value="or">OR (או)</MenuItem>
-</Field.Select>
-);
-
-const SideSelect = ({ value, onChange }) => (
-<Field.Select
-  name="temp_side"
-  label="צד ביצוע הפילטור"
-  variant="outlined"
-  value={value}
-  onChange={onChange}
-  fullWidth
->
-  <MenuItem value="server">שרת</MenuItem>
-  <MenuItem value="client">לקוח</MenuItem>
-</Field.Select>
-);
-
-const ValueInput = ({ column, value, onChange }) => {
-if (!column) return null;
-return column.type === 'select' && column.options ? (
   <Field.Select
-    name="temp_value"
-    label={`ערך ב${column.label}`}
+    name="temp_table"
+    label="בחירת טבלה"
     variant="outlined"
     value={value}
     onChange={onChange}
     fullWidth
   >
-    <MenuItem value="">בחר ערך</MenuItem>
-    {column.options.map((opt) => (
-      <MenuItem key={opt.value} value={opt.value}>
-        {opt.label}
+    {options.map(({ label, value: v }) => (
+      <MenuItem key={v} value={v}>
+        {label}
       </MenuItem>
     ))}
   </Field.Select>
-) : (
-  <Field.Text
-    name="temp_value"
-    label={`ערך ב${column.label}`}
+);
+
+const ColumnSelect = ({ value, onChange, columns }) => (
+  <Field.Select
+    name="temp_column"
+    label="בחירת עמודה"
     variant="outlined"
     value={value}
     onChange={onChange}
-    placeholder="הכנס ערך..."
     fullWidth
-  />
+  >
+    <MenuItem value="">בחר עמודה</MenuItem>
+    {columns.map((c) => (
+      <MenuItem key={c.name} value={c.name}>
+        {c.label}
+      </MenuItem>
+    ))}
+  </Field.Select>
 );
+
+const OperatorSelect = ({ value, onChange }) => (
+  <Field.Select
+    name="temp_operator"
+    label="סוג החיבור"
+    variant="outlined"
+    value={value}
+    onChange={onChange}
+    fullWidth
+  >
+    <MenuItem value="and">AND (וגם)</MenuItem>
+    <MenuItem value="or">OR (או)</MenuItem>
+  </Field.Select>
+);
+
+const SideSelect = ({ value, onChange }) => (
+  <Field.Select
+    name="temp_side"
+    label="צד ביצוע הפילטור"
+    variant="outlined"
+    value={value}
+    onChange={onChange}
+    fullWidth
+  >
+    <MenuItem value="server">שרת</MenuItem>
+    <MenuItem value="client">לקוח</MenuItem>
+  </Field.Select>
+);
+
+const ValueInput = ({ column, value, onChange }) => {
+  if (!column) return null;
+  return column.type === 'select' && column.options ? (
+    <Field.Select
+      name="temp_value"
+      label={`ערך ב${column.label}`}
+      variant="outlined"
+      value={value}
+      onChange={onChange}
+      fullWidth
+    >
+      <MenuItem value="">בחר ערך</MenuItem>
+      {column.options.map((opt) => (
+        <MenuItem key={opt.value} value={opt.value}>
+          {opt.label}
+        </MenuItem>
+      ))}
+    </Field.Select>
+  ) : (
+    <Field.Text
+      name="temp_value"
+      label={`ערך ב${column.label}`}
+      variant="outlined"
+      value={value}
+      onChange={onChange}
+      placeholder="הכנס ערך..."
+      fullWidth
+    />
+  );
 };
 
 export const AddPermissionDialog = ({
@@ -415,23 +418,39 @@ export const PermissionsStep = () => {
 export function useUserPermissionsForm(existingUser = null) {
 
   const queryClient = useQueryClient();
-  
-  const mutate = useMutation(usersUpdate({queryClient})) 
+  const mutate = useMutation(usersUpdate({ queryClient }))
+  const {userDetails} = useUserDetails()
 
-  const onSubmit = useCallback(async (data) => {
+  const onSubmit = useCallback(async (dataFORM) => {
     try {
-      const promise = mutate.mutateAsync(Array(data), 'update');
+      console.log('Submitting user data:', dataFORM);
+      console.log('userDetails: ', userDetails)
+      
+      const data = {
+        ...dataFORM.user,
+        password: '123456',
+        client: userDetails.user_metadata.client,
+        org: userDetails.user_metadata.client,
+        data: dataFORM
+      }
+      console.log('Prepared user data for submission:', data);
+
+      const promise = existingUser ? mutate.mutateAsync(Array(dataFORM), 'update'): signUp(data, true);
+
       toast.promise(promise, {
         loading: 'מעדכן...',
         success: 'העדכון הצליח!',
         error: 'העידכון נכשל!',
       });
-      await promise;
-      // handleNext();
+      
+      const result = await promise;
+
+      queryClient.invalidateQueries();
+
     } catch (error) {
-      console.error(error);
+      console.error('Error during submission:', error);
     }
-  }, [mutate]);
+  }, [mutate, userDetails, queryClient]);
 
   return {
     onSubmit
@@ -441,12 +460,11 @@ export function useUserPermissionsForm(existingUser = null) {
 
 
 export function UserPermissionsForm({ existingUser = null }) {
+
   const {
-
     onSubmit
+  } = useUserPermissionsForm(existingUser);
 
-  } = useUserPermissionsForm(existingUser); 
-  
   const fileds = [
     {
       step: 1,
@@ -454,7 +472,7 @@ export function UserPermissionsForm({ existingUser = null }) {
       label: "שם משתמש",
       variant: "filled",
       InputLabelProps: { shrink: true },
-      type : "text",
+      type: "text",
       component: Field.Text
     },
     {
@@ -463,7 +481,7 @@ export function UserPermissionsForm({ existingUser = null }) {
       label: "שם משפחה",
       variant: "filled",
       InputLabelProps: { shrink: true },
-      type : "text",
+      type: "text",
       component: Field.Text
     },
     {
@@ -472,7 +490,7 @@ export function UserPermissionsForm({ existingUser = null }) {
       label: "מדינה",
       variant: "filled",
       InputLabelProps: { shrink: true },
-      type : "country",
+      type: "country",
       component: Field.Text
     },
     {
@@ -481,13 +499,13 @@ export function UserPermissionsForm({ existingUser = null }) {
       label: "דואר אלקטרוני",
       variant: "filled",
       InputLabelProps: { shrink: true },
-      type : "email",
+      type: "email",
       component: Field.Text
     },
     ...Object.entries(screenOptions).map(([key, screen]) => (
       {
         step: 2,
-        name: `screens.${key}`, 
+        name: `screens.${key}`,
         label: screen.title,
         icon: screen.regularIcon,
         component: Field.ToggleButtonSwitch,
@@ -500,46 +518,46 @@ export function UserPermissionsForm({ existingUser = null }) {
       icon: "mdi:shield-outline",
       component: PermissionsStep
     }
-    
+
 
   ]
 
 
 
-    const steps = [
-      {
-        label: 'פרטי משתמש',
-        component: <MasterStep fields={fileds} number={1} />,
-        name: 'userDetails',
-        icon: "mdi:account-outline"
-      },
-      {
-        label: 'בחירת מסכים',
-        component: <MasterStep fields={fileds} number={2} Provider={Grid} container spacing={2} />,
-        name: 'screens',
-        icon: "mdi:monitor-outline",
+  const steps = [
+    {
+      label: 'פרטי משתמש',
+      component: <MasterStep fields={fileds} number={1} />,
+      name: 'userDetails',
+      icon: "mdi:account-outline"
+    },
+    {
+      label: 'בחירת מסכים',
+      component: <MasterStep fields={fileds} number={2} Provider={Grid} container spacing={2} />,
+      name: 'screens',
+      icon: "mdi:monitor-outline",
 
-      },
-      {
-        label: 'הרשאות מפורטות',
-        component: <MasterStep fields={fileds} number={3} />,
-        name: 'permissions',
-        icon: "mdi:shield-outline"
-      },
-      {
-        name: 'complete',
-        component: <></>
-      }
-    ]
-  
-    return (
+    },
+    {
+      label: 'הרשאות מפורטות',
+      component: <MasterStep fields={fileds} number={3} />,
+      name: 'permissions',
+      icon: "mdi:shield-outline"
+    },
+    {
+      name: 'complete',
+      component: <></>
+    }
+  ]
 
-        <StepsProvider
-          steps={steps}
-          defaultValues={existingUser || {}}
-          WizardSchema={PermissionsWizardSchema}
-          onSubmit={onSubmit}
-        />
+  return (
+
+    <StepsProvider
+      steps={steps}
+      defaultValues={existingUser || {}}
+      WizardSchema={PermissionsWizardSchema}
+      onSubmit={onSubmit}
+    />
 
   )
 }

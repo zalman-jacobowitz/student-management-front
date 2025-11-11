@@ -41,7 +41,7 @@ export const signInWithPassword = async ({ email, password }) => {
 /** **************************************
  * Sign up
  *************************************** */
-export const signUp = async (userData) => {
+export const signUp = async (userData, firstUser=true) => {
   const {
     email,
     password,
@@ -52,7 +52,7 @@ export const signUp = async (userData) => {
     org
   } = userData
 
-  const blankData = adminUserBlank(userData)
+  const blankData = firstUser ? adminUserBlank(userData) : {...userData.data, client}
   
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -70,12 +70,7 @@ export const signUp = async (userData) => {
     throw error;
   }
 
-  if (!data?.user?.identities?.length) {
-    throw new Error('This user already exists');
-  }
-
-  return { data, error };
-};
+}
 
 /** **************************************
  * Sign out

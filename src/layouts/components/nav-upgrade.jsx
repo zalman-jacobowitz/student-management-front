@@ -23,7 +23,7 @@ import { useMockedUser } from 'src/auth/hooks';
 export function NavUpgrade({ sx, ...other }) {
   const { user } = useMockedUser();
   const { userDetails, isLoading, error } = useUserDetails();
-  
+  const name = userDetails?.user_metadata?.user
   return (
     <Stack sx={{ px: 2, py: 5, textAlign: 'center', ...sx }} {...other}>
       <Stack alignItems="center">
@@ -52,7 +52,7 @@ export function NavUpgrade({ sx, ...other }) {
             noWrap
             sx={{ color: 'var(--layout-nav-text-primary-color)' }}
           >
-           {isLoading ? 'טוען...' : (userDetails?.user_metadata?.display_name || 'משתמש')}
+           {isLoading ? 'טוען...' : `${name.firstName} ${name.lastName}`}
           </Typography>
 
           <Typography
@@ -60,7 +60,7 @@ export function NavUpgrade({ sx, ...other }) {
             noWrap
             sx={{ color: 'var(--layout-nav-text-disabled-color)' }}
           >
-            {userDetails?.user_metadata?.role || 'מנהל'}
+            {userDetails?.user_metadata?.email || 'מנהל'}
           </Typography>
         </Stack>
 

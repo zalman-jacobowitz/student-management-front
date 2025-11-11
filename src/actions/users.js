@@ -22,7 +22,7 @@ export function apiUsers() {
 
 export const usersUpdate = ({queryClient})=>({
   mutationKey: ['users'],
-  mutationFn: async ({data, mode='update'}) => {
+  mutationFn: async (data, mode='update') => {
     const res = await apiFetch('all', {
       table_name: 'users',
       mode,
