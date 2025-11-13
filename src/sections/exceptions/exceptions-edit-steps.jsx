@@ -130,7 +130,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),
-    exception_type: z.enum(['today', 'event', 'custom']),
+    exception_type: z.string().min(1, 'יש לבחור סוג אישור'),
     from_day: z.string().min(1, 'תאריך התחלה נדרש'),
     from_hour: z.string().min(1, 'שעת התחלה נדרשת'),
     to_day: z.string().min(1, 'תאריך סיום נדרש'),

@@ -1,5 +1,5 @@
 
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography, useTheme } from "@mui/material";
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
@@ -195,12 +195,11 @@ function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [
   );
   
 
-
   return (
-    <Card variant="outlined" sx={{ bgcolor: 'background.neutral' }}>
+    <Card sx={{m: 1, boxShadow: (theme) => theme.customShadows.z8 }}>
       <CardHeader
 
-        title={<Typography variant="h6">{student.primary}</Typography>}
+        title={<Typography variant="subtitle1">{student.primary}</Typography>}
         avatar={
 
           <Box sx={{ position: 'relative' }}>
@@ -208,21 +207,21 @@ function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [
             {SLabel}
           </Box>}
 
-        subheader={<Typography>{student.secondary}</Typography>}
+        subheader={<Typography variant="body2">{student.secondary}</Typography>}
         subheaderTypographyProps={{ color: 'success' }}
-        sx={{ alignContent: 'center', bgcolor: 'background.neutral' }}
+        sx={{ alignContent: 'center',  bgcolor: 'background.neutral', pb: 2 }}
       >
 
       </CardHeader>
       <CardContent>
 
-        <Box sx={{ mb: 0, p: 1 }}>
+        <Box sx={{ mb: 0, p: 0 }}>
           
            <AccordionSummaryMode value={presentage(Object.values(events))}>
               <CountShows count={events} />
           </AccordionSummaryMode>
         </Box>
-        <Box sx={{ mb: 0, p: 1 }}>
+        <Box sx={{ mb: 0, p: 0 }}>
           <AccordionSummaryMode value={presentage(Object.values(days))}>
             <CountShows count={days} />
           </AccordionSummaryMode>
@@ -287,9 +286,8 @@ function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) 
 function AccordionSummaryMode({ children, value }: { children: React.ReactNode }) {
   return (
     <Accordion>
-      
       <AccordionSummary sx={{ width: '100%' }}>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%',p : 0 }}>
           <RenderCell value={value} />
         </Box>
       </AccordionSummary>

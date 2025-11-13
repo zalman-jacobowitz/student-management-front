@@ -16,8 +16,8 @@ export function useSteps(steps, defaultValues, WizardSchema){
   
     const handleNext = useCallback(async (type='') => {
       const step = steps[activeStep].name;
-      alert('step name: ' + step);
-      await trigger('user.email');  // ← מחפש את 'user' בSchema ומאמת את כל השדות שלו
+
+      
 
       if (step && await trigger(step)) {
 
