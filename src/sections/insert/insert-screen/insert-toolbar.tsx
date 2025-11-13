@@ -151,7 +151,7 @@ export const FabButton = ({
         color={color as any}
         variant={variant}
         onClick={onClick}
-        sx={{ pr: 2, pl: 1, pt: 2, pb: 2, borderRadius: 1, borderColor: 'transparent', height: 'auto', width, minWidth: width }}
+        sx={{ pr: 2, pl: 1, pt: 2, pb: 2,  borderRadius: 1, borderColor: 'transparent', height: 'auto', width, minWidth: width }}
         data-testid={testId}
       >
         {!iconAfter ? <Iconify icon={icon} width={24} /> : null}
@@ -182,6 +182,7 @@ export const FabButton = ({
         minWidth: width, 
         height: 'auto',
         gap: 1,
+        boxShadow: (theme) => theme.customShadows.z8
       }}
       data-testid={testId}
     >
@@ -299,6 +300,7 @@ export function InsertToolbar({
            <FabButton
             icon="solar:round-alt-arrow-right-bold-duotone"
             label="חזרה"
+            sx={{ boxShadow: (theme) => theme.customShadows.z8 }}
             subLabel="לתפריט"
             color="default"
             variant="softExtended"
@@ -307,6 +309,7 @@ export function InsertToolbar({
             showSubLabel
           />
           <FabButton
+          sx={{ boxShadow: (theme) => theme.customShadows.z8 }}
             icon="solar:filter-bold-duotone"
             label="סנן"
             subLabel="הוסף"
@@ -318,6 +321,7 @@ export function InsertToolbar({
           />
                               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } , ml: .5, mr: .5 }} />
 <FabButton
+            sx={{ boxShadow: (theme) => theme.customShadows.z8 }}
             icon={SORT_OPTIONS[sortIndex].icon}
             subLabel="מיין"
             label={SORT_OPTIONS[sortIndex].label}
