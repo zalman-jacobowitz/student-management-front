@@ -99,7 +99,8 @@ export function RenderCell({ value }) {
           (numValue < 80 && 'warning') ||
           'success'
         }
-        sx={{ mb: 1, width: 1, height: 6, maxWidth: 80 }}
+        sx={{ mb: 1, width: 1, height: 6 }}
+        
       />
       {numValue}%
     </Stack>

@@ -1,11 +1,11 @@
 
-import { Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography } from "@mui/material";
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
 
 import useInsertStore from "../insert-state";
-import { getDesc, descriptionColumns } from "../functions";
+
 import { newApplyFilters } from "../components/filters";
 import { useCallback } from "react";
 import { ProgressBar } from "src/components/progress-bar";
@@ -89,20 +89,20 @@ function enhanceStudentData(student) {
   };
 }
 
-  const colorMap = {
-    true: 'success',
-    false: 'error',
-    delayed: 'warning',
-    exceptional: 'default',
-  };
+const colorMap = {
+  true: 'success',
+  false: 'error',
+  delayed: 'warning',
+  exceptional: 'default',
+};
 
 
-  const text = {
-    exceptional: 'נעדר באישור',
-    delayed: 'איחר',
-    true: 'היה',
-    false: 'חיסר',
-  }
+const text = {
+  exceptional: 'נעדר באישור',
+  delayed: 'איחר',
+  true: 'היה',
+  false: 'חיסר',
+}
 
 
 function CountShows({ count }: {}) {
@@ -117,6 +117,9 @@ function CountShows({ count }: {}) {
     ... 
   }
   */
+
+  
+
   const iconMap = {
     exceptional: 'solar:alert-circle-bold-duotone',
     delayed: 'solar:check-circle-bold-duotone',
@@ -125,42 +128,51 @@ function CountShows({ count }: {}) {
   };
 
   return <>
-      {Object.entries(count).map(([eventName, status]) => (
-        <Tooltip title={eventName.split(' | ')[1]} key={eventName}>
-            <Chip
-              key={eventName}
-              size="small"
-              label={`${text[status]} ב${eventName.split(' | ')[0]}`}
-              tooltip={eventName}
-              color={colorMap[status as keyof typeof colorMap]}
-              variant="soft"
-              sx={{ m: 0.3, p:0 }}
-            />
-            
-        </Tooltip>
+    {Object.entries(count).map(([eventName, status]) => (
+      <Tooltip title={eventName.split(' | ')[1]} key={eventName}>
+        <Chip
+          key={eventName}
+          size="small"
+          label={`${text[status]} ב${eventName.split(' | ')[0]} -  ${eventName.split(' | ')[1]}`}
+          tooltip={eventName}
+          color={colorMap[status as keyof typeof colorMap]}
+          variant="soft"
+          sx={{ m: 0.3, p: 0 }}
+        />
 
-      ))}
+      </Tooltip>
+
+    ))}
   </>
 }
 
 
 const getColorByStatus = (student) => {
-  
+
   if (student.delay) {
-    return {color: 'warning', label: 'איחר', icon: 'solar:check-circle-bold-duotone', type: 'delay', tooltip: 'התלמיד איחר'};
+    return { color: 'warning', label: 'איחר', icon: 'solar:check-circle-bold-duotone', type: 'delay', tooltip: 'התלמיד איחר' };
   }
   if (student.reason) {
-    return {color: 'default', label: 'נעדר באישור', icon: 'solar:check-circle-bold-duotone', type: 'exceptional', tooltip: 'התלמיד נעדר באישור'};
+    return { color: 'default', label: 'נעדר באישור', icon: 'solar:check-circle-bold-duotone', type: 'exceptional', tooltip: 'התלמיד נעדר באישור' };
   }
   if (Number(student.data)) {
-    return {color: 'success', label: 'היה', icon: 'solar:check-circle-bold-duotone', type: 'present', tooltip: 'התלמיד היה נוכח'};
+    return { color: 'success', label: 'היה', icon: 'solar:check-circle-bold-duotone', type: 'present', tooltip: 'התלמיד היה נוכח' };
   }
-  return {color: 'error', label: 'חיסר', icon: 'solar:check-circle-bold-duotone', type: 'absent', tooltip: 'התלמיד היה חסר'};
+  return { color: 'error', label: 'חיסר', icon: 'solar:check-circle-bold-duotone', type: 'absent', tooltip: 'התלמיד היה חסר' };
 };
+
+
+function presentage(arr){
+  const len = arr.length;
+  const is = arr.filter(e => e).length;
+
+  return (is / len) * 100;
+}
+
 
 function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [] }: { children: React.ReactNode }) {
   const { color, label, icon, tooltip } = getColorByStatus(student);
-  const SLabel =  (
+  const SLabel = (
     <Tooltip title={tooltip}>
       <Label
         color={color || 'default'}
@@ -181,31 +193,39 @@ function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [
       </Label>
     </Tooltip>
   );
+  
+
 
   return (
-    <Card variant="outlined" sx={{bgcolor: 'background.neutral'}}>
+    <Card variant="outlined" sx={{ bgcolor: 'background.neutral' }}>
       <CardHeader
 
         title={<Typography variant="h6">{student.primary}</Typography>}
         avatar={
-          
+
           <Box sx={{ position: 'relative' }}>
-            <Avatar color={color}  src="" alt="" sx={{ width: 48, height: 48, opacity: 0.7 }}  />
+            <Avatar color={color} src="" alt="" sx={{ width: 48, height: 48, opacity: 0.7 }} />
             {SLabel}
           </Box>}
 
         subheader={<Typography>{student.secondary}</Typography>}
-        subheaderTypographyProps={{color: 'success'}}
+        subheaderTypographyProps={{ color: 'success' }}
         sx={{ alignContent: 'center', bgcolor: 'background.neutral' }}
       >
 
       </CardHeader>
       <CardContent>
-        <Box sx={{ mb: 2, p: 1 }}>
-        <CountShows count={events} />
+
+        <Box sx={{ mb: 0, p: 1 }}>
+          
+           <AccordionSummaryMode value={presentage(Object.values(events))}>
+              <CountShows count={events} />
+          </AccordionSummaryMode>
         </Box>
-        <Box sx={{ mb: 2, p: 1 }}>
-        <CountShows count={days} />
+        <Box sx={{ mb: 0, p: 1 }}>
+          <AccordionSummaryMode value={presentage(Object.values(days))}>
+            <CountShows count={days} />
+          </AccordionSummaryMode>
         </Box>
       </CardContent>
 
@@ -239,29 +259,46 @@ function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) 
       // קביעת המצב לפי הנתונים
       let status: any = false;
       if (student.delay_id || student.delay) {
-          // יש איחור
-          status = 'delayed';
-      } 
+        // יש איחור
+        status = 'delayed';
+      }
       else if (student.data === 1) {
         // נוכחות
         status = true;
       }
       else if (student.data === 0) {
-      // עדר
+        // עדר
         status = false;
       }
-    
+
       if (student.exception_id || student.exception) {
-          // יש אישור
-          status = 'exceptional';
-        }
-      
+        // יש אישור
+        status = 'exceptional';
+      }
+
 
       result[student.student_id][eventName] = status;
     });
   });
 
   return result;
+}
+
+function AccordionSummaryMode({ children, value }: { children: React.ReactNode }) {
+  return (
+    <Accordion>
+      
+      <AccordionSummary sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }}>
+          <RenderCell value={value} />
+        </Box>
+      </AccordionSummary>
+      <AccordionDetails>
+        {children}
+      </AccordionDetails>
+
+    </Accordion>
+  )
 }
 
 function useLastEventsData() {
@@ -271,8 +308,8 @@ function useLastEventsData() {
   const allEventsData = {}
   const allDaysData = {}
   // 4 limit
-  lastEvents.data.slice(0, 3).forEach((event) => {
-        event.event = event.event_id; 
+  lastEvents.data.slice(0, 5).forEach((event) => {
+    event.event = event.event_id;
     const eventData = useSuspenseQuery(apiDataStudentsEvent(event)).data;
 
 
@@ -284,7 +321,7 @@ function useLastEventsData() {
     allEventsData[`${event.event_name} | ${inHebrew(event.day, false, true)}`] = [...eventData];
   });
 
-  return  {
+  return {
     event: transformEventsDataForCountShows(allEventsData),
     day: transformEventsDataForCountShows(allDaysData)
   };
@@ -328,7 +365,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
 
 
   const lastEventsData = useLastEventsData();
-  
+
 
 
   return (
@@ -360,13 +397,13 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
             />
 
           ) : <SummaryMode
-                key={student.student_id}
-                student={student}
-                enhancedStudent={enhancedStudent}
-                events={lastEventsData.event[student.student_id]}
-                days={lastEventsData.day[student.student_id]} />;
-            })}
-        
+            key={student.student_id}
+            student={student}
+            enhancedStudent={enhancedStudent}
+            events={lastEventsData.event[student.student_id]}
+            days={lastEventsData.day[student.student_id]} />;
+        })}
+
         <ButtonGreen
           type="submit"
           variant="extended"

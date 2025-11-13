@@ -17,6 +17,8 @@ import { TableConfig } from "src/components/full-table/types";
 import { UserPermissionsForm } from "./user-permissions-form";
 import { UsersRowDetails } from "./users-details";
 
+import { NewList } from "./new-list";
+
 
 const LINKS = [
   { name: 'מסך-ראשי', href: paths.dashboard.root },
@@ -57,13 +59,7 @@ function UserMainDynamicView() {
         const { open, onClose, column } = props
 
         return (
-          <ConfirmDialog
-            mode="full"
-            maxWidth="sm"
-            open={open}
-            onClose={onClose}
-            content={<UserPermissionsForm existingUser={column.details} />}
-          />
+          <></>
         )
       },
       
@@ -85,7 +81,7 @@ function UserMainDynamicView() {
    export function UserViewWrapper() {
     return (
       <Suspense fallback={<LoadingScreen />}> {/* fallback until all queries resolve */}
-        <UserMainDynamicView/>
+        <NewList />
       </Suspense>
     );
   }
