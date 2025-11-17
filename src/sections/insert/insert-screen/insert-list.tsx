@@ -1,5 +1,5 @@
 
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Tooltip, Typography, useTheme } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Card, CardContent, CardHeader, Chip, Grid, Tooltip, Typography, useTheme } from "@mui/material";
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
@@ -19,6 +19,7 @@ import { apiDataStudentsEvent } from "src/actions/data_students_event";
 import { apiListEvents } from "src/actions/list_of_events";
 import { inHebrew } from "src/utils/hebrew/getter";
 import { stat } from "fs";
+import { apiSummary } from "src/actions/summary";
 
 interface InsertListProps {
   methods: any;
@@ -90,8 +91,8 @@ function enhanceStudentData(student) {
 }
 
 const colorMap = {
-  true: 'success',
-  false: 'error',
+  100: 'success',
+  0: 'error',
   delayed: 'warning',
   exceptional: 'default',
 };
@@ -100,12 +101,290 @@ const colorMap = {
 const text = {
   exceptional: 'נעדר באישור',
   delayed: 'איחר',
-  true: 'היה',
-  false: 'חיסר',
+  100: 'היה',
+  0: 'חיסר',
 }
 
-
+const demoDataSummary = {
+    "1313-R": {
+        "2025-11-04": {
+            "1": 100
+        },
+        "2025-11-05": {
+            "1": 100,
+            "2": 100
+        },
+        "2025-11-06": {
+            "1": 100,
+            "2": 100
+        },
+        "2025-11-08": {
+            "1": 0
+        },
+        "2025-11-09": {
+            "1": 0,
+            "2": 0
+        },
+        "2025-11-14": {
+            "2": 0
+        }
+    },
+    "2673-C": {
+        "2025-11-04": {
+            "1": 100
+        },
+        "2025-11-05": {
+            "1": 100,
+            "2": 100
+        },
+        "2025-11-06": {
+            "1": 100,
+            "2": 100
+        },
+        "2025-11-08": {
+            "1": 100
+        },
+        "2025-11-09": {
+            "1": 100,
+            "2": 100
+        },
+        "2025-11-14": {
+            "2": 0
+        }
+    },
+    "2836-H": {
+        "2025-11-04": {
+            "1": ""
+        },
+        "2025-11-05": {
+            "1": "",
+            "2": ""
+        },
+        "2025-11-06": {
+            "1": "",
+            "2": ""
+        },
+        "2025-11-08": {
+            "1": ""
+        },
+        "2025-11-09": {
+            "1": "",
+            "2": ""
+        },
+        "2025-11-14": {
+            "2": "100.0"
+        }
+    },
+    "2914-J": {
+        "2025-11-04": {
+            "1": "0.0"
+        },
+        "2025-11-05": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "0.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "100.0"
+        },
+        "2025-11-14": {
+            "2": "100.0"
+        }
+    },
+    "3120-F": {
+        "2025-11-04": {
+            "1": "100.0"
+        },
+        "2025-11-05": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "0.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "100.0"
+        },
+        "2025-11-14": {
+            "2": "100.0"
+        }
+    },
+    "5233-Y": {
+        "2025-11-04": {
+            "1": "100.0"
+        },
+        "2025-11-05": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-14": {
+            "2": "100.0"
+        }
+    },
+    "6210-K": {
+        "2025-11-04": {
+            "1": "100.0"
+        },
+        "2025-11-05": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-06": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-14": {
+            "2": "100.0"
+        }
+    },
+    "6290-Q": {
+        "2025-11-04": {
+            "1": "0.0"
+        },
+        "2025-11-05": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "0.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "100.0"
+        },
+        "2025-11-14": {
+            "2": "0.0"
+        }
+    },
+    "6465-K": {
+        "2025-11-04": {
+            "1": "100.0"
+        },
+        "2025-11-05": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-14": {
+            "2": "0.0"
+        }
+    },
+    "6748-U": {
+        "2025-11-04": {
+            "1": "100.0"
+        },
+        "2025-11-05": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-06": {
+            "1": "0.0",
+            "2": "100.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "100.0"
+        },
+        "2025-11-14": {
+            "2": "0.0"
+        }
+    },
+    "8893-Q": {
+        "2025-11-04": {
+            "1": "0.0"
+        },
+        "2025-11-05": {
+            "1": "100.0",
+            "2": "0.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "0.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-14": {
+            "2": "0.0"
+        }
+    },
+    "9550-V": {
+        "2025-11-04": {
+            "1": "0.0"
+        },
+        "2025-11-05": {
+            "1": "100.0",
+            "2": "0.0"
+        },
+        "2025-11-06": {
+            "1": "100.0",
+            "2": "100.0"
+        },
+        "2025-11-08": {
+            "1": "0.0"
+        },
+        "2025-11-09": {
+            "1": "0.0",
+            "2": "0.0"
+        },
+        "2025-11-14": {
+            "2": "0.0"
+        }
+    }
+}
 function CountShows({ count }: {}) {
+  console.log({count});
   /*
   מציג את האירועים עם צבע אייקון לפי מצב נוכחות
   בזה אחר זה ללא כיתוב של האירוע אלא רק הTOLLTIP
@@ -129,12 +408,12 @@ function CountShows({ count }: {}) {
 
   return <>
     {Object.entries(count).map(([eventName, status]) => (
-      <Tooltip title={eventName.split(' | ')[1]} key={eventName}>
+      <Tooltip title={eventName} key={eventName}>
         <Chip
           key={eventName}
           size="small"
-          label={`${text[status]} ב${eventName.split(' | ')[0]} -  ${eventName.split(' | ')[1]}`}
-          tooltip={eventName}
+          label={`${text[status]} ב${eventName}`}
+          tooltip={status}
           color={colorMap[status as keyof typeof colorMap]}
           variant="soft"
           sx={{ m: 0.3, p: 0 }}
@@ -145,7 +424,32 @@ function CountShows({ count }: {}) {
     ))}
   </>
 }
+function convert(data) {
+  const { columns, data: rows, index } = data;
+  const result = {};
+  console.log({columns, rows, index});
+  const byDays = columns[0].includes('-');
+  // הכנה לכל סטודנט
+  index.forEach(id => {
+    result[id] = {};
+  });
 
+  columns.forEach(([day, event], colIndex) => {
+    const hebrewDay = byDays ? inHebrew(day, 'Dm') : event;
+    const hebrewEvent = !byDays ? inHebrew(event, 'Dm') : day;
+    
+    rows.forEach((row, rowIndex) => {
+      const studentId = index[rowIndex];
+      const value = row[colIndex];
+
+      if (!result[studentId][hebrewDay]) result[studentId][hebrewDay] = {};
+      result[studentId][hebrewDay][hebrewEvent] = value;
+    });
+  });
+
+  console.log({result})
+  return result;
+}
 
 const getColorByStatus = (student) => {
 
@@ -170,7 +474,7 @@ function presentage(arr){
 }
 
 
-function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [] }: { children: React.ReactNode }) {
+function SummaryMode({ student = {}, enhancedStudent = {}, summary = {} }: { children: React.ReactNode }) {
   const { color, label, icon, tooltip } = getColorByStatus(student);
   const SLabel = (
     <Tooltip title={tooltip}>
@@ -216,16 +520,13 @@ function SummaryMode({ student = {}, enhancedStudent = {}, events = [], days = [
       <CardContent>
 
         <Box sx={{ mb: 0, p: 0 }}>
-          
-           <AccordionSummaryMode value={presentage(Object.values(events))}>
-              <CountShows count={events} />
+          {Object.keys(summary).map(key => (
+           <AccordionSummaryMode key={key} title={key} value={presentage(Object.values(summary[key]))}>
+              <CountShows count={summary[key]} />
           </AccordionSummaryMode>
+          ))}
         </Box>
-        <Box sx={{ mb: 0, p: 0 }}>
-          <AccordionSummaryMode value={presentage(Object.values(days))}>
-            <CountShows count={days} />
-          </AccordionSummaryMode>
-        </Box>
+        
       </CardContent>
 
     </Card>
@@ -283,13 +584,23 @@ function transformEventsDataForCountShows(allEventsData: Record<string, any[]>) 
   return result;
 }
 
-function AccordionSummaryMode({ children, value }: { children: React.ReactNode }) {
+function AccordionSummaryMode({ children, title, value }: { children: React.ReactNode, title: string, value: number }) {
   return (
     <Accordion>
+
       <AccordionSummary sx={{ width: '100%' }}>
-        <Box sx={{ width: '100%',p : 0 }}>
+        
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item xs={4}>
+          <Typography variant="subtitle2" sx={{ p: 1 }}>
+            {title}
+          </Typography></Grid>
+          <Grid item xs={8}>
+          
           <RenderCell value={value} />
-        </Box>
+          
+          </Grid>
+          </Grid>
       </AccordionSummary>
       <AccordionDetails>
         {children}
@@ -324,10 +635,37 @@ function useLastEventsData() {
     day: transformEventsDataForCountShows(allDaysData)
   };
 }
-
+  const sampleFormData = {
+    events: ['1', '2'],
+    start: '2025-11-01',
+    end: '2025-11-30',
+    group_by: ['day', 'event_name'],
+    type: 'mean',
+    days: [
+      '2025-11-01',
+      '2025-11-02',
+      '2025-11-03',
+      '2025-11-04',
+      '2025-11-05',
+      '2025-11-06',
+      '2025-11-07',
+      '2025-11-08',
+      '2025-11-09',
+      '2025-11-10',
+      '2025-11-11',
+      '2025-11-12',
+      '2025-11-13',
+      '2025-11-14'
+    ]
+  };
 export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
 
+  const { summary } = useInsertStore();
+  console.log({summary});
+  const summaryData = useSuspenseQuery(apiSummary(summary));
+  const convertedData = summaryData.data ? convert(summaryData.data) : null;
+  console.log(convertedData);
   const { selectedEvent } = useInsertStore(state => state);
 
   const { handleSubmit } = methods;
@@ -394,12 +732,13 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
               secondary={student.secondary}
             />
 
-          ) : <SummaryMode
-            key={student.student_id}
-            student={student}
-            enhancedStudent={enhancedStudent}
-            events={lastEventsData.event[student.student_id]}
-            days={lastEventsData.day[student.student_id]} />;
+          ) : convertedData ? (
+            <SummaryMode
+              key={student.student_id}
+              student={student}
+              enhancedStudent={enhancedStudent}
+              summary={convertedData[student.student_id]}
+            />) : null;
         })}
 
         <ButtonGreen

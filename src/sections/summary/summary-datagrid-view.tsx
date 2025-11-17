@@ -90,7 +90,7 @@ export function RenderCell({ value }) {
   const numValue = int(Number(value));
   
   return (
-    <Stack justifyContent="center" padding={0.2} sx={{ typography: 'caption', color: 'text.secondary' }}>
+    <Stack justifyContent="center" p={0} m={0} sx={{ typography: 'caption', color: 'text.secondary' }}>
       <LinearProgress
         value={numValue}
         variant="determinate"
@@ -99,10 +99,10 @@ export function RenderCell({ value }) {
           (numValue < 80 && 'warning') ||
           'success'
         }
-        sx={{ mb: 1, width: 1, height: 6 }}
+        sx={{ mb: 0, width: 1, height: 6 }}
         
       />
-      {numValue}%
+      
     </Stack>
   );
 }
@@ -198,6 +198,7 @@ function generateColumnGrouping(data, formData) {
 
 export function SummaryDataGrid({ formData }) {
   const summaryData = useSuspenseQuery(apiSummary(formData));
+  
   const infoStudents = useSuspenseQuery(apiInfoStudents());
   const infoColumns = useSuspenseQuery(apiInfoColumns());
   
@@ -211,7 +212,7 @@ export function SummaryDataGrid({ formData }) {
   const columns = generateColumns(mergedData, formData);
   const columnGroupingModel = generateColumnGrouping(mergedData, formData);
 
-
+  console.log('summaryData:', summaryData.data);
   const generatePDF = async () => {
   
     const element = document.getElementById('content');
@@ -366,23 +367,48 @@ export function SummaryDataGrid({ formData }) {
   );
 }
 
+
+
+
+function NewSummary({formData}) {
+  // Implementation for NewSummary component
+
+  return <>
+  {JSON.stringify(formData, null, 2)}
+  </>
+}
+
 // Main component with the same form as the original
 export function SummaryDataGridViewWrapper() {
   // For demo purposes, using sample form data
   // In real implementation, this would come from the form
   const sampleFormData = {
-    events: ['event1', 'event2'],
-    start: '2024-01-01',
-    end: '2024-01-31',
-    group_by: 'day',
+    events: ['1', '2'],
+    start: '2025-11-01',
+    end: '2025-11-30',
+    group_by: ['day', 'event'],
     type: 'mean',
-    days: ['2024-01-01', '2024-01-02', '2024-01-03']
+    days: [
+      '2025-11-01',
+      '2025-11-02',
+      '2025-11-03',
+      '2025-11-04',
+      '2025-11-05',
+      '2025-11-06',
+      '2025-11-07',
+      '2025-11-08',
+      '2025-11-09',
+      '2025-11-10',
+      '2025-11-11',
+      '2025-11-12',
+      '2025-11-13',
+      '2025-11-14'
+    ]
   };
-
   return (
     <Container maxWidth={false}>
       <Suspense fallback={<LoadingScreen />}>
-        <SummaryDataGrid formData={sampleFormData} />
+        <NewSummary formData={sampleFormData} />
       </Suspense>
     </Container>
   );

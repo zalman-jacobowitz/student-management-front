@@ -26,6 +26,8 @@ const useInsertStore = create<InsertState>((set, get) => ({
   screen: 'form',
   selectedEvent: {},
   allEvents: [],
+  summary: {},
+  setSummary: (summary: any) => set({ summary }),
   currentEventIndex: 0,
   onBack : () => set({ screen: 'form' }),
 

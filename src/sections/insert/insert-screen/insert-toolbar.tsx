@@ -19,6 +19,7 @@ import { ExceptionDialog } from "src/sections/exceptions/exceptions-edit-steps";
 import { Iconify } from "src/components/iconify/iconify";
 import { useForm, useFormContext } from "react-hook-form";
 import { inHebrew } from "src/utils/hebrew/getter";
+import { SummaryEditDialog, SummaryEditStep } from "../delays/summary-edit-steps";
 
 
 
@@ -406,13 +407,14 @@ export function InsertToolbar({
         }}
 
       />
-      <ExceptionDialog
+
+    <SummaryEditDialog
         open={exceptionDialog.value}
         onClose={exceptionDialog.onFalse}
         onComplete={(data) => {
           exceptionDialog.onFalse();
         }}
-        column={selectedLabel}
+        
       />
 
     </>
