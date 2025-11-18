@@ -5,7 +5,7 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { LoadingButton } from '@mui/lab';
-import { Card, Stack, Button, MenuItem, CardHeader, Typography, CardActions, CardContent } from '@mui/material';
+import { Card, Stack, Button, MenuItem, CardHeader, Typography, CardActions, CardContent, Alert } from '@mui/material';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -20,6 +20,7 @@ import useInsertStore from '../insert-state';
 
 import { InsertFormPastEvents } from './insert-form-past-events';
 import { apiListEvents } from 'src/actions/list_of_events';
+import { inHebrew } from 'src/utils/hebrew/getter';
 
 
 
@@ -102,6 +103,10 @@ export function InsertForm() {
 
   const dialogPrevEvents = useBoolean(false);
 
+
+  const selectedEvent = listOfTimes.data.find(event => event.event_id === methods.watch('event'));
+  const selectedDay = methods.watch('day');
+
   const renderSelectDay = (
     <Field.HebrewDatePicker
       label="תאריך עברי"
@@ -123,15 +128,21 @@ export function InsertForm() {
       slotProps={{}}
       helperText=""
       inputProps={{}}
+      id="event-select"
     >
     {eventsToday.map((option) => (
       <MenuItem
         key={option.event_id}
         value={option.event_id}
         sx={{ textTransform: 'capitalize' }}>  
-        <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-          {`${option.event_name}`}
-        </Typography>
+        <Stack direction="column" spacing={0.5}>
+          <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+            {`${option.event_name}`}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            {`${option.event_start} - ${option.event_end}`}
+          </Typography>
+        </Stack>
       </MenuItem>
     ))}
     </Field.Select>
@@ -141,13 +152,18 @@ export function InsertForm() {
   return (
     <ComponentContainer sx={{}}>
       <Card sx={{ p: 5, width: 1, mx: 'auto', maxWidth: 520 }}>
+
         <Form methods={methods} onSubmit={onSubmit}>
           <CardHeader
             title="רישום אירוע"
             subheader="בחר אירוע לרישום"
           />
+
           <CardContent sx={{ mb: 3 }}>
             <Stack direction="column" spacing={2}>
+                        <Alert severity="info" sx={{ mb: 2 }}>
+            האירוע שנבחר: {selectedEvent?.event_name} ({inHebrew(selectedDay, true, true)})
+          </Alert>
               {renderSelectDay}
               {renderSelectEvent}
             </Stack>

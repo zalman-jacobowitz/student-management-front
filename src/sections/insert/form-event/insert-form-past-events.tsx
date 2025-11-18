@@ -6,14 +6,14 @@ import { inHebrew } from "src/utils/hebrew/getter";
 
 import { apiListEvents } from "src/actions/list_of_events";
 
-import { InsertFormEventLoading } from "./insert-form-past-loading";
 import { LoadingScreen } from "src/components/loading-screen";
 
 interface InsertFormPastEventsProps {
-  students_ids: string[];
+  students_ids?: string[];
   dialogPrevEvents?: any;
   methods?: any;
   reset?: (option: any) => void;
+  listOfTimes?: any;
 }
 
 export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
@@ -39,8 +39,8 @@ export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, re
             }}
           >
             <ListItemText
-              primary={option.event_name}
-              secondary={inHebrew(option.day, true)}
+              primary={`${inHebrew(option.day, 'Dms')} (${inHebrew(option.day, true, true)})`}
+              secondary={`${option.event_name} (${option.event_start} - ${option.event_end})`}
             />
           </ListItemButton>
         ))}
