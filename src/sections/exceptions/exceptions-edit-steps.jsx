@@ -110,6 +110,7 @@ function useExceptionDefinition({ exception }) {
 
 
 export function ExceptionDefinitionStep({ onComplete, exception, editMode = false }) {
+  console.log('ExceptionDefinitionStep rendered: ', exception);
   const studentsData = useSuspenseQuery(apiInfoStudents());
   const { selectedEvent } = useInsertStore();
   
@@ -232,8 +233,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
             )}
           </Field.Select>
                      
-          {
-            exceptionType === 'custom' && (
+
               <>
                <Divider />
               <Stack spacing={2} >
@@ -283,8 +283,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
           </Stack>
           </>
-            )
-          }
+
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button
               variant="soft"
@@ -316,7 +315,7 @@ export function ExceptionDialog({ open, onClose, onComplete, column, editMode=fa
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog open={open} onClose={onClose} maxWidth='sm'>
       <ExceptionDefinitionStep
         exception={column}
         onComplete={handleWizardComplete}

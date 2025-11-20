@@ -50,6 +50,8 @@ function useInsertForm() {
   }, [selectedEvent, crnt.data, reset]);
 
   const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
+    console.table(data);
+    
     await updateData({
       data: {data, eventDetails: selectedEvent},
       mode,

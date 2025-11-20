@@ -408,15 +408,14 @@ export function InsertToolbar({
 
       />
 
-    <SummaryEditDialog
-        open={exceptionDialog.value}
-        onClose={exceptionDialog.onFalse}
-        onComplete={(data) => {
-          exceptionDialog.onFalse();
-        }}
-        
+    <ExceptionDialog
+      onClose={exceptionDialog.onFalse}
+      open={exceptionDialog.value}
+      onComplete={() => {
+        exceptionDialog.onFalse();
+      }}
+      column={selectedLabel}
       />
-
     </>
   );
 }

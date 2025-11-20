@@ -671,12 +671,13 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const { handleSubmit } = methods;
 
   const onSubmit = (values: any) => {
+    console.log('selectedEvent: ', selectedEvent)
     // כאן תוכל לשלוח את הערכים לשרת או להמשיך הלאה
     const toServer = Object.entries(values).map(([student_id, data]) => ({
       student_id,
-      exception: currentData.find((item) => item.student_id === student_id)?.exception_id || '',
+      exception: currentData.find((item) => item.student_id === student_id)?.exception || '',
       data: Number(data),
-      event: selectedEvent.event,
+      event: selectedEvent.event_id,
       day: selectedEvent.day,
       delay: currentData.find((item) => item.student_id === student_id)?.delay || ''
 
@@ -689,7 +690,8 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const handleOnClick = useCallback((type, details) => {
 
     if (type === 'exception') {
-      selectLabel(details)
+      const students = currentData.filter((item) => item.exception_id === details.exception_id)
+      selectLabel({...details, students})
       exceptionDialog.onTrue()
     }
     if (type === 'delay') {
