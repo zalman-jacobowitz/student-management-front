@@ -247,7 +247,7 @@ export function InsertToolbar({
     handleFilter('data', FILTER_OPTIONS[nextIndex].value);
   };
 
-
+  const summaryDialog = useBoolean();
 
   const listActionsMap = [
     {
@@ -338,7 +338,7 @@ export function InsertToolbar({
             label={summaryMode.value ? 'פירוט' : 'פשוט'}
             color="default"
             variant={!summaryMode.value ? "outlinedExtended" : "softExtended"}
-            onClick={() => {summaryMode.onToggle()}}
+            onClick={() => {summaryMode.onToggle(),summaryDialog.onTrue() }}
             testId="sort-fab"
             showSubLabel={true}
           />
@@ -353,7 +353,8 @@ export function InsertToolbar({
             testId="filter-fab"
             showSubLabel={true}
           />
-                    <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } , ml: .5, mr: .5 }} />
+          
+          <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } , ml: .5, mr: .5 }} />
 
           <FabButton
             icon="solar:clock-circle-bold-duotone"
@@ -381,7 +382,7 @@ export function InsertToolbar({
             subLabel="מחק"
             color="error"
             variant="outlinedExtended"
-            onClick={exceptionDialog.onTrue}
+            onClick={() => handleDelete()}
             testId="exception-fab"
             showSubLabel={true}
           />
@@ -415,6 +416,15 @@ export function InsertToolbar({
         exceptionDialog.onFalse();
       }}
       column={selectedLabel}
+      />
+
+      <SummaryEditDialog
+            open={summaryDialog.value}
+            onClose={summaryDialog.onFalse}
+                    onComplete={() => {
+          summaryDialog.onFalse();
+      }}
+
       />
     </>
   );

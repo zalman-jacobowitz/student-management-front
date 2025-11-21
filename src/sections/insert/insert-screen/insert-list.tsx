@@ -690,7 +690,10 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const handleOnClick = useCallback((type, details) => {
 
     if (type === 'exception') {
-      const students = currentData.filter((item) => item.exception_id === details.exception_id)
+      console.table(currentData);
+      console.log('Exception details: ', details);
+      const students = currentData.filter((item) => item.exception === details.exception)
+      console.log('Exception students: ', students);
       selectLabel({...details, students})
       exceptionDialog.onTrue()
     }
