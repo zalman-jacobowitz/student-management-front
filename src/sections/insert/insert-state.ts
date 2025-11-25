@@ -56,13 +56,24 @@ const useInsertStore = create<InsertState>((set, get) => ({
 
   setEventDetails: (details: any) => {
     const { allEvents } = get();
-    const eventIndex = allEvents.findIndex(e => e.event_id === details.event_id && e.day === details.day);
+    
+    // סידור הרשימה לפי יום ושעת התחלה
+    const sortedEvents = [...allEvents, details].sort((a, b) => {
+      const timeA = a.day + ' ' + (a.event_start || '');
+      const timeB = b.day + ' ' + (b.event_start || '');
+      return timeA.localeCompare(timeB);
+    });
+    
+    // מציאת האינדקס של האירוע המבוקש ברשימה המסודרת
+    const eventIndex = sortedEvents.findIndex(e => e.event_id === details.event_id && e.day === details.day);
     const indexToSet = eventIndex >= 0 ? eventIndex : 0;
+    
     set({ 
       selectedEvent: details, 
       screen: 'view',  
       delays: [],
-      currentEventIndex: indexToSet
+      currentEventIndex: indexToSet,
+      allEvents: sortedEvents
     })
   },
 
