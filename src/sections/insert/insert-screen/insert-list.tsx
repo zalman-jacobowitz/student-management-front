@@ -681,11 +681,13 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
     handleUpdate(toServer, 'update')
   };
 
-  const handleOnClick = useCallback((type, details) => {
+
+
+  const handleOnClick = useCallback((type, details, cData) => {
 
     if (type === 'exception') {
-      const students = currentData.filter((item) => item.exception === details.exception)
-      console.log('Exception students:', currentData);
+      const students = cData.filter((item) => item.exception === details.exception)
+      console.log('Exception students:', cData);
       console.log('details: ', details)
       selectLabel({...details, students})
       exceptionDialog.onTrue()
@@ -723,7 +725,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
               icon={enhancedStudent.icon}
               label={enhancedStudent.label}
               tooltip={enhancedStudent.tooltip}
-              onClick={() => handleOnClick(enhancedStudent.type, student)}
+              onClick={() => handleOnClick(enhancedStudent.type, student, currentData)}
               primary={student.primary}
               secondary={student.secondary}
             />
