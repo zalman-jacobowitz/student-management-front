@@ -35,6 +35,7 @@ export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, re
               key={option.event} 
               onClick={() => {
                 reset({day: option.day, event: option.event_id})
+                
                 dialogPrevEvents.onFalse(); 
             }}
           >

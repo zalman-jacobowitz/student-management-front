@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-import { Button, Stack, Fab, IconButton, Divider, Typography, Grid, useTheme } from "@mui/material";
+import { Button, Stack, Fab, IconButton, Divider, Typography, Grid, useTheme, Drawer } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useBoolean } from "src/hooks/use-boolean";
@@ -20,6 +20,7 @@ import { Iconify } from "src/components/iconify/iconify";
 import { useForm, useFormContext } from "react-hook-form";
 import { inHebrew } from "src/utils/hebrew/getter";
 import { SummaryEditDialog, SummaryEditStep } from "../delays/summary-edit-steps";
+import { useResponsive } from "src/hooks/use-responsive";
 
 
 
@@ -84,10 +85,11 @@ export const FabButton = ({
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
   
   const baseWidth = 15;
-  const width = `${baseWidth * sizeMultiplier}%`;
+  const width = 'auto'//`${baseWidth * sizeMultiplier}%`;
 
-  // Mode 1: Icon only (xs)
+  /* Mode 1: Icon only (xs)
   if (isXs) {
+
     return (
       <Fab
         color={color as any}
@@ -117,7 +119,7 @@ export const FabButton = ({
       </Fab>
     );
   }
-
+*/
   // Mode 3: Icon + Text horizontal (md)
   if (isMd) {
     return (
@@ -213,6 +215,38 @@ interface InsertToolbarProps {
   nextEvent?: () => void;
 }
 
+
+function MoreButtons({open, onClose,children, isSmall,  ...other}){
+  return isSmall?
+  <Drawer
+          open={open}
+          onClose={onClose}
+          anchor="right"
+          slotProps={{ backdrop: { invisible: true } }}
+          PaperProps={{ sx: { width: 320 } }}
+          {...other}
+        >
+      <Stack
+        spacing={0}
+        alignItems={{ xs: 'flex-end', md: 'center' }}
+        direction="row"
+        sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
+      >        <Stack 
+          direction="column" 
+          spacing={.8} 
+
+
+        >
+        {children}
+        </Stack>
+        </Stack>
+        </Drawer>
+        : <>
+        {children}
+        </>
+}
+
+
 export function InsertToolbar({
   header,
   summaryMode,
@@ -233,7 +267,12 @@ export function InsertToolbar({
 
   const [sortIndex, setSortIndex] = useState(0);
   const [filterIndex, setFilterIndex] = useState(3); // Start with 'הכל'
-
+  
+  // תלוי בגודל המסך:
+  // sm | md | xl
+  const smDown = useResponsive('down', 'md');
+  console.log({smDown})
+  const buttonDrawer = useBoolean();
 
   const handleSortClick = () => {
     const nextIndex = (sortIndex + 1) % SORT_OPTIONS.length;
@@ -285,19 +324,35 @@ export function InsertToolbar({
 
   return (
     <>
+            
+                       { smDown && <FabButton
+            sx={{ boxShadow: (theme) => theme.customShadows.z8 }}
+
+            color="default"
+            variant="softExtended"
+            onClick={buttonDrawer.onTrue}
+            testId="filter-drawer-fab"
+            showSubLabel
+          />}
+
       <Stack
         spacing={0}
         alignItems={{ xs: 'flex-end', md: 'center' }}
         direction={{ xs: 'column', md: 'row' }}
         sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
       >
-
+              
         <Stack 
           direction={{ xs: 'column', md: 'row' }} 
           spacing={.8} 
 
 
         >
+<MoreButtons
+              isSmall={smDown}
+            open={buttonDrawer.value}
+            onClose={buttonDrawer.onFalse}
+           >
            <FabButton
             icon="solar:round-alt-arrow-right-bold-duotone"
             label="חזרה"
@@ -386,9 +441,11 @@ export function InsertToolbar({
             testId="exception-fab"
             showSubLabel={true}
           />
+                  </MoreButtons>
         </Stack>
 
       </Stack>
+      
 
       <InsertFilters
         open={filterDrawer.value}
