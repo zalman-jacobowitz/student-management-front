@@ -660,7 +660,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
 
   const { summary } = useInsertStore();
   const summaryData = useSuspenseQuery(apiSummary(summary));
-  const convertedData = summaryData.data ? convert(summaryData.data) : null;
+  const convertedData = null // summaryData.data ? convert(summaryData.data) : null;
   const { selectedEvent } = useInsertStore(state => state);
 
   const { handleSubmit } = methods;
