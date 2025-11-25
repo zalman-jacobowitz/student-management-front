@@ -67,12 +67,14 @@ function useInsertForm() {
   const currentEvent = useQuery(apiEventsToday(watch('day'))).data || [];
 
   const eventsToday = useMemo(() => mergeCurrentWithPastEvents(currentEvent, listOfTimes.data, watch('day')), [watch('day'), currentEvent, listOfTimes.data]);
+  
   const onSubmit = handleSubmit(async (data) => {
         // מוצא את פרטי ה event
         const moreDetails = eventsToday.find((option) => option.event_id === data.event)
         setAllEvents(listOfTimes.data);
         setEventDetails( {...moreDetails, ...data})
-  })
+   })
+  
   useEffect(()=>{
     if (eventsToday.length > 0){
       // כאן צריך להיות חישוב של איזה סדר שייך לעכשיו

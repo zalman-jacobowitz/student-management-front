@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { Alert, Stack, Dialog, Typography, Box, Button, MenuItem, Divider, Grid } from "@mui/material";
-import { Field } from "src/components/hook-form";
+import { Field, Form } from "src/components/hook-form";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,7 @@ import { fCurrentTime, today } from "src/utils/format-time.js";
 import { Scrollbar } from "src/components/scrollbar/scrollbar.tsx";
 import useInsertStore from "../insert/insert-state";
 import { inHebrew } from "src/utils/hebrew/getter.js";
+import { LoadingButton } from "@mui/lab";
 
 // הגדרת תבניות אישורים מוגדרות מראש
 const PREDEFINED_EXCEPTION_TYPES = {
@@ -215,7 +216,7 @@ function useExceptionDefinition({ exception }) {
 }
 
 
-export function ExceptionDefinitionStep({ onComplete, exception, editMode = false }) {
+export function ExceptionDefinitionStep({ onComplete, exception, editMode = false, mode = 'base' }) {
   const studentsData = useSuspenseQuery(apiInfoStudents());
   const { selectedEvent } = useInsertStore();
   
@@ -225,7 +226,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   const initialValues = {
     exception_id: exception?.exception_id || '',
-    exception_type: detectExceptionType(exception, selectedEvent) || 'custom',
+    exception_type: mode === 'event' ? detectExceptionType(exception, selectedEvent) : 'custom',
     from_day: exception?.from_day || today('YYYY-MM-DD'),
     from_hour: exception?.from_hour || fCurrentTime(),
     to_day: exception?.to_day || today('YYYY-MM-DD'),
@@ -252,7 +253,8 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
     defaultValues: initialValues
   });
 
-  const { handleSubmit, watch, setValue } = methods;
+  const { handleSubmit, watch, setValue, formState: { isSubmitting } } = methods;
+
   const { onSubmit: handleExceptionSubmit } = useExceptionDefinition({ exception });
   
   const exceptionType = watch('exception_type');
@@ -270,6 +272,8 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
   }, [exceptionType, selectedEvent, setValue]);
 
   const onSubmit = async (data, mode = 'update') => {
+    console.log('Submitting data:', data);
+
     await handleExceptionSubmit(data, mode);
     if (onComplete) {
       onComplete(data);
@@ -278,7 +282,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   return (
     <Box sx={{ p: 3 }}>
-      <FormProvider {...methods}>
+       <Form methods={methods} onSubmit={handleSubmit((data) => onSubmit(data, 'update'))}>
        
         <Stack spacing={3}>
           <Typography variant="h6" gutterBottom>
@@ -296,6 +300,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
             fullWidth
           />
 
+{ mode === 'event' && (
           <Field.Select
             name="exception_type"
             label="סוג האישור"
@@ -317,6 +322,8 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
               )
             )}
           </Field.Select>
+)
+}
                      
 
               <>
@@ -377,31 +384,29 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
             >
               מחק
             </Button>
-            <Button
-              variant="soft"
-              color="success"
-              onClick={handleSubmit((data) => onSubmit(data, 'update'))}
-            >
-              שמירת אישור
-            </Button>
+        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          שמור שינויים
+        </LoadingButton>
           </Stack>
         </Stack>
-      </FormProvider>
+      </Form>
     </Box>
   );
 }
 
-export function ExceptionDialog({ open, onClose, onComplete, column, editMode=false }) {
+export function ExceptionDialog({ open, mode='base', onClose, onComplete, column, editMode=false }) {
   const handleWizardComplete = (data) => {
     if (onComplete) {
       onComplete(data);
     }
+    
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm'>
       <ExceptionDefinitionStep
+        mode={mode}
         exception={column}
         onComplete={handleWizardComplete}
         editMode={editMode}

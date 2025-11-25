@@ -700,8 +700,6 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
 
   const lastEventsData = useLastEventsData();
 
-
-
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Box

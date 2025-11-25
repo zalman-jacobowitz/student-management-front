@@ -412,6 +412,7 @@ export function InsertToolbar({
     <ExceptionDialog
       onClose={exceptionDialog.onFalse}
       open={exceptionDialog.value}
+      mode='event'
       onComplete={() => {
         exceptionDialog.onFalse();
       }}
