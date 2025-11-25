@@ -220,9 +220,6 @@ export function InitializationWizard() {
           info_columns: newFormattedColumns,
           templates: formatTemplates(data.templateData.events)
         }
-      console.log('formattedTables:', formattedTables);
-      
-      console.log('Formatted Tables:', formattedTables);
       
       const promise =   mutate.mutateAsync({data: formattedTables, mode: 'update'});
 

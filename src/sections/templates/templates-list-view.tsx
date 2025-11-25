@@ -28,7 +28,6 @@ const LINKS = [
 ]
 
 function eventsTemplatesByReduce(templates) {
-  console.log('templates::', templates);
   return Object.values(
     templates.reduce((acc, cur) => {
       const { template_id, template_name, client, ...event } = cur;
@@ -96,15 +95,12 @@ function useTemplateDefinition({ template, dialog, template_id_default }) {
 
   const onSubmit = useCallback(async (data, mode="update") => {
     try {
-      console.log('template data: ', data)
-      console.log('mode: ', template)
       if (template_id_default === data && mode === "delete") {
         toast.error('לא ניתן למחוק את התבנית המוגדרת כברירת מחדל');
         return
       }
       
       const templateData = mode === "update" ? templateDataServerFromat(data, template?.template_id) : data
-      console.log({templateData})
 
       const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  mode })
 

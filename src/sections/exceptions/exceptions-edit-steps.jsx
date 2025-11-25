@@ -18,6 +18,115 @@ import { Scrollbar } from "src/components/scrollbar/scrollbar.tsx";
 import useInsertStore from "../insert/insert-state";
 import { inHebrew } from "src/utils/hebrew/getter.js";
 
+// הגדרת תבניות אישורים מוגדרות מראש
+const PREDEFINED_EXCEPTION_TYPES = {
+  day: {
+    name: 'אישור ליום',
+    getData: (selectedEvent) => ({
+      from_day: selectedEvent.day,
+      to_day: selectedEvent.day,
+      from_hour: '00:00',
+      to_hour: '23:59',
+    }),
+  },
+  past_event: {
+    name: 'אישור לסדר בעבר',
+    getData: (selectedEvent) => ({
+      from_day: selectedEvent.day,
+      to_day: selectedEvent.day,
+      from_hour: selectedEvent.event_start || null,
+      to_hour: selectedEvent.event_end || null,
+    }),
+  },
+  today: {
+    name: 'אישור להיום',
+    getData: () => ({
+      from_day: today('YYYY-MM-DD'),
+      to_day: today('YYYY-MM-DD'),
+      from_hour: '00:00',
+      to_hour: '23:59',
+    }),
+  },
+  event: {
+    name: 'אישור להיום בסדר',
+    getData: (selectedEvent) => ({
+      from_day: selectedEvent.day,
+      to_day: selectedEvent.day,
+      from_hour: selectedEvent.event_start || null,
+      to_hour: selectedEvent.event_end || null,
+    }),
+  },
+};
+
+// פונקציה לעדכון שדות הטופס בהתאם לסוג האישור
+export function getExceptionTypeData(exceptionType, selectedEvent) {
+  if (exceptionType === 'custom') {
+    return null; // התאמה אישית - לא משתמשים בתבנית
+  }
+
+  if (exceptionType && PREDEFINED_EXCEPTION_TYPES[exceptionType]) {
+    const templateData = PREDEFINED_EXCEPTION_TYPES[exceptionType].getData(selectedEvent);
+    return templateData;
+  }
+
+  return null;
+}
+
+/**
+ * זיהוי אוטומטי של סוג אישור בהתאם לערכים הקיימים ול-selectedEvent
+ * @param {Object} data - נתוני האישור
+ * @param {string} data.from_day - תאריך התחלה (YYYY-MM-DD)
+ * @param {string} data.to_day - תאריך סיום (YYYY-MM-DD)
+ * @param {string} data.from_hour - שעת התחלה (HH:mm)
+ * @param {string} data.to_hour - שעת סיום (HH:mm)
+ * @param {Object} selectedEvent - האירוע הנבחר
+ * @param {string} selectedEvent.day - היום של האירוע (YYYY-MM-DD)
+ * @param {string} selectedEvent.event_start - שעת התחלת האירוע (HH:mm)
+ * @param {string} selectedEvent.event_end - שעת סיום האירוע (HH:mm)
+ * @returns {string} סוג האישור המזוהה
+ */
+export function detectExceptionType(data, selectedEvent) {
+  if (!data || !data.from_day || !data.to_day) {
+    return 'custom';
+  }
+
+  const todayDate = today('YYYY-MM-DD');
+  const fromDay = data.from_day;
+  const toDay = data.to_day;
+  const fromHour = data.from_hour;
+  const toHour = data.to_hour;
+
+  // בדיקה: אישור להיום
+  if (fromDay === todayDate && toDay === todayDate) {
+    // בדיקה: אישור להיום בסדר (עם שעות של selectedEvent)
+    if (selectedEvent?.event_start && selectedEvent?.event_end && 
+        fromHour === selectedEvent.event_start && toHour === selectedEvent.event_end) {
+      return 'event';
+    }
+
+    // בדיקה: אישור להיום (כל היום)
+    if (fromHour === '00:00' && toHour === '23:59') {
+      return 'today';
+    }
+  }
+
+  // בדיקה: אישור ליום מסוים
+  if (fromDay === toDay && selectedEvent && fromDay === selectedEvent.day) {
+    // בדיקה: אישור לסדר בעבר (עם שעות של selectedEvent)
+    if (selectedEvent.event_start && selectedEvent.event_end && 
+        fromHour === selectedEvent.event_start && toHour === selectedEvent.event_end) {
+      return 'past_event';
+    }
+
+    // בדיקה: אישור ליום (כל היום)
+    if (fromHour === '00:00' && toHour === '23:59') {
+      return 'day';
+    }
+  }
+
+  // אם לא התאים לאף תבנית
+  return 'custom';
+}
 
 function getExceptionTypeOptions(selectedEvent) {
   return [
@@ -76,11 +185,9 @@ function useExceptionDefinition({ exception }) {
 
   const onSubmit = useCallback(async (data, mode = 'update') => {
     try {
-      console.log('exception data: ', data);
       
       const exceptionData = exceptionsDataServerFromat(data);
 
-      console.log('exceptionData formatted: ', exceptionData);
       
 
       const promiseException = updateException.mutateAsync({ 
@@ -96,7 +203,6 @@ function useExceptionDefinition({ exception }) {
 
       await promiseException;
 
-      console.log('exception', exceptionData);
     } catch (error) {
       console.error('Error saving exception:', error);
       toast.error('שגיאה בשמירת האישור');
@@ -110,7 +216,6 @@ function useExceptionDefinition({ exception }) {
 
 
 export function ExceptionDefinitionStep({ onComplete, exception, editMode = false }) {
-  console.log('ExceptionDefinitionStep rendered: ', exception);
   const studentsData = useSuspenseQuery(apiInfoStudents());
   const { selectedEvent } = useInsertStore();
   
@@ -120,7 +225,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   const initialValues = {
     exception_id: exception?.exception_id || '',
-    exception_type: exception?.exception_type || 'custom',
+    exception_type: detectExceptionType(exception, selectedEvent) || 'custom',
     from_day: exception?.from_day || today('YYYY-MM-DD'),
     from_hour: exception?.from_hour || fCurrentTime(),
     to_day: exception?.to_day || today('YYYY-MM-DD'),
@@ -128,6 +233,8 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
     reason: exception?.reason || '',
     students: studentsList.map(student => student.student_id) || [],
   };
+
+  console.log('studentsList', studentsList);
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),
@@ -152,39 +259,17 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   // Update time fields based on exception type
   useEffect(() => {
-    if (exceptionType === 'day') {
-      setValue('from_day', selectedEvent.day);
-      setValue('to_day', selectedEvent.day);
-    }
-    if (exceptionType === 'past_event' && selectedEvent?.day) {
-      setValue('from_day', selectedEvent.day);
-      setValue('to_day', selectedEvent.day);
-      if (selectedEvent.event_start) {
-        setValue('from_hour', selectedEvent.event_start);
-      }
-      if (selectedEvent.event_end) {
-        setValue('to_hour', selectedEvent.event_end);
-      }
-    }
-    if (exceptionType === 'today') {
-      setValue('from_day', today('YYYY-MM-DD'));
-      setValue('to_day', today('YYYY-MM-DD'));
-      setValue('from_hour', fCurrentTime());
-      setValue('to_hour', fCurrentTime());
-    } else if (exceptionType === 'event' && selectedEvent?.day) {
-      setValue('from_day', selectedEvent.day);
-      setValue('to_day', selectedEvent.day);
-      if (selectedEvent.event_start) {
-        setValue('from_hour', selectedEvent.event_start);
-      }
-      if (selectedEvent.event_end) {
-        setValue('to_hour', selectedEvent.event_end);
-      }
+    const exceptionData = getExceptionTypeData(exceptionType, selectedEvent);
+    
+    if (exceptionData) {
+      if (exceptionData.from_day) setValue('from_day', exceptionData.from_day);
+      if (exceptionData.to_day) setValue('to_day', exceptionData.to_day);
+      if (exceptionData.from_hour) setValue('from_hour', exceptionData.from_hour);
+      if (exceptionData.to_hour) setValue('to_hour', exceptionData.to_hour);
     }
   }, [exceptionType, selectedEvent, setValue]);
 
   const onSubmit = async (data, mode = 'update') => {
-    console.log('data submitted: ', data);
     await handleExceptionSubmit(data, mode);
     if (onComplete) {
       onComplete(data);

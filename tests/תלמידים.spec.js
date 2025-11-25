@@ -7,7 +7,6 @@ test.beforeEach(async ({ page }) => {
   // runs before each test in the file
   // go to: http://localhost:3030/%D7%A0%D7%99%D7%94%D7%95%D7%9C/%D7%A8%D7%A9%D7%99%D7%9E%D7%94
   await page.goto(URL);
-  console.log('beforeEach');  
 });
 
 test.describe('תלמידים', () => {
@@ -128,11 +127,9 @@ test('מחיקה', async ({ page }) => {
   const rowsInfoBefore = page.locator('.MuiTablePagination-displayedRows').first();
   await expect(rowsInfoBefore).toBeVisible();
   const textBefore = await rowsInfoBefore.textContent();
-  console.log('Rows info before text:', textBefore);
   const matchBefore = textBefore?.match(/of (\d+)/);
   if (matchBefore) {
     const countBefore = parseInt(matchBefore[1], 10);
-    console.log('Number of students before:', countBefore);
   }
   else {
     throw new Error('Could not parse number of students before');
@@ -155,11 +152,9 @@ test('מחיקה', async ({ page }) => {
   const rowsInfo = page.locator('.MuiTablePagination-displayedRows').first();
   await expect(rowsInfo).toBeVisible();
   const textAfter = await rowsInfo.textContent();
-  console.log('Rows info after text:', textAfter);
   const matchAfter = textAfter?.match(/of (\d+)/);
   if (matchAfter) {
     const countAfter = parseInt(matchAfter[1], 10);
-    console.log('Number of students after:', countAfter);
     const countBefore = parseInt(matchBefore[1], 10);
     await page.waitForTimeout(5000);
     expect(countAfter).toBe(countBefore - 1);
@@ -210,7 +205,6 @@ test('ייבוא', async ({ page }) => {
   const rowsInfo = page.locator('.MuiTablePagination-displayedRows').first();
   await expect(rowsInfo).toBeVisible();
   const text = await rowsInfo.textContent();
-  console.log('Rows info after text:', text);
   const matchLength = text?.match(/of (\d+)/);
   // max time for update to happen
   await page.waitForTimeout(10000);

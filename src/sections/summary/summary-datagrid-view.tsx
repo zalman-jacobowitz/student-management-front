@@ -86,7 +86,6 @@ function mergeSummaryData(infoStudents, summaryData, infoColumns, formData) {
   return mergedData;
 }
 export function RenderCell({ value }) {
-  console.log({ value });
   const numValue = int(Number(value));
   
   return (
@@ -138,7 +137,6 @@ function generateColumns(data, formData): GridColDef[] {
   const skipFields = ['id', 'student_id', 'primary', 'secondary'];
   Object.keys(firstRow).forEach(key => {
     if (!skipFields.includes(key)) {
-      console.log('Adding column:', key);
       const headerName = formData.group_by === 'day'? inHebrew(key, 'Dm') : key.split('|')[1];
       columns.push({
         field: key,
@@ -212,7 +210,6 @@ export function SummaryDataGrid({ formData }) {
   const columns = generateColumns(mergedData, formData);
   const columnGroupingModel = generateColumnGrouping(mergedData, formData);
 
-  console.log('summaryData:', summaryData.data);
   const generatePDF = async () => {
   
     const element = document.getElementById('content');

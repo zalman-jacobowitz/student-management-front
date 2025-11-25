@@ -423,8 +423,6 @@ export function useUserPermissionsForm(existingUser = null) {
 
   const onSubmit = useCallback(async (dataFORM) => {
     try {
-      console.log('Submitting user data:', dataFORM);
-      console.log('userDetails: ', userDetails)
       
       const data = {
         ...dataFORM.user,
@@ -433,7 +431,6 @@ export function useUserPermissionsForm(existingUser = null) {
         org: userDetails.user_metadata.client,
         data: dataFORM
       }
-      console.log('Prepared user data for submission:', data);
 
       const promise = existingUser ? mutate.mutateAsync(Array(dataFORM), 'update'): signUp(data, true);
 

@@ -384,7 +384,6 @@ const demoDataSummary = {
     }
 }
 function CountShows({ count }: {}) {
-  console.log({count});
   /*
   מציג את האירועים עם צבע אייקון לפי מצב נוכחות
   בזה אחר זה ללא כיתוב של האירוע אלא רק הTOLLTIP
@@ -427,7 +426,6 @@ function CountShows({ count }: {}) {
 function convert(data) {
   const { columns, data: rows, index } = data;
   const result = {};
-  console.log({columns, rows, index});
   const byDays = columns[0].includes('-');
   // הכנה לכל סטודנט
   index.forEach(id => {
@@ -447,7 +445,6 @@ function convert(data) {
     });
   });
 
-  console.log({result})
   return result;
 }
 
@@ -662,16 +659,13 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   // הכנה של ערכי ברירת מחדל
 
   const { summary } = useInsertStore();
-  console.log({summary});
   const summaryData = useSuspenseQuery(apiSummary(summary));
   const convertedData = summaryData.data ? convert(summaryData.data) : null;
-  console.log(convertedData);
   const { selectedEvent } = useInsertStore(state => state);
 
   const { handleSubmit } = methods;
 
   const onSubmit = (values: any) => {
-    console.log('selectedEvent: ', selectedEvent)
     // כאן תוכל לשלוח את הערכים לשרת או להמשיך הלאה
     const toServer = Object.entries(values).map(([student_id, data]) => ({
       student_id,
@@ -690,10 +684,9 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const handleOnClick = useCallback((type, details) => {
 
     if (type === 'exception') {
-      console.table(currentData);
-      console.log('Exception details: ', details);
       const students = currentData.filter((item) => item.exception === details.exception)
-      console.log('Exception students: ', students);
+      console.log('Exception students:', currentData);
+      console.log('details: ', details)
       selectLabel({...details, students})
       exceptionDialog.onTrue()
     }

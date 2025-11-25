@@ -61,7 +61,6 @@ function describeHebrew(day){
         
         // מחזיר: היום אתמול לפני X ימים או בעתיד
         const diffTime = today - dateToCheck;
-        console.log({diffTime});
         
         const MS_PER_DAY = 1000 * 60 * 60 * 24;
         const isFuture = diffTime < 0;

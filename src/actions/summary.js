@@ -9,7 +9,6 @@ export function apiSummary(formData) {
     queryKey: ['summary', formData],
     queryFn: async () => {
       const res =  await apiFetch('all', postData);
-      console.log('res: ', res)
       return res?.data ?? null;
     }
   });

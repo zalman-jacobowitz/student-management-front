@@ -45,7 +45,6 @@ function UserMainDynamicView() {
       rowId: 'user_id',
       DetailsComponent: (props) => {
         const { open, onClose, column } = props
-        console.log('column: ', column)
         return (
           <UsersRowDetails
             student={column}

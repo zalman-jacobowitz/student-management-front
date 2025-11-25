@@ -35,8 +35,6 @@ export function useNewForm({existingUser = null}) {
 
   const onSubmit = useCallback(async (dataFORM) => {
     try {
-      console.log('Submitting user data:', dataFORM);
-      console.log('userDetails: ', userDetails)
       
       const data = {
         ...dataFORM.user,
@@ -45,7 +43,6 @@ export function useNewForm({existingUser = null}) {
         org: userDetails.user_metadata.client,
         data: dataFORM
       }
-      console.log('Prepared user data for submission:', data);
 
       const promise = existingUser ? mutate.mutateAsync(Array(dataFORM), 'update'): signUp(data, true);
 
@@ -195,7 +192,6 @@ export function NewDefinitionStep({ onComplete, existingUser, editMode = false }
   
 
   const handleSubmit = async (data, mode = 'update') => {
-    console.log('data submitted: ', data);
     await onSubmit(data, mode);
     if (onComplete) {
       onComplete(data);
@@ -205,7 +201,6 @@ export function NewDefinitionStep({ onComplete, existingUser, editMode = false }
   const [column, setColumn] = useState('');
 
   const watch = useCallback((e) => {
-    console.log('watching', e.limit?.column);
     setColumn(e.limit?.column);
     return e;
     }, []);
@@ -216,7 +211,6 @@ const infoStudents = useSuspenseQuery(apiInfoStudents()).data || [];
 
 
     const availableValues = useMemo(() => [...new Set(infoStudents.map(student => student[column]))], [infoStudents, column]);
-    console.log('availableValues', availableValues);
     
   const fileds = [
     {

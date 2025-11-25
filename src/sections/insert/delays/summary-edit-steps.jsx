@@ -117,7 +117,6 @@ export function useSummaryForm() {
         dataFORM.group_by = dataFORM.group_by === 'event_name' ? ['event_name', 'day'] : ['day', 'event_name'];
       // range of days
         dataFORM.days = generateDaysOptions(dataFORM.start, dataFORM.end).map(day => day.value);
-      console.log('טופס הסיכום הוגש:', dataFORM);
       setSummary(dataFORM);
       toast.promise(
         Promise.resolve(dataFORM),
@@ -169,7 +168,6 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
   );
 
   const handleSubmit = async (data) => {
-    console.log('נתונים סופיים:', data);
     const result = onSubmit(data);
     if (onComplete) {
       onComplete();
@@ -178,7 +176,6 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
 
   const eventsOptions = useSuspenseQuery(apiListEvents()).data;
   const uniqueEventOptions = eventsOptions ? [...new Map(eventsOptions.map(item => [item.event_id, item])).values()] : [];
-  console.log({uniqueEventOptions});
 
   // Callback עבור ה-watch כדי להעדכן את השדות בהתאם לבחירת התבנית
   const handleTemplateChange = useCallback((formData) => {
@@ -191,7 +188,6 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
       // הגדר את הנתונים מהתבנית
       const templateData = getTemplateData(selectedTemplate, uniqueEventOptions);
       if (templateData) {
-        console.log('טעינת נתוני תבנית:', templateData);
         // זה יתבצע דרך StepsProvider עם reset
       }
     }

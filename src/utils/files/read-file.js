@@ -5,10 +5,8 @@ import { fileType } from "./file-type";
 // excel
 export function parseExcel(file, fileData){
   const fileDataArray = new Uint8Array(fileData);
-  console.log('fileDataArray: ', fileDataArray);
       try {
         const workbook = XLSX.read(fileDataArray, { type: 'array' });
-        console.log('workbook: ', workbook);
         
         // Get the first worksheet
         const firstSheetName = workbook.SheetNames[0];

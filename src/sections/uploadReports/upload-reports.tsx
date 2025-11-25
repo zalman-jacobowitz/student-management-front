@@ -137,9 +137,6 @@ function UploadReports() {
                     const apiKey = 'AIzaSyBvk38UgS65nlRn-2M2G6MqAb_HdjqfBAA';
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-                    console.log('Attempting API call for file:', file.name);
-                    console.log('API Key value (should be populated by environment):', apiKey);
-
                     let retries = 0;
                     const maxRetries = 5;
                     const baseDelay = 1000;
@@ -183,8 +180,6 @@ function UploadReports() {
                             const jsonString = result.candidates[0].content.parts[0].text;
                             try {
                               const parsedJson = JSON.parse(jsonString);
-                              console.log('🧪 Parsed JSON for', file.name, ':', parsedJson);
-                              parsed.push({ fileName: file.name, json: parsedJson });
                             } catch (parseError) {
                               console.error(
                                 'Failed to parse JSON response for file:',
@@ -238,7 +233,6 @@ function UploadReports() {
         Promise.resolve()
       )
       .then(() => {
-        console.log('parsed: ', parsed)
         // This block runs after all files have been processed (or attempts made)
         setParsedData(parsed);
         setStep('preview');

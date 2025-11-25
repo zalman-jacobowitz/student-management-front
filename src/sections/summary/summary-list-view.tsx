@@ -223,7 +223,6 @@ function formatSummary(data, formData){
          e.day_event === dayEvent &&
          e.student_id === studentId
        );
-       console.log('record', record);
        // הוסף את הערך (או 0 אם לא נמצא)
        row[dayEvent] = record ? record.data : 0;
      });
@@ -238,9 +237,7 @@ function formatSummary(data, formData){
 
 
 function SummaryTableView({ formData }){
-  console.log('formData: ', formData);
   const data = useSuspenseQuery(apiSummary(formData));
-  console.log({data});
   return <SummaryDataGrid summaryData={formatSummary(data.data, formData)} formData={formData} />;
 }
 
@@ -264,7 +261,7 @@ function HebrewCalendar(){
   const methods = useForm()
 
   return (
-  <Form methods={methods} onSubmit={(data)=>console.log(data)}>
+  <Form methods={methods} onSubmit={() => {}}>
     <Field.HebrewDatePicker defaultValue="2025-01-01" time={true}/>
   </Form>
   )

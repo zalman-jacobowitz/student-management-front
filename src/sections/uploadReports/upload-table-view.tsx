@@ -423,7 +423,6 @@ function generateTableStructure(fields) {
   
   // סינון עמודות שמתחילות במספר ולאחר מכן תו לא-מספרי ואז מספר נוסף
   const eventFields = fields.filter(field => /^\d+[^\d]+\d+$/.test(field));
-  console.log({fields})
   
   // קיבוץ לפי המספר הראשון (יום)
   const groupedByDay = {};
@@ -474,7 +473,6 @@ const getDesc = (student: InfoStudent, desc: string[]): string => desc.map(e => 
 
 
 export function UploadTableView({dataJson}) {
-    console.log({dataJson})
     // השתמשו בנתונים המקומיים במקום קריאות API שלא ניתנות להרצה
     const templates = useSuspenseQuery(apiTemplates());
     const infoStudents = useSuspenseQuery(apiInfoStudents());
@@ -550,7 +548,6 @@ export function UploadTableView({dataJson}) {
     };
 
     const handleRowUpdate = (newRow) => {
-        console.log('שורה מעודכנת:', newRow); 
         setRows(prevRows => prevRows.map(row => (row.id === newRow.id ? newRow : row)));
         return newRow;
     };

@@ -31,10 +31,10 @@ export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, re
           {listOfTimes.data?.map((option: any) => (
             <ListItemButton
               data-testid="event-list-item" 
-              selected={option.event === methods.watch('event') && option.day === methods.watch('day')}
+              selected={option.event_id === methods.watch('event') && option.day === methods.watch('day')}
               key={option.event} 
               onClick={() => {
-                reset(option)
+                reset({day: option.day, event: option.event_id})
                 dialogPrevEvents.onFalse(); 
             }}
           >

@@ -80,7 +80,7 @@ export function NewList() {
     <NewDialog
           open={dialogOpen.value}
           onClose={dialogOpen.onFalse}
-          onComplete={(data) => console.log('Dialog complete:', data)}
+          onComplete={() => {}}
           existingUser={user}
           editMode={false}
         />

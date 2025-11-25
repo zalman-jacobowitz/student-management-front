@@ -7,7 +7,6 @@ import { Scrollbar } from "src/components/scrollbar";
 
 
 export function UserListScreens({ student }) {
-  console.log('screenOptions: ', screenOptions)
   student.screens = student.screens.filter(screen => screenOptions[screen])
   return (
   <>

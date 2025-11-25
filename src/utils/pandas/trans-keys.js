@@ -5,8 +5,6 @@ export function transformKeys({table, keyMapping}) {
     // ואת הקשר השמות של העמודות של מה צריך להיות ומה קיים בטבלה שהועלתה
     // לדוגמא: [{'שם פרטי': 'שם'}, {'שם משפחה': 'משפחה'}]
     
-    console.log('table: ', table);
-    console.log('keyMapping: ', keyMapping);
 
     // בדיקה שהטבלה לא ריקה
     if (!table?.length) return [];
