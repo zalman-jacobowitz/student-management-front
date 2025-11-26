@@ -199,7 +199,6 @@ export function ProfileViewScreen({studentId}) {
     const dataStudents = useSuspenseQuery(apiProfile(studentId));
 
     const studentInfo = infoStudents.data.find(e => e.student_id === studentId) || {};
-    console.log({studentInfo});
     const studentData = dataStudents.data || [];
 
     const settings = useSettingsContext();

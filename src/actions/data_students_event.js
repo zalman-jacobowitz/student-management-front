@@ -5,7 +5,7 @@ import { apiFetch } from "src/utils/manager-fetch";
 
 export function apiDataStudentsEvent(eventDetailsOverride = null) {
   const eventDetails = eventDetailsOverride || useInsertStore.getState().selectedEvent;
-  console.log({eventDetails})
+
   const postData = { table_name: 'data_students', mode: 'select', data: eventDetails };
   return queryOptions({
       queryKey: ['data_students', eventDetails],

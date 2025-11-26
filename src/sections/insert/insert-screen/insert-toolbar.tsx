@@ -271,7 +271,6 @@ export function InsertToolbar({
   // תלוי בגודל המסך:
   // sm | md | xl
   const smDown = useResponsive('down', 'md');
-  console.log({smDown})
   const buttonDrawer = useBoolean();
 
   const handleSortClick = () => {

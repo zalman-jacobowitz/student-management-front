@@ -62,7 +62,7 @@ function useDelayDefinition(delay) {
     try {
       const delayData = delayDataServerFormat(data, eventDetails, delay)
       const promise = mutate.mutateAsync({data: {eventDetails, delayData}, mode})
-      console.log('eventDetails: ', {eventDetails, delayData})
+
 
       toast.promise(promise, {
         loading: 'עידכון איחורים...',

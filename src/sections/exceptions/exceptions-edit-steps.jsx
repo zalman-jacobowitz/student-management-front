@@ -235,7 +235,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
     students: studentsList.map(student => student.student_id) || [],
   };
 
-  console.log('studentsList', studentsList);
+  console.log('exception', exception);
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),

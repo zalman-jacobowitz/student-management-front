@@ -46,7 +46,6 @@ function useInsertForm() {
   const crnt = useSuspenseQuery(apiDataStudentsEvent());
   const currentData = mergeWithStudents(infoStudents, crnt.data, infoColumns);
   
-  console.log({currentData});
 
   useEffect(() => {
     reset(formValues(crnt.data))
