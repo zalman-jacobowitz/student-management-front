@@ -423,6 +423,14 @@ function CountShows({ count }: {}) {
     ))}
   </>
 }
+function eventAndDayFormat(text){
+  const isDay = text.includes('-')
+  if (isDay){
+    return inHebrew(text, 'Dm')
+  }
+  return text
+}
+
 function convert(data) {
   const { columns, data: rows, index } = data;
   const result = {};
@@ -433,15 +441,14 @@ function convert(data) {
   });
 
   columns.forEach(([day, event], colIndex) => {
-    const hebrewDay = byDays ? inHebrew(day, 'Dm') : event;
-    const hebrewEvent = !byDays ? inHebrew(event, 'Dm') : day;
-    
+    const key1 = eventAndDayFormat(day)
+    const key2 = eventAndDayFormat(event)
     rows.forEach((row, rowIndex) => {
       const studentId = index[rowIndex];
       const value = row[colIndex];
 
-      if (!result[studentId][hebrewDay]) result[studentId][hebrewDay] = {};
-      result[studentId][hebrewDay][hebrewEvent] = value;
+      if (!result[studentId][key1]) result[studentId][key1] = {};
+      result[studentId][key1][key2] = value;
     });
   });
 
@@ -660,7 +667,11 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
 
   const { summary } = useInsertStore();
   const summaryData = useSuspenseQuery(apiSummary(summary));
-  const convertedData = null // summaryData.data ? convert(summaryData.data) : null;
+    console.log('convertedData: ', summaryData.data)
+  const convertedData = Object.keys(summaryData.data).length ? convert(summaryData.data) : null;
+  
+
+
   const { selectedEvent } = useInsertStore(state => state);
 
   const { handleSubmit } = methods;

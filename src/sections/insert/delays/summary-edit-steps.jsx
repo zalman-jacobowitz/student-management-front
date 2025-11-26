@@ -117,6 +117,7 @@ export function useSummaryForm() {
         dataFORM.group_by = dataFORM.group_by === 'event_name' ? ['event_name', 'day'] : ['day', 'event_name'];
       // range of days
         dataFORM.days = generateDaysOptions(dataFORM.start, dataFORM.end).map(day => day.value);
+        console.log({dataFORM});
       setSummary(dataFORM);
       toast.promise(
         Promise.resolve(dataFORM),
@@ -227,7 +228,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         chip: true,
       },
       {
-        step: 1,
+        step: 2,
         name: 'start',
         label: 'תאריך התחלה',
         component: Field.HebrewDatePicker,
@@ -235,7 +236,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         InputLabelProps: { shrink: true },
       },
       {
-        step: 1,
+        step: 2,
         name: 'end',
         label: 'תאריך סיום',
         component: Field.HebrewDatePicker,
@@ -243,7 +244,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         InputLabelProps: { shrink: true },
       },
       {
-        step: 2,
+        step: 3,
         name: 'group_by',
         label: 'קבץ לפי',
         component: Field.Select,
@@ -257,7 +258,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         )),
       },
       {
-        step: 2,
+        step: 3,
         name: 'type',
         label: 'סוג החישוב',
         component: Field.Select,
@@ -269,48 +270,30 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
             <Typography variant="body2">{option.label}</Typography>
           </MenuItem>
         )),
-      },
-      {
-        step: 3,
-        name: 'days',
-        label: 'בחר ימים',
-        component: Field.MultiSelect,
-        variant: 'filled',
-        InputLabelProps: { shrink: true },
-        helperText: 'בחר את הימים לניתוח',
-        options: daysOptions,
-        checkbox: true,
-        chip: true,
-      },
+      }
     ] : []),
   ];
 
   const steps = [
     {
       label: 'בחירת תבנית',
-      component: <MasterStep fields={fields.filter(f => f.step === 1)} number={1} />,
+      component: <MasterStep fields={fields} number={1} />,
       icon: 'mdi:template-outline',
       name: 'templateType',
     },
     ...(showCustomFields ? [
       {
         label: 'אירועים ותאריכים',
-        component: <MasterStep fields={fields.filter(f => f.step === 1)} number={1} />,
+        component: <MasterStep fields={fields} number={2} />,
         icon: 'mdi:calendar-range',
         name: 'events',
       },
       {
         label: 'קיבוץ וחישוב',
-        component: <MasterStep fields={fields.filter(f => f.step === 2)} number={2} />,
+        component: <MasterStep fields={fields} number={3} />,
         icon: 'mdi:chart-box-outline',
         name: 'group_by',
-      },
-      {
-        label: 'בחירת ימים',
-        component: <MasterStep fields={fields.filter(f => f.step === 3)} number={3} />,
-        icon: 'mdi:calendar-check-outline',
-        name: 'days',
-      },
+      }
     ] : []),
     {
       name: 'complete',
