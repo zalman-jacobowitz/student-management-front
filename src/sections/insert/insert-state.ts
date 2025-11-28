@@ -58,7 +58,10 @@ const useInsertStore = create<InsertState>((set, get) => ({
     const { allEvents } = get();
     
     // סידור הרשימה לפי יום ושעת התחלה
-    const sortedEvents = [...allEvents, details].sort((a, b) => {
+    // בדיקה אם הסדר קיים ברשימה: 
+    const isNew = allEvents.find(event => event === details)
+    const newListEvents = isNew ? [...allEvents, details] : allEvents
+    const sortedEvents = newListEvents.sort((a, b) => {
       const timeA = a.day + ' ' + (a.event_start || '');
       const timeB = b.day + ' ' + (b.event_start || '');
       return timeA.localeCompare(timeB);

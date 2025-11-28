@@ -1,5 +1,5 @@
 
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 
 import { PageTitle } from "src/components/layout";
 
@@ -49,10 +49,46 @@ export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
   
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
+              <Stack
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={1} 
+          alignItems="center"
+          justifyContent="center"
+          sx={{ flex: 1 }}
+        >
+          <FabButton
+            sx={{ boxShadow: (theme) => theme.customShadows.z8 }}
+            icon="solar:round-alt-arrow-right-bold-duotone"
+            label={prevEventName}
+            subLabel={inHebrew(prevEventDay, 'Dm')}
+            color="default"
+            variant="softExtended"
+            onClick={prevEvent}
+            testId="prev-event-fab"
+            showSubLabel
+            sizeMultiplier={3}
+          />
       <PageTitle
         primary={selectedEvent.event_name}
         secondary={`יום ${hebDay}`}
       />
+          <FabButton
+          
+            icon="solar:round-alt-arrow-left-bold-duotone"
+            iconAfter={true}
+            label={nextEventName}
+            subLabel={inHebrew(nextEventDay, 'Dm')}
+            color="default"
+            variant="softExtended"
+            onClick={nextEvent}
+            testId="next-event-fab"
+            showSubLabel
+            sizeMultiplier={3}
+          />
+        </Stack>
+
+
+
     </Box>
   );
 }

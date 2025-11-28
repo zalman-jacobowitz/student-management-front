@@ -187,7 +187,7 @@ function useExceptionDefinition({ exception }) {
   const onSubmit = useCallback(async (data, mode = 'update') => {
     try {
       
-      const exceptionData = exceptionsDataServerFromat(data);
+      const exceptionData = mode==='delete' ? data : exceptionsDataServerFromat(data);
 
       
 
@@ -380,7 +380,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
             <Button
               variant="soft"
               color="error"
-              onClick={handleSubmit((data) => onSubmit(data, 'delete'))}
+              onClick={handleSubmit((data) => onSubmit([data.exception_id], 'delete'))}
             >
               מחק
             </Button>

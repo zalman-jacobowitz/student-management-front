@@ -150,7 +150,9 @@ export function InsertListView({}) {
           }}
         >
           {/* Left Section - Previous Event Button */}
+          
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            {prevEventDay &&
             <FabButton
               icon=""
               
@@ -165,9 +167,13 @@ export function InsertListView({}) {
             >
               <Iconify icon="solar:alt-arrow-right-bold" width={24} sx={{ mr: 1, color: 'text.disabled' }} />
             </FabButton>
+}
           </Box>
 
+          
           {/* Center Section - Event Title and Date */}
+          
+          
           <Box sx={{ textAlign: 'center', width: '100%' }}>
             <Typography variant="h3" sx={{ mb: 0 }}>
               סדר {selectedEvent.event_name}
@@ -178,6 +184,8 @@ export function InsertListView({}) {
           </Box>
 
           {/* Right Section - Next Event Button */}
+          
+          {nextEventDay &&
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <FabButton
               icon=""
@@ -195,6 +203,7 @@ export function InsertListView({}) {
           
               </FabButton>
             </Box>
+            }
         </Box>
 
       <InsertToolbar
