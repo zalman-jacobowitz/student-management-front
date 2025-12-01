@@ -25,6 +25,7 @@ export function RHFHebrewDatePicker({
     disabled = false,
     required = false,
     inputProps = {},
+    ...other
 }) {
     // day format: 01-01-2024
 
@@ -51,7 +52,7 @@ export function RHFHebrewDatePicker({
             <Box>
             <TextField
                 {...field}
-                
+                {...other}
                 label={label}
                 data-testid="hebrew-date-picker"
                 value={`${selectedDate['יום_בשבוע']} ${selectedDate['יום_עברי']} ${selectedDate['חודש_עברי']} ${selectedDate['שנה_עברית']}`}

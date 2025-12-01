@@ -714,7 +714,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const lastEventsData = useLastEventsData();
 
   return (
-    <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
+    <Form methods={methods} onSubmit={handleSubmit(onSubmit)} className="insert-list__form">
       <Box
         data-testid="student-list"
         gap={1}
@@ -724,6 +724,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           sm: 'repeat(2, 1fr)',
           md: 'repeat(3, 1fr)',
         }}
+        className="insert-list__container"
       >
         {[...currentData].map((student) => {
           const enhancedStudent = enhanceStudentData(student);
@@ -758,6 +759,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           onClick={() => { }}
           icon="solar:upload-square-bold-duotone"
           text="עדכן נוכחות"
+          className="insert-list__submit-button"
         />
       </Box>
     </Form>

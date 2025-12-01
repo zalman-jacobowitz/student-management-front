@@ -114,6 +114,7 @@ export function InsertForm() {
       label="תאריך עברי"
       name="day"
       data-testid="hebrew-date-picker"
+      className="insert-form__date-picker"
     />
   )
 
@@ -131,17 +132,19 @@ export function InsertForm() {
       helperText=""
       inputProps={{}}
       id="event-select"
+      className="insert-form__event-select"
     >
     {eventsToday.map((option) => (
       <MenuItem
         key={option.event_id}
         value={option.event_id}
-        sx={{ textTransform: 'capitalize' }}>  
-        <Stack direction="column" spacing={0.5}>
-          <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+        sx={{ textTransform: 'capitalize' }}
+        className="insert-form__event-menu-item">  
+        <Stack direction="column" spacing={0.5} className="insert-form__event-details">
+          <Typography variant="subtitle2" sx={{ color: 'text.primary' }} className="insert-form__event-name">
             {`${option.event_name}`}
           </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }} className="insert-form__event-time">
             {`${option.event_start} - ${option.event_end}`}
           </Typography>
         </Stack>
@@ -152,30 +155,32 @@ export function InsertForm() {
 
 
   return (
-    <ComponentContainer sx={{}}>
-      <Card sx={{ p: 5, width: 1, mx: 'auto', maxWidth: 520 }}>
+    <ComponentContainer sx={{}} className="insert-form__container">
+      <Card sx={{ p: 5, width: 1, mx: 'auto', maxWidth: 520 }} className="insert-form__card">
 
-        <Form methods={methods} onSubmit={onSubmit}>
+        <Form methods={methods} onSubmit={onSubmit} className="insert-form__form">
           <CardHeader
             title="רישום אירוע"
             subheader="בחר אירוע לרישום"
+            className="insert-form__header"
           />
 
-          <CardContent sx={{ mb: 3 }}>
-            <Stack direction="column" spacing={2}>
-                        <Alert severity="info" sx={{ mb: 2 }}>
+          <CardContent sx={{ mb: 3 }} className="insert-form__content">
+            <Stack direction="column" spacing={2} className="insert-form__content-stack">
+                        <Alert severity="info" sx={{ mb: 2 }} className="insert-form__alert">
             האירוע שנבחר: {selectedEvent?.event_name} ({inHebrew(selectedDay, true, true)})
           </Alert>
               {renderSelectDay}
               {renderSelectEvent}
             </Stack>
           </CardContent>
-          <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }} className="insert-form__actions">
             <Button 
               onClick={() => dialogPrevEvents.onTrue()} 
               variant="outlined" 
               color="inherit"
               data-testid="existing-events-button"
+              className="insert-form__prev-events-button"
             >
               בחר אירוע קיים
             </Button>
@@ -184,6 +189,7 @@ export function InsertForm() {
               variant="contained"
               loading={isSubmitting}
               data-testid="start-registration"
+              className="insert-form__submit-button"
             >
               התחל רישום
             </LoadingButton>
@@ -191,7 +197,7 @@ export function InsertForm() {
           <ConfirmDialog
             open={dialogPrevEvents.value}
             title="עריכת אירועים קודמים"
-
+            className="insert-form__confirm-dialog"
            content={
             <InsertFormPastEvents
                 listOfTimes={listOfTimes}
