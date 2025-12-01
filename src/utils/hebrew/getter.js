@@ -124,6 +124,7 @@ export function inHebrew(day, full=false, desc=false) {
      * if full is 'Dm' returns "יום_עברי חודש_עברי"
      * if full is 'Dms' returns "יום_בשבוע יום_עברי חודש_עברי"
      */
+    
     const hebrewJson = readHebrewJson(day);
     if (desc){
         return describeHebrew(day);

@@ -4,19 +4,19 @@ import { Chart, useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-export function ChartColumnSingle({ chart }) {
+export function ChartLine({ chart }) {
   const theme = useTheme();
 
-  const chartColors = chart.colors ?? [hexAlpha(theme.palette.primary.dark, 0.8)];
+  const chartColors = chart.colors ?? [
+    hexAlpha(theme.palette.primary.dark, 0.8),
+    theme.palette.warning.main,
+  ];
 
   const chartOptions = useChart({
     colors: chartColors,
-    stroke: { width: 0 },
+    legend: { show: true },
     xaxis: { categories: chart.categories },
-    
-
-    plotOptions: { bar: { columnWidth: '40%' } },
   });
 
-  return <Chart type="bar" series={chart.series} options={chartOptions} height={320} />;
+  return <Chart type="line" series={chart.series} options={chartOptions} height={320} />;
 }

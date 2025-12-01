@@ -13,8 +13,12 @@ export function ChartColumnSingle({ chart }) {
     colors: chartColors,
     stroke: { width: 0 },
     xaxis: { categories: chart.categories },
-    
-
+    tooltip: {
+      y: {
+        formatter: (value) => `${value} thousands`,
+        title: { formatter: () => '' },
+      },
+    },
     plotOptions: { bar: { columnWidth: '40%' } },
   });
 

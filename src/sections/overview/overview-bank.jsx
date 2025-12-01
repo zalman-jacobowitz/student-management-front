@@ -39,6 +39,29 @@ import { Walktour } from 'src/components/walktour/walktour.jsx';
 // ------------------------------------------------------------
 function useStudentFileUpload(){
 
+  // פונקציה מקומית לקריאת קובץ CSV
+  const parseCSV = (csvText) => {
+    const lines = csvText.trim().split('\n');
+    if (lines.length === 0) return { columns: [], data: [] };
+    
+    // חילוץ כותרות העמודות
+    const headers = lines[0].split(',').map(h => h.trim());
+    
+    // המרת שורות לאובייקטים
+    const rows = lines.slice(1).map(line => {
+      const values = line.split(',').map(v => v.trim());
+      const row = {};
+      headers.forEach((header, index) => {
+        row[header] = values[index] || '';
+      });
+      return row;
+    });
+    
+    return {
+      columns: headers,
+      data: rows
+    };
+  };
 
   // מייבא את הפונקציה לאיחול הנתונים שהועולו
   const [watchedFile, setWatchedFile] = useState(null);
@@ -54,6 +77,7 @@ function useStudentFileUpload(){
     reader.readAsArrayBuffer(fileDetails);
     
     reader.onload = (event) => {
+      if ()
       const result = readFile({
         fileDetils: fileDetails,
         types: ['excel', 'csv'],

@@ -4,18 +4,24 @@ import { Chart, useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-export function ChartColumnSingle({ chart }) {
+export function ChartColumnMultiple({ chart }) {
   const theme = useTheme();
 
-  const chartColors = chart.colors ?? [hexAlpha(theme.palette.primary.dark, 0.8)];
+  const chartColors = chart.colors ?? [
+    hexAlpha(theme.palette.primary.dark, 0.8),
+    theme.palette.warning.main,
+  ];
 
   const chartOptions = useChart({
     colors: chartColors,
-    stroke: { width: 0 },
+    legend: { show: true },
     xaxis: { categories: chart.categories },
-    
-
-    plotOptions: { bar: { columnWidth: '40%' } },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['transparent'],
+    },
+    tooltip: { y: { formatter: (value) => `$ ${value} thousands` } },
   });
 
   return <Chart type="bar" series={chart.series} options={chartOptions} height={320} />;

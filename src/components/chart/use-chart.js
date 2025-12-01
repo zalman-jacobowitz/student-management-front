@@ -122,7 +122,7 @@ export function useChart(options) {
         shadeIntensity: 0,
         opacityFrom: 0.4,
         opacityTo: 0,
-        stops: [0, 100],
+        // stops: [0, 100],
         ...options?.fill?.gradient,
       },
     },
@@ -179,8 +179,8 @@ export function useChart(options) {
       ...options?.xaxis,
     },
     yaxis: {
-      min: 0, // Set minimum value
-      max: 100, // Set maximum value
+      // min: 0, // Set minimum value
+      // max: 100, // Set maximum value
       tickAmount: 5,
       labels: {
         formatter: (value) => Math.round(value), // Format labels as integers

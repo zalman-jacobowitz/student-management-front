@@ -4,7 +4,7 @@ import { Chart, useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-export function ChartColumnSingle({ chart }) {
+export function ChartBar({ chart }) {
   const theme = useTheme();
 
   const chartColors = chart.colors ?? [hexAlpha(theme.palette.primary.dark, 0.8)];
@@ -13,10 +13,20 @@ export function ChartColumnSingle({ chart }) {
     colors: chartColors,
     stroke: { width: 0 },
     xaxis: { categories: chart.categories },
-    
-
-    plotOptions: { bar: { columnWidth: '40%' } },
+    tooltip: {
+      y: {
+        formatter: (value) => `$ ${value} thousands`,
+        title: { formatter: () => '' },
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: '30%',
+        borderRadius: 2,
+      },
+    },
   });
 
-  return <Chart type="bar" series={chart.series} options={chartOptions} height={320} />;
+  return <Chart type="bar" series={[{ data: chart.series }]} options={chartOptions} height={320} />;
 }

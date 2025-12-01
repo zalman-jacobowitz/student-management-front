@@ -1,40 +1,49 @@
-import { Box } from '@mui/material';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { apiBank } from 'src/actions/data_students_event';
-import { Chart } from 'src/components/chart';
-import { RegularChart } from 'src/sections/charts/regular-chart';
-import { ChartBar } from './chart-bar';
+import { useMemo } from 'react';
+import { Box, Grid } from '@mui/material';
+import { ChartBar } from 'src/sections/overview/chart-view/chart-bar';
+import { groupTransactionsByCategory, getCategoryColor } from 'src/actions/transaction-categories';
 import { ChartColumnSingle } from './chart-column-single';
-
-const convertKeys = {
-    Mobile: 'מהטלפון',
-    Shoping: 'קניות ועוד',
-    Food: 'אוכל',
-    Zelle: 'העברות',
-    transportaion: 'נסיעות'
-}
+import Zelle from './zelle';
+import CategoryDailyView from './category-daily-view';
 
 export function TemplatesViewer({ watchedFile }) {
-    const bankData = useSuspenseQuery(apiBank({data: watchedFile}))
-  
-    const chartConfig = {
-        type: 'bar', // או 'bar', 'donut', וכו'
-        title: 'דוח תבניות',
-        subheader: 'סיכום נתונים',
-        data: bankData.data.group, // הנתונים שלך
-        x: 'cate', // שם העמודה עבור ציר X
-        y: 'Amount', // שם העמודה עבור ציר Y
-    };
-    console.table(bankData.data.group)
 
-  return (
-    <Box>
-<ChartColumnSingle
- chart={{
-          categories: bankData.data.group.map(e => convertKeys[e.cate] || e.cate),
-          series: [{ data: bankData.data.group.map(e => Math.abs(parseFloat(e.Amount))) }],
-        }}
-      />
-    </Box>
-  );
+    // Group transactions by category
+    console.log('watchedFile', watchedFile);
+    const {group: categorizedData, enrichedTransactions} = groupTransactionsByCategory(watchedFile, 'Description', 'Amount')
+    
+    console.log('categorizedData', categorizedData);
+    // Filter only negative amounts
+    const negativeData = categorizedData.filter(item => parseFloat(item.Amount) < 0);
+    
+    // Prepare chart configuration
+    const chartConfig = {
+        categories: negativeData.map(item => item.cate),
+        series: [{data: negativeData.map(item => Math.abs(parseFloat(item.Amount)))}],
+            tooltip: {
+      y: {
+        formatter: (value) => `${parseInt(value, 10)}$ `,
+        title: { formatter: () => '' },
+      },
+    },
+        // colors: negativeData.map(item => getCategoryColor(item.cate)),
+        yaxis: { 
+            labels: {
+                formatter: (value) => `${value}`,
+        },
+      // auto: עיגול כלפי המאה הבאה
+      },
+    };
+
+    return (
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={12}>
+                <ChartColumnSingle chart={chartConfig} />
+            </Grid>
+            <Zelle data={enrichedTransactions} />
+            <Grid item xs={12}>
+                <CategoryDailyView data={enrichedTransactions} />
+            </Grid>
+        </Grid>
+    );
 }
