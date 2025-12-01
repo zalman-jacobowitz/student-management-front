@@ -183,15 +183,6 @@ function WeeklyAccordionView({ groupedData, categoryColor }) {
                   <Typography sx={{ fontWeight: 'bold', color: categoryColor, minWidth: 150 }}>
                     {weekData.torahPortion}
                   </Typography>
-                  <Typography sx={{ color: 'text.secondary', minWidth: 200 }}>
-                    {formatDateRange(weekData.weekStart, weekData.weekEnd)}
-                  </Typography>
-                  <Typography sx={{ fontWeight: 'bold', ml: 'auto' }}>
-                    ${weekData.totalAmount.toFixed(2)}
-                  </Typography>
-                  <Typography sx={{ color: 'text.secondary', minWidth: 80 }}>
-                    {dayCount} ימים
-                  </Typography>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails sx={{ pt: 0 }}>

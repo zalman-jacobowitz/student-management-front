@@ -7,8 +7,11 @@ import { Chart, useChart } from 'src/components/chart';
 function extractZellePayerName(description) {
     console.log('description', description);
     if (!description) return null;
-    // Pattern: "Zelle payment from NAME [for/Conf#]"
-    const match = description.match(/Zelle payment from (.+?)\s+(?:for|Conf#)/i);
+    // Pattern: "Zelle payment from NAME [for/Conf#]" or "Zelle payment to NAME [Conf#]"
+    let match = description.match(/Zelle payment from (.+?)\s+(?:for|Conf#)/i);
+    if (match) return match[1].trim();
+    
+    match = description.match(/Zelle payment to (.+?)\s+(?:Conf#|$)/i);
     return match ? match[1].trim() : null;
 }
 
@@ -17,9 +20,11 @@ function groupZelleByPayer(transactions, transactionType = 'all') {
     
     transactions.forEach(tx => {
         const payerName = extractZellePayerName(tx.Description);
+        console.log('tx.Description', tx.Description);
+        console.log('payerName', payerName);
         if (payerName) {
-            const amount = parseFloat(tx.Amount) || 0;
-            
+            const amount = parseFloat(tx.Amount);
+            console.log('amount', tx.Amount);
             // סינון לפי סוג עסקה (חיובי או שלילי)
             if (transactionType === 'positive' && amount < 0) return;
             if (transactionType === 'negative' && amount >= 0) return;
@@ -88,8 +93,9 @@ function ZelleChart({ title, subheader, groupedByPayer, theme }) {
 
 function Zelle({data}) {
     const theme = useTheme();
+
     const zelleTransactions = data.filter(tx => tx['category'] === "העברות");
-    
+        console.table(zelleTransactions);
     const positiveGrouped = groupZelleByPayer(zelleTransactions, 'positive');
     const negativeGrouped = groupZelleByPayer(zelleTransactions, 'negative');
     

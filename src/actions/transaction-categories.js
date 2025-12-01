@@ -100,16 +100,15 @@ export function groupTransactionsByCategory(
 
   // Process each enriched transaction
   enrichedTransactions.forEach((transaction) => {
-    const amount = parseFloat(transaction[amountField]) || 0;
+    const amount = parseFloat(transaction[amountField]);
     const category = transaction.category;
 
-    groupedData[category].Amount += amount;
+    groupedData[category].Amount += amount; // Works correctly with negative values
     groupedData[category].count += 1;
   });
 
   // Convert to array and sort by amount (descending)
-  return {group : Object.values(groupedData)
-    .filter((item) => item.Amount !== 0) // Remove categories with 0 amount
+  return {group : Object.values(groupedData) // Keep categories that have transactions
     .sort((a, b) => b.Amount - a.Amount)
 , enrichedTransactions: enrichedTransactions  };
 }
