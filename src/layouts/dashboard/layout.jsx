@@ -22,6 +22,7 @@ import { HeaderSection } from '../core/header-section';
 import { StyledDivider, useNavColorVars } from './styles';
 import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
+import { HelpButton } from 'src/components/walktour';
 import { screenOptions, navData as dashboardNavData } from '../config-nav-dashboard';
 
 // ----------------------------------------------------------------------
@@ -174,6 +175,8 @@ export function DashboardLayout({ sx, children, header, data }) {
               <Box display="flex" alignItems="center" gap={{ xs: 0, sm: 0.75 }}>
                 {/* -- Searchbar -- */}
                 <Searchbar data={navData} />
+                {/* -- Help button -- */}
+                <HelpButton />
                 {/* -- Language popover -- 
                 <LanguagePopover data={allLangs} />
                 {/* -- Notifications popover -- 
