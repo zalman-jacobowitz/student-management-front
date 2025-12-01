@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { Chart, useChart } from 'src/components/chart';
 
 function extractZellePayerName(description) {
-    console.log('description', description);
+
     if (!description) return null;
     // Pattern: "Zelle payment from NAME [for/Conf#]" or "Zelle payment to NAME [Conf#]"
     let match = description.match(/Zelle payment from (.+?)\s+(?:for|Conf#)/i);
@@ -14,7 +14,6 @@ function extractZellePayerName(description) {
     match = description.match(/Zelle payment to (.+?)\s+(?:Conf#|$)/i);
     return match ? match[1].trim() : null;
 }
-
 function groupZelleByPayer(transactions, transactionType = 'all') {
     const grouped = {};
     
