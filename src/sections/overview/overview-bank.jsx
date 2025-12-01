@@ -77,7 +77,7 @@ function useStudentFileUpload(){
     reader.readAsArrayBuffer(fileDetails);
     
     reader.onload = (event) => {
-      if ()
+      
       const result = readFile({
         fileDetils: fileDetails,
         types: ['excel', 'csv'],
