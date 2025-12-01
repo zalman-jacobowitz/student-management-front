@@ -16,6 +16,7 @@ import { apiInfoColumns } from 'src/actions/info_columns';
 import { apiInfoStudents } from 'src/actions/info_students';
 
 import { LoadingScreen } from 'src/components/loading-screen';
+import { useWalktour, Walktour } from "src/components/walktour";
 import { PageLinksHeader } from 'src/components/layout/header-links';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -402,10 +403,20 @@ export function SummaryDataGridViewWrapper() {
       '2025-11-14'
     ]
   };
+
+  const walktourSteps = [
+    // TODO: Add walktour steps here
+  ];
+
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
+
   return (
     <Container maxWidth={false}>
       <Suspense fallback={<LoadingScreen />}>
-        <NewSummary formData={sampleFormData} />
+        <>
+          <NewSummary formData={sampleFormData} />
+          {walktour}
+        </>
       </Suspense>
     </Container>
   );

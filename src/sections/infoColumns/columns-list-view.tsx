@@ -7,6 +7,7 @@ import { useInfoColumns } from "src/actions/columns_with_select";
 import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { INFO_TABLE } from "src/utils/uinqe_usege/columns";
 
@@ -40,9 +41,13 @@ function ColumnsMainView() {
   return (<FullTableWrapper config={tableColumnsConfig} /> )
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
 
 export function ColumnsViewWrapper() {
-  return <ColumnsMinimalViewWrapper />
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
+  return <ColumnsMinimalViewWrapper walktour={walktour} />
   return (
     <Suspense fallback={<LoadingScreen />}>
       <ColumnsMainView/>

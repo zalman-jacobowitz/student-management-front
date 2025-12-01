@@ -112,11 +112,12 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
           type="submit"
           variant="contained"
           loading={isSubmitting}
+          className="student-form-submit"
         >
           עדכן
         </LoadingButton>
         
-        <Button variant="outlined" color="inherit" onClick={onClose}>
+        <Button variant="outlined" color="inherit" onClick={onClose} className="student-form-cancel">
           ביטול
         </Button>
       </DialogActions>
@@ -130,7 +131,8 @@ type StudentsNewEditFormDialogProps = {
   open: boolean,
   onClose: () => void,
   existingStudents?: InfoStudent[],
-  isEditing: boolean
+  isEditing: boolean,
+  className?: string
 }
 
 export function StudentsNewEditFormDialog(
@@ -140,7 +142,8 @@ export function StudentsNewEditFormDialog(
     open,
     onClose,
     existingStudents = [],
-    isEditing
+    isEditing,
+    className
   }: StudentsNewEditFormDialogProps
 ) {
 
@@ -152,6 +155,7 @@ export function StudentsNewEditFormDialog(
       maxWidth="sm"
       open={open}
       title={title}
+      className={className}
       content={
         <StudentsNewEditFormDialogContent 
           columns={columns} 

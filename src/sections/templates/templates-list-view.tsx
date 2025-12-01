@@ -10,6 +10,7 @@ import { apiTemplates, templatesUpdate } from "src/actions/templates";
 import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { INFO_TEMPLATES } from "./columns";
 import { TemplateDialog } from "./templates-edit-steps";
@@ -166,11 +167,18 @@ function TemplatesMainView() {
   );
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
 
 export function TemplatesViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <TemplatesMainView/>
+      <>
+        <TemplatesMainView/>
+        {walktour}
+      </>
     </Suspense>
   );
 }

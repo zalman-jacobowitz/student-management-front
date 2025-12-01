@@ -10,6 +10,7 @@ import { apiUsers } from "src/actions/users";
 import { LoadingScreen } from "src/components/loading-screen";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { USERS_COLUMNS } from "src/utils/uinqe_usege/users-columns";
 import { TableConfig } from "src/components/full-table/types";
@@ -73,14 +74,22 @@ function UserMainDynamicView() {
 
 
 
+  const walktourSteps = [
+    // TODO: Add walktour steps here
+  ];
+
   
   /* ----------------------------
    | Public wrapper: <Suspense>  |
    ----------------------------*/
    export function UserViewWrapper() {
+    const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
     return (
       <Suspense fallback={<LoadingScreen />}> {/* fallback until all queries resolve */}
-        <NewList />
+        <>
+          <NewList />
+          {walktour}
+        </>
       </Suspense>
     );
   }

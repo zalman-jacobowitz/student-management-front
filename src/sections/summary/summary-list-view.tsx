@@ -22,6 +22,7 @@ import { useSettingsContext } from "src/components/settings";
 import { LoadingScreen } from "src/components/loading-screen";
 import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { TableMainView } from "./summary-list";
 import { SummaryDataGrid } from "./summary-datagrid-view";
@@ -267,10 +268,18 @@ function HebrewCalendar(){
   )
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
+
 export function SummaryViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <HebrewCalendar />
+      <>
+        <HebrewCalendar />
+        {walktour}
+      </>
     </Suspense>
   );
 }

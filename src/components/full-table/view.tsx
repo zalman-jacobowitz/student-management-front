@@ -118,7 +118,7 @@ export function FullTableWrapper({ config }: { config: TableConfig }) {
   // הטבלה עצמה
   const renderTable = <FullTable dataFiltered={dataFiltered} />
   // כפתור הוספה
-  const renderAddBtn = addButton && <ButtonGreen data-testid="add-button" onClick={quickAdd.onTrue} />
+  const renderAddBtn = addButton && <ButtonGreen data-testid="add-button" className="add-button" onClick={quickAdd.onTrue} />
   // דיאלוג הייבוא טבלה חדשה
   const renderImportDialog = (<FullTableImportDialog
     onClose={importData.onFalse}

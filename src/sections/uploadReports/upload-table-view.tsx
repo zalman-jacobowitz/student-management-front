@@ -21,6 +21,7 @@ import { dataStudentsEventUpdate } from 'src/actions/data_students_event';
 import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { useWalktour, Walktour } from "src/components/walktour";
 import { InfoStudent } from 'src/components/full-table/types';
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';

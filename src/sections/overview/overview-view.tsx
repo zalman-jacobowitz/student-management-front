@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { apiInfoStudents } from "src/actions/info_students";
 import { LoadingScreen } from "src/components/loading-screen";
+import { useWalktour, Walktour } from "src/components/walktour";
 import { useRouter } from "src/routes/hooks";
 import { paths } from "src/routes/paths";
 import { AboutView } from "../about/view/about-view";
@@ -19,11 +20,18 @@ function OverviewMainView() {
   return <>{infoStudents.data.length}</>
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
 
 export function OverviewViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-     <FileUploadStep />
+      <>
+        <FileUploadStep />
+        {walktour}
+      </>
     </Suspense>
   );
 }

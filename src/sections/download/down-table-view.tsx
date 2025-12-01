@@ -19,6 +19,7 @@ import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { LoadingScreen } from 'src/components/loading-screen';
+import { useWalktour, Walktour } from "src/components/walktour";
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
 
@@ -322,10 +323,18 @@ export function DownTableView() {
     );
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
+
 export function DownloadViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DownTableView />
+      <>
+        <DownTableView />
+        {walktour}
+      </>
     </Suspense>
   );
 }

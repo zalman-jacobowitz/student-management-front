@@ -28,6 +28,7 @@ function RowStyles({children, selected, style='default'}) {
     if (style === 'paper') {
       return (
         <TableRow
+          className="row"
             selected={selected}
             sx={{
             borderRadius: 2,
@@ -45,7 +46,7 @@ function RowStyles({children, selected, style='default'}) {
     }>{children}</TableRow>
       );
     }
-    return (<TableRow hover selected={selected} aria-checked={selected} tabIndex={-1}>{children}</TableRow>)
+    return (<TableRow className="row" hover selected={selected} aria-checked={selected} tabIndex={-1}>{children}</TableRow>)
 }
 
 
@@ -61,10 +62,11 @@ export function RegularRowProvider({children, selected, columns, style='default'
 
 
   return (
-    <RowStyles selected={selected} style={style}>
+    
+    <RowStyles  selected={selected} style={style}>
       {actionsBefore}
       {children}
       {actionsAfter}
     </RowStyles>
-)
+  )
 }

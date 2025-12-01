@@ -4,11 +4,11 @@ import { useWalktourStore } from './walktour-store';
 
 // ----------------------------------------------------------------------
 
-export function useWalktour({ steps, defaultRun=true }) {
+export function useWalktour({ steps, defaultRun=false }) {
   const helpers = useRef();
-
-  const [run, setRun] = useState(!!defaultRun);
   const { isHelpActive, setHelpActive } = useWalktourStore();
+
+  const [run, setRun] = useState(!!isHelpActive || defaultRun);
 
   // כאשר isHelpActive משתנה, הפעל/בטל את ההדרכה
   useEffect(() => {

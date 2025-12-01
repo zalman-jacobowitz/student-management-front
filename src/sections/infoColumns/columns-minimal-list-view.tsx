@@ -16,6 +16,7 @@ import { useInfoColumns } from "src/actions/columns_with_select";
 
 import { Iconify } from "src/components/iconify";
 import { LoadingScreen } from "src/components/loading-screen";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { ColumnVisibilityDialog, ColumnGeneralSettingsDialog } from "./column-edit-steps";
 import { ColumnsList } from "./columns-list-minimal";
@@ -133,10 +134,18 @@ function ColumnsMinimalListView() {
 
 // ----------------------------------------------------------------------
 
-export function ColumnsMinimalViewWrapper() {
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
+
+export function ColumnsMinimalViewWrapper({walktour: walktourProp}: {walktour?: React.ReactNode}) {
+  const walktour = walktourProp || <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <ColumnsMinimalListView />
+      <>
+        <ColumnsMinimalListView />
+        {walktour}
+      </>
     </Suspense>
   );
 }
