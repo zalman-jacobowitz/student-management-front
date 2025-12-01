@@ -1,0 +1,1341 @@
+{
+    "columns": [
+        "Date",
+        "Description",
+        "Amount",
+        "Running Bal."
+    ],
+    "data": [
+        {
+            "Date": "45666",
+            "Description": "Beginning balance as of 09/01/2025",
+            "Running Bal.": "1044.1"
+        },
+        {
+            "Date": "45697",
+            "Description": "NEXMO 08/29 PURCHASE 415-805-8810 CA",
+            "Amount": "-10",
+            "Running Bal.": "1034.1"
+        },
+        {
+            "Date": "45697",
+            "Description": "GOOGLE *CLOUD 6QvzSK 09/01 PURCHASE g.co/HelpPay# CA",
+            "Amount": "-0.64",
+            "Running Bal.": "1033.46"
+        },
+        {
+            "Date": "45697",
+            "Description": "GITHUB, INC. 09/01 PURCHASE GITHUB.COM CA",
+            "Amount": "-10.89",
+            "Running Bal.": "1022.57"
+        },
+        {
+            "Date": "45697",
+            "Description": "Zelle payment to LEVI WEINFELD NEUSTAUT Conf# gimt99zmr",
+            "Amount": "-400",
+            "Running Bal.": "622.57"
+        },
+        {
+            "Date": "45756",
+            "Description": "Zelle payment from YOSSEF ELMKIES Conf# zupsgz0my",
+            "Amount": "256",
+            "Running Bal.": "878.57"
+        },
+        {
+            "Date": "45756",
+            "Description": "CLAUDE.AI SUBSCRIPTION 09/03 PURCHASE ANTHROPIC.COM CA",
+            "Amount": "-21.78",
+            "Running Bal.": "856.79"
+        },
+        {
+            "Date": "45786",
+            "Description": "CURB NYC TAXI 09/04 MOBILE PURCHASE ASTORIA NY",
+            "Amount": "-59.15",
+            "Running Bal.": "797.64"
+        },
+        {
+            "Date": "45878",
+            "Description": "BKOFAMERICA ATM 09/08 #XXXXX6722 DEPOSIT CROWN HEIGHTS BROOKLYN NY",
+            "Amount": "850",
+            "Running Bal.": "1647.64"
+        },
+        {
+            "Date": "45878",
+            "Description": "MTA*NYCT PAYGO 09/04 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "1644.74"
+        },
+        {
+            "Date": "45878",
+            "Description": "MTA*NYCT PAYGO 09/04 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "1641.84"
+        },
+        {
+            "Date": "45878",
+            "Description": "MTA*NYCT PAYGO 09/05 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "1638.94"
+        },
+        {
+            "Date": "45878",
+            "Description": "AMAZON RETA* LI1VH4B83 09/06 PURCHASE WWW.AMAZON.CO WA",
+            "Amount": "-62.18",
+            "Running Bal.": "1576.76"
+        },
+        {
+            "Date": "45878",
+            "Description": "WWW.CLEVER-CLOUD.COM 09/07 PURCHASE NANTES",
+            "Amount": "-14.36",
+            "Running Bal.": "1562.4"
+        },
+        {
+            "Date": "45878",
+            "Description": "MTA*NYCT PAYGO 09/07 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "1559.5"
+        },
+        {
+            "Date": "45878",
+            "Description": "Zelle payment to RABBINICAL COLLEGE OF AMERICA Conf# ahlxurlac",
+            "Amount": "-45",
+            "Running Bal.": "1514.5"
+        },
+        {
+            "Date": "45878",
+            "Description": "Zelle payment to SHALOM TOLEDANO Conf# ccsetp29w",
+            "Amount": "-653.25",
+            "Running Bal.": "861.25"
+        },
+        {
+            "Date": "45878",
+            "Description": "INTERNATIONAL TRANSACTION FEE 09/07 WWW.CLEVER-CLOUD.COM NANTES",
+            "Amount": "-0.43",
+            "Running Bal.": "860.82"
+        },
+        {
+            "Date": "45939",
+            "Description": "GITHUB, INC. 09/09 PURCHASE GITHUB.COM CA",
+            "Amount": "-10.89",
+            "Running Bal.": "849.93"
+        },
+        {
+            "Date": "45970",
+            "Description": "MTA*NYCT PAYGO 09/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "847.03"
+        },
+        {
+            "Date": "46000",
+            "Description": "FRUIT CART 09/10 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-2.82",
+            "Running Bal.": "844.21"
+        },
+        {
+            "Date": "46000",
+            "Description": "MTA*NYCT PAYGO 09/10 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "841.31"
+        },
+        {
+            "Date": "46000",
+            "Description": "MTA*NYCT PAYGO 09/10 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "838.41"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "MTA*NYCT PAYGO 09/11 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "835.51"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "HOUSE OF GLATT 09/11 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-9.1",
+            "Running Bal.": "826.41"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "HOUSE OF GLATT 09/11 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-7.61",
+            "Running Bal.": "818.8"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "MTA*NYCT PAYGO 09/14 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "815.9"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "GOOGLE *Google One 09/14 PURCHASE 855-836-3987 CA",
+            "Amount": "-2.17",
+            "Running Bal.": "813.73"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "Zelle payment to AHARON LANDAU Conf# isr9a31tr",
+            "Amount": "-360",
+            "Running Bal.": "453.73"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "TARGET T-1849 09/15 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-47.77",
+            "Running Bal.": "405.96"
+        },
+        {
+            "Date": "09/15/2025",
+            "Description": "Zelle payment to YOSSEF WEINER Conf# e7s2v2xsw",
+            "Amount": "-120",
+            "Running Bal.": "285.96"
+        },
+        {
+            "Date": "09/16/2025",
+            "Description": "HOUSE OF GLATT 09/14 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-20.81",
+            "Running Bal.": "265.15"
+        },
+        {
+            "Date": "09/17/2025",
+            "Description": "MTA*NYCT PAYGO 09/15 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "262.25"
+        },
+        {
+            "Date": "09/17/2025",
+            "Description": "MTA*NYCT PAYGO 09/15 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "259.35"
+        },
+        {
+            "Date": "09/17/2025",
+            "Description": "Duane Reade ST 09/17 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-1.78",
+            "Running Bal.": "257.57"
+        },
+        {
+            "Date": "09/18/2025",
+            "Description": "MTA*NYCT PAYGO 09/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "254.67"
+        },
+        {
+            "Date": "09/18/2025",
+            "Description": "MTA*NYCT PAYGO 09/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "251.77"
+        },
+        {
+            "Date": "09/19/2025",
+            "Description": "35 MADISON ST GARAGE 09/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.4",
+            "Running Bal.": "249.37"
+        },
+        {
+            "Date": "09/19/2025",
+            "Description": "MTA*NYCT PAYGO 09/17 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "246.47"
+        },
+        {
+            "Date": "09/19/2025",
+            "Description": "35 MADISON ST GARAGE 09/18 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.4",
+            "Running Bal.": "244.07"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "MTA*NYCT PAYGO 09/18 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "241.17"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "MTA*NYCT PAYGO RECOVER 09/19 PURCHASE 718-330-1234 NY",
+            "Amount": "-2.9",
+            "Running Bal.": "238.27"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "MTA*NYCT PAYGO 09/19 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "235.37"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "MTA*NYCT PAYGO 09/19 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "232.47"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "KAHAN`S SUPERETTE 09/19 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-6.52",
+            "Running Bal.": "225.95"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "TST* PRIME AVENUE 09/20 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-29.24",
+            "Running Bal.": "196.71"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "FN FOOD VENDOR 09/21 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-2.26",
+            "Running Bal.": "194.45"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/21 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "191.24"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "VISIBLE 09/21 PURCHASE 866-331-3527 CO",
+            "Amount": "-25",
+            "Running Bal.": "166.24"
+        },
+        {
+            "Date": "09/22/2025",
+            "Description": "Zelle payment to Levi Klein Conf# cly7hu013",
+            "Amount": "-4",
+            "Running Bal.": "162.24"
+        },
+        {
+            "Date": "09/23/2025",
+            "Description": "MTA*NYCT PAYGO 09/21 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "159.34"
+        },
+        {
+            "Date": "09/23/2025",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/22 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "156.13"
+        },
+        {
+            "Date": "09/23/2025",
+            "Description": "PYTHONANYWHERE 09/23 PURCHASE RICHMOND",
+            "Amount": "-5",
+            "Running Bal.": "151.13"
+        },
+        {
+            "Date": "09/24/2025",
+            "Description": "KAHAN`S SUPERETTE 09/22 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-7.65",
+            "Running Bal.": "143.48"
+        },
+        {
+            "Date": "09/24/2025",
+            "Description": "MTA*NYCT PAYGO 09/22 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "140.58"
+        },
+        {
+            "Date": "09/25/2025",
+            "Description": "Zelle payment from INC THE TORAH CENTER Conf# 0JHWFISQN",
+            "Amount": "800",
+            "Running Bal.": "940.58"
+        },
+        {
+            "Date": "09/25/2025",
+            "Description": "Zelle payment from SHNEOR VIGLER Conf# m75u974nz",
+            "Amount": "200",
+            "Running Bal.": "1140.58"
+        },
+        {
+            "Date": "09/25/2025",
+            "Description": "Zelle payment from INC THE TORAH CENTER Conf# 0JHWFI7WN",
+            "Amount": "1",
+            "Running Bal.": "1141.58"
+        },
+        {
+            "Date": "09/25/2025",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/24 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "1138.37"
+        },
+        {
+            "Date": "09/26/2025",
+            "Description": "Zelle payment from CHABADLUBAVITCH OF THE UPPER EAST for shofar blowing\"; Conf# 99bokk8fr\"",
+            "Amount": "250",
+            "Running Bal.": "1388.37"
+        },
+        {
+            "Date": "09/26/2025",
+            "Description": "TST* PRIME AVENUE 09/24 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-19.55",
+            "Running Bal.": "1368.82"
+        },
+        {
+            "Date": "09/26/2025",
+            "Description": "TST* PRIME AVENUE 09/24 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-9.74",
+            "Running Bal.": "1359.08"
+        },
+        {
+            "Date": "09/29/2025",
+            "Description": "Zelle payment from MENACHEM PERETS Conf# pcqdnsqtx",
+            "Amount": "324",
+            "Running Bal.": "1683.08"
+        },
+        {
+            "Date": "09/29/2025",
+            "Description": "Zelle payment from ITSCHAK LIPSHITZ Conf# x1t5czxh2",
+            "Amount": "125",
+            "Running Bal.": "1808.08"
+        },
+        {
+            "Date": "09/29/2025",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/28 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "1804.87"
+        },
+        {
+            "Date": "09/29/2025",
+            "Description": "Zelle payment to MENACHEM TOLEDANO Conf# aiqu1cz8t",
+            "Amount": "-1000",
+            "Running Bal.": "804.87"
+        },
+        {
+            "Date": "09/30/2025",
+            "Description": "FLAMM`S CLOTHING 09/28 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-42.99",
+            "Running Bal.": "761.88"
+        },
+        {
+            "Date": "09/30/2025",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/29 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "758.67"
+        },
+        {
+            "Date": "45667",
+            "Description": "AL BARAKA SUPERMARKET N 09/29 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-1",
+            "Running Bal.": "757.67"
+        },
+        {
+            "Date": "45667",
+            "Description": "0900 PLANET FITNESS 09/29 PURCHASE BROOKLYN NY",
+            "Amount": "-50.03",
+            "Running Bal.": "707.64"
+        },
+        {
+            "Date": "45667",
+            "Description": "R & R FRUIT & PRODUCE 09/30 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-2.47",
+            "Running Bal.": "705.17"
+        },
+        {
+            "Date": "45667",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/30 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "701.96"
+        },
+        {
+            "Date": "45667",
+            "Description": "Zelle payment to NATIONAL COMMITTEE FOR THE FURTHERANCE Conf# dok8ksewb",
+            "Amount": "-10",
+            "Running Bal.": "691.96"
+        },
+        {
+            "Date": "45698",
+            "Description": "NEXMO 10/01 REFUND 415-805-8810 CA",
+            "Amount": "2.99",
+            "Running Bal.": "694.95"
+        },
+        {
+            "Date": "45698",
+            "Description": "AL BARAKA SUPERMARKET N 09/30 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-1.09",
+            "Running Bal.": "693.86"
+        },
+        {
+            "Date": "45698",
+            "Description": "FLAMM`S CLOTHING 09/30 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-188.99",
+            "Running Bal.": "504.87"
+        },
+        {
+            "Date": "45698",
+            "Description": "MIKVAH MAYER 10/01 PURCHASE BROOKLYN NY",
+            "Amount": "-8",
+            "Running Bal.": "496.87"
+        },
+        {
+            "Date": "45698",
+            "Description": "MIKVAH MAYER 10/01 PURCHASE BROOKLYN NY",
+            "Amount": "-8",
+            "Running Bal.": "488.87"
+        },
+        {
+            "Date": "45698",
+            "Description": "Google CLOUD 3xX28z 10/01 PURCHASE XXX-XX30000 CA",
+            "Amount": "-0.57",
+            "Running Bal.": "488.3"
+        },
+        {
+            "Date": "45698",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 09/30 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "485.09"
+        },
+        {
+            "Date": "45698",
+            "Description": "GITHUB, INC. 10/01 PURCHASE GITHUB.COM CA",
+            "Amount": "-10.89",
+            "Running Bal.": "474.2"
+        },
+        {
+            "Date": "45698",
+            "Description": "MIKVAH MAYER 10/01 PURCHASE BROOKLYN NY",
+            "Amount": "-8",
+            "Running Bal.": "466.2"
+        },
+        {
+            "Date": "45726",
+            "Description": "AL BARAKA SUPERMARKET N 10/01 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-1.29",
+            "Running Bal.": "464.91"
+        },
+        {
+            "Date": "45818",
+            "Description": "Zelle payment from YISROEL LERMAN Conf# ayzjirhsy",
+            "Amount": "1000",
+            "Running Bal.": "1464.91"
+        },
+        {
+            "Date": "45818",
+            "Description": "BKOFAMERICA ATM 10/05 #XXXXX2929 WITHDRWL THIRD AVENUE/59TH NEW YORK NY",
+            "Amount": "-600",
+            "Running Bal.": "864.91"
+        },
+        {
+            "Date": "45818",
+            "Description": "MTA*NYCT PAYGO 10/03 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "862.01"
+        },
+        {
+            "Date": "45818",
+            "Description": "BRAVO KOSHER PIZZA 10/04 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-30.33",
+            "Running Bal.": "831.68"
+        },
+        {
+            "Date": "45818",
+            "Description": "MTA*NYCT PAYGO 10/05 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "828.78"
+        },
+        {
+            "Date": "45818",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 10/05 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "825.57"
+        },
+        {
+            "Date": "45818",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 10/05 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-3.21",
+            "Running Bal.": "822.36"
+        },
+        {
+            "Date": "45818",
+            "Description": "BKOFAMERICA ATM 10/06 #XXXXX8663 WITHDRWL CROWN HEIGHTS BROOKLYN NY",
+            "Amount": "-100",
+            "Running Bal.": "722.36"
+        },
+        {
+            "Date": "45818",
+            "Description": "Zelle payment to RUSLAN KOVPAK Conf# h5twyt2b9",
+            "Amount": "-25",
+            "Running Bal.": "697.36"
+        },
+        {
+            "Date": "45848",
+            "Description": "MTA*NYCT PAYGO 10/05 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "694.46"
+        },
+        {
+            "Date": "45848",
+            "Description": "GOOGLE *Tandem Languag 10/06 PURCHASE 855-836-3987 CA",
+            "Amount": "-32.65",
+            "Running Bal.": "661.81"
+        },
+        {
+            "Date": "45848",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 10/06 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-4.3",
+            "Running Bal.": "657.51"
+        },
+        {
+            "Date": "45848",
+            "Description": "MTA*NYCT PAYGO 10/06 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "654.61"
+        },
+        {
+            "Date": "45848",
+            "Description": "MIKVAH MAYER 10/06 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-5",
+            "Running Bal.": "649.61"
+        },
+        {
+            "Date": "45848",
+            "Description": "UBER *TRIP 10/06 PURCHASE HELP.UBER.COM CA",
+            "Amount": "-18.59",
+            "Running Bal.": "631.02"
+        },
+        {
+            "Date": "45848",
+            "Description": "WWW.CLEVER-CLOUD.COM 10/07 PURCHASE NANTES",
+            "Amount": "-13.84",
+            "Running Bal.": "617.18"
+        },
+        {
+            "Date": "45848",
+            "Description": "INTERNATIONAL TRANSACTION FEE 10/07 WWW.CLEVER-CLOUD.COM NANTES",
+            "Amount": "-0.42",
+            "Running Bal.": "616.76"
+        },
+        {
+            "Date": "45910",
+            "Description": "UBER *TRIP 10/08 PURCHASE HELP.UBER.COM CA",
+            "Amount": "-49.36",
+            "Running Bal.": "567.4"
+        },
+        {
+            "Date": "45910",
+            "Description": "UBER *TRIP 10/08 PURCHASE HELP.UBER.COM CA",
+            "Amount": "-49.84",
+            "Running Bal.": "517.56"
+        },
+        {
+            "Date": "45940",
+            "Description": "GITHUB, INC. 10/09 PURCHASE GITHUB.COM CA",
+            "Amount": "-10.89",
+            "Running Bal.": "506.67"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "503.77"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "500.87"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "497.97"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "495.07"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "BRAVO KOSHER PIZZA 10/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-35.82",
+            "Running Bal.": "459.25"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/09 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "456.35"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/10 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "453.45"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "UBER *TRIP 10/10 PURCHASE HELP.UBER.COM CA",
+            "Amount": "-82.54",
+            "Running Bal.": "370.91"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "SMILEYS 10/10 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-12",
+            "Running Bal.": "358.91"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/12 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "356.01"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/12 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "353.11"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/12 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "350.21"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/12 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "347.31"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/13 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "344.41"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MTA*NYCT PAYGO 10/13 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "341.51"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "UBER *TRIP 10/13 PURCHASE HELP.UBER.COM CA",
+            "Amount": "-96.11",
+            "Running Bal.": "245.4"
+        },
+        {
+            "Date": "10/14/2025",
+            "Description": "MORTON WILLIAM 10/13 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-14.19",
+            "Running Bal.": "231.21"
+        },
+        {
+            "Date": "10/15/2025",
+            "Description": "GOOGLE *Google One 10/12 PURCHASE 855-836-3987 CA",
+            "Amount": "-2.17",
+            "Running Bal.": "229.04"
+        },
+        {
+            "Date": "10/15/2025",
+            "Description": "MTA*NYCT PAYGO 10/13 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "226.14"
+        },
+        {
+            "Date": "10/15/2025",
+            "Description": "MTA*NYCT PAYGO 10/13 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "223.24"
+        },
+        {
+            "Date": "10/16/2025",
+            "Description": "GOOGLE *Microsoft OneD 10/15 PURCHASE g.co/helppay# CA",
+            "Amount": "-2.17",
+            "Running Bal.": "221.07"
+        },
+        {
+            "Date": "10/17/2025",
+            "Description": "JERUSALEM CAFE 10/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-15.62",
+            "Running Bal.": "205.45"
+        },
+        {
+            "Date": "10/17/2025",
+            "Description": "SQ *CHOCOLATTE ESPRESSO 10/16 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-4.3",
+            "Running Bal.": "201.15"
+        },
+        {
+            "Date": "10/17/2025",
+            "Description": "PLANET FITNESS B DES:IClub Fees ID:PRXXXXX11220297 INDN:Zalman Jacobowitz CO ID:GXXXXX2737 PPD PMT INFO:XXXXX39170",
+            "Amount": "-15.68",
+            "Running Bal.": "185.47"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "Zelle payment from AIZIK BAUMGARTEN for reimbursement for September 5th ki titzai\"; Conf# q77z0fuhx\"",
+            "Amount": "200",
+            "Running Bal.": "385.47"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "382.57"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "379.67"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/16 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "376.77"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/17 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "373.87"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/17 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.1",
+            "Running Bal.": "371.77"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "UBER *TRIP 10/19 PURCHASE HELP.UBER.COM CA",
+            "Amount": "-76.55",
+            "Running Bal.": "295.22"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "NWS KETER JUDA 10/19 PURCHASE BROOKLYN NY",
+            "Amount": "-7.99",
+            "Running Bal.": "287.23"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/19 PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "284.33"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "JERUSALEM CAFE 10/19 PURCHASE NEW YORK NY",
+            "Amount": "-29.29",
+            "Running Bal.": "255.04"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "JERUSALEM CAFE 10/19 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-1.91",
+            "Running Bal.": "253.13"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/19 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "250.23"
+        },
+        {
+            "Date": "10/20/2025",
+            "Description": "MTA*NYCT PAYGO 10/19 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "247.33"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "BUBBLE UP LAUNDRY 10/19 PURCHASE BROOKLYN NY",
+            "Amount": "-10",
+            "Running Bal.": "237.33"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "BUBBLE UP LAUNDRY 10/19 PURCHASE BROOKLYN NY",
+            "Amount": "-10",
+            "Running Bal.": "227.33"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "GRAPEFOOD548GMAIL.COM 10/20 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-1.56",
+            "Running Bal.": "225.77"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "MTA*NYCT PAYGO 10/20 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "222.87"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "JERUSALEM CAFE 10/20 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-5.72",
+            "Running Bal.": "217.15"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "JERUSALEM CAFE 10/20 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-8.6",
+            "Running Bal.": "208.55"
+        },
+        {
+            "Date": "10/21/2025",
+            "Description": "Zelle payment to MORDECHAY GRUZMAN Conf# gpo43p3v5",
+            "Amount": "-150",
+            "Running Bal.": "58.55"
+        },
+        {
+            "Date": "10/22/2025",
+            "Description": "BKOFAMERICA ATM 10/22 #XXXXX2468 DEPOSIT ONE PENN PLAZA NEW YORK NY",
+            "Amount": "50",
+            "Running Bal.": "108.55"
+        },
+        {
+            "Date": "10/22/2025",
+            "Description": "MTA*NYCT PAYGO 10/20 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "105.65"
+        },
+        {
+            "Date": "10/22/2025",
+            "Description": "JERUSALEM CAFE 10/21 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-5.72",
+            "Running Bal.": "99.93"
+        },
+        {
+            "Date": "10/22/2025",
+            "Description": "JERUSALEM CAFE 10/21 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-4.74",
+            "Running Bal.": "95.19"
+        },
+        {
+            "Date": "10/22/2025",
+            "Description": "JERUSALEM CAFE 10/21 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-4.63",
+            "Running Bal.": "90.56"
+        },
+        {
+            "Date": "10/22/2025",
+            "Description": "VISIBLE 10/21 PURCHASE 866-331-3527 CO",
+            "Amount": "-25",
+            "Running Bal.": "65.56"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "Zelle payment from SHNEOR VIGLER Conf# lb3ue19jr",
+            "Amount": "50",
+            "Running Bal.": "115.56"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "MTA*NYCT PAYGO 10/21 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "112.66"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "MTA*NYCT PAYGO 10/21 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "109.76"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "HOUSE OF GLATT 10/21 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-8.99",
+            "Running Bal.": "100.77"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "JERUSALEM CAFE 10/22 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-0.77",
+            "Running Bal.": "100"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "JERUSALEM CAFE 10/22 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-7.62",
+            "Running Bal.": "92.38"
+        },
+        {
+            "Date": "10/23/2025",
+            "Description": "PYTHONANYWHERE 10/23 PURCHASE RICHMOND",
+            "Amount": "-5",
+            "Running Bal.": "87.38"
+        },
+        {
+            "Date": "10/24/2025",
+            "Description": "MTA*NYCT PAYGO RECOVER 10/22 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-5.8",
+            "Running Bal.": "81.58"
+        },
+        {
+            "Date": "10/24/2025",
+            "Description": "MTA*NYCT PAYGO 10/22 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "78.68"
+        },
+        {
+            "Date": "10/24/2025",
+            "Description": "JERUSALEM CAFE 10/23 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-3.81",
+            "Running Bal.": "74.87"
+        },
+        {
+            "Date": "10/24/2025",
+            "Description": "JERUSALEM CAFE 10/23 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-9.69",
+            "Running Bal.": "65.18"
+        },
+        {
+            "Date": "10/24/2025",
+            "Description": "JERUSALEM CAFE 10/23 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-6.26",
+            "Running Bal.": "58.92"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "BKOFAMERICA ATM 10/27 #XXXXX8108 DEPOSIT HERALD CENTER NEW YORK NY",
+            "Amount": "55",
+            "Running Bal.": "113.92"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "MTA*NYCT PAYGO 10/23 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "111.02"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "MTA*NYCT PAYGO 10/23 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "108.12"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "HOUSE OF GLATT 10/23 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-14.56",
+            "Running Bal.": "93.56"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "MTA*NYCT PAYGO 10/24 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "90.66"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "JERUSALEM CAFE 10/24 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-19.54",
+            "Running Bal.": "71.12"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "JERUSALEM CAFE 10/24 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-3.54",
+            "Running Bal.": "67.58"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "MTA*NYCT PAYGO 10/24 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.1",
+            "Running Bal.": "65.48"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "JERUSALEM CAFE 10/26 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-3.81",
+            "Running Bal.": "61.67"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "JERUSALEM CAFE 10/26 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-4.9",
+            "Running Bal.": "56.77"
+        },
+        {
+            "Date": "10/27/2025",
+            "Description": "Zelle payment to MENDEL GOPIN Conf# hdjcqooeg",
+            "Amount": "-20",
+            "Running Bal.": "36.77"
+        },
+        {
+            "Date": "10/28/2025",
+            "Description": "Zelle payment from MOSHE WEISS Conf# y3dgnhspw",
+            "Amount": "100",
+            "Running Bal.": "136.77"
+        },
+        {
+            "Date": "10/28/2025",
+            "Description": "JERUSALEM CAFE 10/27 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-3.81",
+            "Running Bal.": "132.96"
+        },
+        {
+            "Date": "10/28/2025",
+            "Description": "JERUSALEM CAFE 10/27 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-9.69",
+            "Running Bal.": "123.27"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "Zelle payment from CONGREGATION CHABAD DBA CHABAD OF Conf# 99bsp0cml",
+            "Amount": "628",
+            "Running Bal.": "751.27"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "BKOFAMERICA ATM 10/29 #XXXXX2367 DEPOSIT 72ND AND FIRST AVE NEW YORK NY",
+            "Amount": "200",
+            "Running Bal.": "951.27"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "BKOFAMERICA ATM 10/28 #XXXXX4254 DEPOSIT CROWN HEIGHTS BROOKLYN NY",
+            "Amount": "100",
+            "Running Bal.": "1051.27"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "MTA*NYCT PAYGO 10/27 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "1048.37"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "MTA*NYCT PAYGO 10/27 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "1045.47"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "JERUSALEM CAFE 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-9.69",
+            "Running Bal.": "1035.78"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "JERUSALEM CAFE 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-7.62",
+            "Running Bal.": "1028.16"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "JERUSALEM CAFE 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-4.74",
+            "Running Bal.": "1023.42"
+        },
+        {
+            "Date": "10/29/2025",
+            "Description": "Zelle payment to MOSHE WEISS Conf# cumlfcbd7",
+            "Amount": "-628",
+            "Running Bal.": "395.42"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "Zelle payment from AIZIK BAUMGARTEN for Reimbursement for September 12th Ki Savo\"; Conf# q0qdamvzp\"",
+            "Amount": "200",
+            "Running Bal.": "595.42"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "MTA*NYCT PAYGO 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "592.52"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "MTA*NYCT PAYGO 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "589.62"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "MTA*NYCT PAYGO 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "586.72"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "MTA*NYCT PAYGO 10/28 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "583.82"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "HOUSE OF GLATT 10/28 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-15.58",
+            "Running Bal.": "568.24"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "KAHAN`S SUPERETTE 10/28 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-11.76",
+            "Running Bal.": "556.48"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "JERUSALEM CAFE 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-17.75",
+            "Running Bal.": "538.73"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "JERUSALEM CAFE 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-4.36",
+            "Running Bal.": "534.37"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "TARGET T-1849 10/29 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-59",
+            "Running Bal.": "475.37"
+        },
+        {
+            "Date": "10/30/2025",
+            "Description": "Zelle payment to AHARON LANDAU Conf# hngcynaf0",
+            "Amount": "-210",
+            "Running Bal.": "265.37"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "BKOFAMERICA ATM 10/30 #XXXXX4144 DEPOSIT CROWN HEIGHTS BROOKLYN NY",
+            "Amount": "200",
+            "Running Bal.": "465.37"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "MTA*NYCT PAYGO 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "462.47"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "MTA*NYCT PAYGO 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "459.57"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "MTA*NYCT PAYGO 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "456.67"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "MTA*NYCT PAYGO 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "453.77"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "MTA*NYCT PAYGO 10/29 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "450.87"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "TARGET 00018499 10/29 MOBILE PURCHASE BROOKLYN NY",
+            "Amount": "-5.54",
+            "Running Bal.": "445.33"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "MTA*NYCT PAYGO 10/30 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.9",
+            "Running Bal.": "442.43"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "JERUSALEM CAFE 10/30 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-17.09",
+            "Running Bal.": "425.34"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "BAGEL AND CO 10/30 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-5.63",
+            "Running Bal.": "419.71"
+        },
+        {
+            "Date": "10/31/2025",
+            "Description": "Zelle payment to AHARON LANDAU Conf# cyxhjqlb6",
+            "Amount": "-150",
+            "Running Bal.": "269.71"
+        },
+        {
+            "Date": "45727",
+            "Description": "BKOFAMERICA ATM 11/02 #XXXXX3675 DEPOSIT 550 FIFTH AVENUE NEW YORK NY",
+            "Amount": "200",
+            "Running Bal.": "469.71"
+        },
+        {
+            "Date": "45727",
+            "Description": "BKOFAMERICA ATM 11/02 #XXXXX7239 DEPOSIT CROWN HEIGHTS BROOKLYN NY",
+            "Amount": "100",
+            "Running Bal.": "569.71"
+        },
+        {
+            "Date": "45727",
+            "Description": "MTA*NYCT PAYGO 10/30 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-2.1",
+            "Running Bal.": "567.61"
+        },
+        {
+            "Date": "45727",
+            "Description": "JERUSALEM CAFE 10/31 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-7",
+            "Running Bal.": "560.61"
+        },
+        {
+            "Date": "45727",
+            "Description": "GOOGLE*CLOUD R58ZK7 11/01 PURCHASE G.CO/HELPPAY# CA",
+            "Amount": "-0.55",
+            "Running Bal.": "560.06"
+        },
+        {
+            "Date": "45727",
+            "Description": "GITHUB, INC. 11/01 PURCHASE GITHUB.COM CA",
+            "Amount": "-10.89",
+            "Running Bal.": "549.17"
+        },
+        {
+            "Date": "45727",
+            "Description": "JERUSALEM CAFE 11/02 MOBILE PURCHASE NEW YORK NY",
+            "Amount": "-17.31",
+            "Running Bal.": "531.86"
+        },
+        {
+            "Date": "45727",
+            "Description": "MIKVAH YISROEL AT THE O 11/02 PURCHASE BROOKLYN NY",
+            "Amount": "-4",
+            "Running Bal.": "527.86"
+        },
+        {
+            "Date": "45727",
+            "Description": "OHELCHABAD* OHEL CHABA 11/02 PURCHASE XXX-XX234545 NY",
+            "Amount": "-5",
+            "Running Bal.": "522.86"
+        },
+        {
+            "Date": "45727",
+            "Description": "TARGET T-1849 11/03 MOBILE PURCHASE Brooklyn NY",
+            "Amount": "-78.97",
+            "Running Bal.": "443.89"
+        },
+        {
+            "Date": "45727",
+            "Description": "Zelle payment to MOSHE WEISS Conf# fehelgdsi",
+            "Amount": "-41",
+            "Running Bal.": "402.89"
+        },
+        {
+            "Date": "45727",
+            "Description": "PLANET FITNESS B DES:IClub Fees ID:PRXXXXX00658045 INDN:Zalman Jacobowitz CO ID:GXXXXX2737 PPD PMT INFO:XXXXX39170",
+            "Amount": "-61.66",
+            "Running Bal.": "341.23"
+        }
+    ]
+}

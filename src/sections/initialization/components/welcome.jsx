@@ -9,9 +9,6 @@ import { CONFIG } from "src/config-global";
 
 export function Welcome() {
 
-
-
-  
     const theme = useTheme();
   
     return (

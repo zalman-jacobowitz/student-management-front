@@ -60,3 +60,17 @@ export function apiLastEvents() {
     });
   }
 
+export function apiBank({data}) {
+
+  const postData = { table_name: 'bank', mode: 'select', data: data };
+  return queryOptions({
+      queryKey: ['bank', data],
+      queryFn: async () => {
+        const res =  await apiFetch('all', postData);
+        console.log('res: ', res)
+        const data = res.data
+        return data;
+      }
+    });
+  }
+

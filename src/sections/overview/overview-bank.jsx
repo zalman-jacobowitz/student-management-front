@@ -7,14 +7,15 @@ import { readFile } from 'src/utils/files/read-file';
 import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
 
 import { Upload } from 'src/components/upload';
+import { TemplatesViewer } from './templates-viewer';
 
-import useInitializationStore from '../initialization-state.ts';
 import { useBoolean } from 'src/hooks/use-boolean.js';
-import { StudentsViewer } from '../viewer/students.jsx';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWalktour } from 'src/components/walktour/use-walktour.jsx';
 import { Walktour } from 'src/components/walktour/walktour.jsx';
 
+
+// groupBy function moved to templates-viewer.jsx
 // ----------------------------------------------------------------------
 
   const walktourSteps = [
@@ -37,20 +38,16 @@ import { Walktour } from 'src/components/walktour/walktour.jsx';
 
 // ------------------------------------------------------------
 function useStudentFileUpload(){
-  const { setValue, watch } = useFormContext();
-  // מקבל את המסמך שהעולה
-  const watchedFile = watch('studentFile.file');
+
 
   // מייבא את הפונקציה לאיחול הנתונים שהועולו
-  const { updateInitializationData, columnsList } = useInitializationStore();
+  const [watchedFile, setWatchedFile] = useState(null);
   
   // פונקציית העלאת המסמך
   const handleFileUpload = (acceptedFiles) => {
     const fileDetails = acceptedFiles[0];
     if (!fileDetails) return;
 
-    // מעדכן את הערך של הקובץ המועלה
-    setValue('studentFile.file', fileDetails);
     
     
     const reader = new FileReader();
@@ -62,12 +59,11 @@ function useStudentFileUpload(){
         types: ['excel', 'csv'],
         fileData: event.target.result
       });
-
+      console.log({result});
       if (result.status === 'success') {
         const { columns, data } = result.data;
         
-        // Update global state with parsed data
-        updateInitializationData(data, columns);
+        setWatchedFile(data)
         
         toast.success(`נטענו ${data.length} תלמידים עם ${columns.length} עמודות`);
       } else {
@@ -82,7 +78,7 @@ function useStudentFileUpload(){
   };
 
   const handleRemoveFile = () => {
-    setValue('studentFile.file', null);
+    123
   };
 
   const handleDownloadTemplate = (format) => {
@@ -102,7 +98,7 @@ function useStudentFileUpload(){
 }
 
 
-export function StudentFileUploadStep() {
+export function FileUploadStep() {
   
   const {
   
@@ -130,6 +126,13 @@ export function StudentFileUploadStep() {
           >
             הורד תבנית Excel
           </Button>
+          <Button
+            variant="outlined" 
+            size="small"
+            onClick={() => handleDownloadTemplate('csv')}
+          >
+            הורד תבנית CSV
+          </Button>
         </Stack>
       </Box>
     </Container>
@@ -145,7 +148,7 @@ export function StudentFileUploadStep() {
 
   const renderUpload = (
     <Container maxWidth="sm">
-      <Box id='upload-file'>
+      <Box>
         <Upload
           multiple={false}
           files={watchedFile ? [watchedFile] : []}
@@ -185,11 +188,7 @@ export function StudentFileUploadStep() {
 
 
   const renderTemplatesViewer = (
-    <StudentsViewer
-    handleRemoveFile={handleRemoveFile}
-      open={viewer.value}
-      onClose={viewer.onFalse}
-      title={watchedFile ? `נבחר קובץ: ${watchedFile.name} (${(watchedFile.size / 1024).toFixed(1)} KB)` : ''} />
+    <TemplatesViewer watchedFile={watchedFile} />
   );
 
   return (
@@ -198,7 +197,7 @@ export function StudentFileUploadStep() {
       { !watchedFile && renderUpload }
       { watchedFile && renderTemplatesViewer }
       
-      <Walktour {...useWalktour({steps: walktourSteps, defaultRun: true})} />
+      <Walktour {...useWalktour({steps: walktourSteps, defaultRun: false})} />
     </Box>
   );
 }

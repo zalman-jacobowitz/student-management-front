@@ -1,16 +1,13 @@
 // excel:
 import * as XLSX from 'xlsx';
 
-import { columnsDetails } from "src/utils/uinqe_usege/columnsValid";
-
 // Function to generate and download a template Excel file
 export function downloadTemplateExcel(){
     // Define the columns for the template
-    const columns = columnsDetails.map(col => col.name);
+    const columns = ['משפחה', 'מספר טלפון', 'מייל'];
     
     // Create an example data row (optional)
-    const exampleRow = ['ישראל', 'ישראלי', 'זכר', '1990', '0501234567', 'example@mail.com', 
-                         'רחוב העצמאות 1, תל אביב', 'ישראל', 'פולין', 'כן'];
+    const exampleRow = ['ישראלי', '0501234567', 'example@mail.com'];
     
     // Create a worksheet
     const ws = XLSX.utils.aoa_to_sheet([columns, exampleRow]);
@@ -29,8 +26,8 @@ export function downloadTemplateExcel(){
 // csv: 
 
 export function downloadTemplateCSV(){
-    const columns = columnsDetails.map(col => col.name);
-    const example = ['ישראל','ישראלי','זכר','1990','0501234567','example@mail.com','רחוב העצמאות 1','ישראל','פולין'];
+    const columns = ['משפחה', 'מספר_טלפון', 'מייל'];
+    const example = ['ישראלי','0501234567','example@mail.com'];
     const csvContent = [columns.join(','), example.join(',')].join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const link = document.createElement('a');

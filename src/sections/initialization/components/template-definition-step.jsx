@@ -109,7 +109,7 @@ export function TemplateDefinitionStep() {
 
   const walktourConfig = useWalktour({ 
     steps: walktourSteps, 
-    defaultRun: false 
+    defaultRun: true
   });
 
   useEffect(() => {

@@ -52,9 +52,11 @@ function parseCSV(file, fileData){
   // eslint-disable-next-line consistent-return
     try { 
       const text = fileData;
+      console.log({text})
       const lines = text.split(/\r?\n/).filter(Boolean);
       if (!lines.length) return {status: 'error', message: 'הקובץ ריק'};
       const [headerLine, ...rows] = lines;
+      console.log({lines})
       const columns = headerLine.split(',').map(col => col.trim());
       const data = rows.map(line => {
         const values = line.split(',');
