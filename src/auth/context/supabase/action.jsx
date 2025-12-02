@@ -6,9 +6,10 @@ import { supabase } from 'src/auth/supabase';
 
 const adminUserBlank = (data) => {
   console.log(data)
-  const {email, country, lastName, firstName, client, org} = data
+  const {email, country, lastName, firstName, client, org, phone} = data
   return {
     client,
+    phone,
     user: {
         email,
         country,
@@ -50,7 +51,8 @@ export const signUp = async (userData, firstUser=true) => {
     lastName,
     country,
     client,
-    org
+    org,
+    phone
   } = userData
   console.log({userData})
   const blankData = firstUser ? adminUserBlank(userData) : {...userData.data, client}

@@ -29,7 +29,8 @@ export function AuthProvider({ children }) {
           error.message.includes('User from sub claim') ||
           error.message.includes('does not exist') ||
           error.code === 'invalid_jwt' ||
-          error.status === 401
+          error.status === 401 ||
+          error.message.includes('error')
         ) {
           console.warn('User session invalid: User from JWT sub claim does not exist. Signing out...');
           // Sign out the user to clear the invalid session
