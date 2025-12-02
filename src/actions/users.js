@@ -8,7 +8,7 @@ import { apiFetch } from 'src/utils/manager-fetch';
 export function apiUsers() {
   const postData = { table_name: 'users', mode: 'select', data: [] };
   return queryOptions({
-    queryKey: ['users', 1],
+    queryKey: ['users'],
     queryFn: async () => {
       const res =  await apiFetch('all', postData);
       console.log('resUsers:', res)
