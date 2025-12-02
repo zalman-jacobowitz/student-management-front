@@ -434,7 +434,7 @@ function eventAndDayFormat(text){
 function convert(data) {
   const { columns, data: rows, index } = data;
   const result = {};
-  const byDays = columns[0].includes('-');
+
   // הכנה לכל סטודנט
   index.forEach(id => {
     result[id] = {};
@@ -714,7 +714,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   const lastEventsData = useLastEventsData();
 
   return (
-    <Form methods={methods} onSubmit={handleSubmit(onSubmit)} className="insert-list__form">
+    <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Box
         data-testid="student-list"
         gap={1}
@@ -724,7 +724,6 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           sm: 'repeat(2, 1fr)',
           md: 'repeat(3, 1fr)',
         }}
-        className="insert-list__container"
       >
         {[...currentData].map((student) => {
           const enhancedStudent = enhanceStudentData(student);
@@ -759,7 +758,6 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           onClick={() => { }}
           icon="solar:upload-square-bold-duotone"
           text="עדכן נוכחות"
-          className="insert-list__submit-button"
         />
       </Box>
     </Form>
