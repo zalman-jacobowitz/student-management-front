@@ -23,6 +23,9 @@ import { StyledDivider, useNavColorVars } from './styles';
 import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
 import { HelpButton } from 'src/components/walktour';
+
+import { useAuthContext } from 'src/auth/hooks';
+
 import { screenOptions, navData as dashboardNavData } from '../config-nav-dashboard';
 
 // ----------------------------------------------------------------------
@@ -42,7 +45,29 @@ const groups = {
   'ניהול נתונים': ['info', 'profile'],
   'ניהול זמנים': ['templates', 'days'],
 };
-function screensFormat(data) {
+function screensFormat(data, isAdmin = false) {
+  // If user is admin, show all available screens
+  if (isAdmin) {
+    const listScreens = Object.keys(screenOptions);
+    const screens = [];
+
+    Object.keys(groups).forEach((group) => {
+      const g_scrns = listScreens
+        .filter((screen) => groups[group].includes(screen))
+        .map((screen) => screenOptions[screen]);
+      const scrn = {
+        subheader: group,
+        items: g_scrns,
+      };
+      if (g_scrns.length > 0) {
+        screens.push(scrn);
+      }
+    });
+
+    return screens;
+  }
+
+  // Regular users see only their permitted screens
   const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
   // const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
 
@@ -75,9 +100,12 @@ export function DashboardLayout({ sx, children, header, data }) {
 
   const layoutQuery = 'lg';
 
+  const { user } = useAuthContext();
+  const isAdmin = user?.role === 'admin';
+
   const userDetails = useUserDetails();
   const navData = userDetails.userDetails
-    ? screensFormat(userDetails.userDetails)
+    ? screensFormat(userDetails.userDetails, isAdmin)
     : (data?.nav ?? dashboardNavData);
   const isNavMini = settings.navLayout === 'mini';
   const isNavHorizontal = settings.navLayout === 'horizontal';
@@ -175,6 +203,7 @@ export function DashboardLayout({ sx, children, header, data }) {
               <Box display="flex" alignItems="center" gap={{ xs: 0, sm: 0.75 }}>
                 {/* -- Searchbar -- */}
                 <Searchbar data={navData} />
+
                 {/* -- Help button -- */}
                 <HelpButton />
                 {/* -- Language popover -- 

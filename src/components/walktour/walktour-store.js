@@ -4,5 +4,5 @@ import { create } from 'zustand';
 export const useWalktourStore = create((set) => ({
   isHelpActive: false,
   toggleHelp: () => set((state) => ({ isHelpActive: !state.isHelpActive })),
-  setHelpActive: (value) => set({ isHelpActive: value }),
+  setHelpActive: (value) => set({ isHelpActive: value })
 }));

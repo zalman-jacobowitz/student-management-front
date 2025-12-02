@@ -16,14 +16,18 @@ import { varAlpha, bgGradient } from 'src/theme/styles';
 
 import { Label } from 'src/components/label';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useAuthContext, useMockedUser } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
 export function NavUpgrade({ sx, ...other }) {
   const { user } = useMockedUser();
+  
   const { userDetails, isLoading, error } = useUserDetails();
+  
   const name = userDetails?.user_metadata?.user
+  const admin = useAuthContext();
+
   return (
     <Stack sx={{ px: 2, py: 5, textAlign: 'center', ...sx }} {...other}>
       <Stack alignItems="center">
@@ -42,7 +46,7 @@ export function NavUpgrade({ sx, ...other }) {
               borderBottomLeftRadius: 2,
             }}
           >
-           ניסיון
+            { admin.user?.role === 'admin' ? 'מנהל' : 'משתמש' }
           </Label>
         </Box>
 

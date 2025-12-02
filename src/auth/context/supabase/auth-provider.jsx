@@ -63,7 +63,7 @@ export function AuthProvider({ children }) {
           id: state.user?.id,
           accessToken: state.user?.access_token,
           displayName: `${state.user?.user_metadata.display_name}`,
-          role: state.user?.role ?? 'admin',
+          role: state.user?.user_metadata?.email === state.user?.user_metadata?.client ? 'admin' : 'user',
         }
         : null,
       checkUserSession,
