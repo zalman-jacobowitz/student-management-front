@@ -24,6 +24,7 @@ import { MasterStep } from "src/components/steps-form/dynamiv-component";
 import { screenOptions } from "src/layouts/config-nav-dashboard.jsx";
 import { useUserDetails } from "src/hooks/use-user-details.js";
 import { usersUpdate } from "src/actions/users.js";
+import { signUp } from "src/auth/context/supabase/action.jsx";
 
 
 
@@ -155,7 +156,7 @@ EXAMPLE:
 
 export function NewDefinitionStep({ onComplete, existingUser, editMode = false }) {
 
-   
+  console.log('existingUser in NewDefinitionStep:', existingUser);
     const initialValues = {
     user: existingUser.user || {
       email: '',
@@ -163,8 +164,8 @@ export function NewDefinitionStep({ onComplete, existingUser, editMode = false }
       lastName: '',
       firstName: ''
     },
-    screens: existingUser.screens || screenOptions.reduce((acc, key) => {
-            acc[key] = true;
+    screens: existingUser.screens || Object.keys(screenOptions).reduce((acc, key) => {
+            acc[key] = false;
             return acc;
         }, {}),
     limit: {
@@ -181,14 +182,15 @@ export function NewDefinitionStep({ onComplete, existingUser, editMode = false }
       firstName: z.string().min(1, 'שם פרטי נדרש')
     }),
     screens: z.record(z.string(), z.boolean()),  // ✅ כך זה נכון!
+
     limit: z.object({
-      column: z.string().min(1, 'יש לבחור עמודה'),
-      values: z.array(z.string()).min(1, 'יש לבחור לפחות ערך אחד')
-    })
+      column: z.string(),
+      values: z.array(z.string())
+    }).optional()
   });
 
 
-  const { onSubmit } = useNewForm({ existingUser });
+  const { onSubmit } = useNewForm({ existingUser: existingUser.user? existingUser : null });
   
 
   const handleSubmit = async (data, mode = 'update') => {
@@ -199,8 +201,10 @@ export function NewDefinitionStep({ onComplete, existingUser, editMode = false }
   };
   
   const [column, setColumn] = useState('');
+  const [hasLimit, setHasLimit] = useState(!!existingUser?.limit?.column);
 
   const watch = useCallback((e) => {
+    setHasLimit(e.hasLimit);
     setColumn(e.limit?.column);
     return e;
     }, []);
@@ -211,7 +215,7 @@ const infoStudents = useSuspenseQuery(apiInfoStudents()).data || [];
 
 
     const availableValues = useMemo(() => [...new Set(infoStudents.map(student => student[column]))], [infoStudents, column]);
-    
+
   const fileds = [
     {
       step: 1,
@@ -260,35 +264,46 @@ const infoStudents = useSuspenseQuery(apiInfoStudents()).data || [];
     ))
     ,
     {
-      component: Field.Select,
-      name: "limit.column",
-      label: "בחר עמודה",
-      variant: "filled",
-      InputLabelProps: { shrink: true },
-      helperText: "בחר את העמודה לצורך הגבלת המשתמש",
       step: 3,
-      id: 'first',
-      children: infoColumns?.map((column) => (
-        <MenuItem key={column.name} value={column.name}>
-          <Typography variant="body2">{column.label}</Typography>
-        </MenuItem>
-      )) || []
-    },
-    {
-      component: Field.MultiSelect,
-      name: "limit.values",
-      label: "בחר ערכים",
+      name: "hasLimit",
+      onClick: () => setHasLimit(!hasLimit),
+      label: "הגבל משתמש",
       variant: "filled",
       InputLabelProps: { shrink: true },
-      helperText: "בחר את הערכים המתאימים",
-      options: availableValues.map((column) => ({
-        value: column,
-        label: column
-      })) || [],
-      checkbox: true,
-      chip: true,
-      step: 3
-    }
+      component: Field.ToggleButtonSwitch,
+    },
+    ...(hasLimit ? [
+      {
+        component: Field.Select,
+        name: "limit.column",
+        label: "בחר עמודה",
+        variant: "filled",
+        InputLabelProps: { shrink: true },
+        helperText: "בחר את העמודה לצורך הגבלת המשתמש",
+        step: 3,
+        id: 'first',
+        children: infoColumns?.map((column) => (
+          <MenuItem key={column.name} value={column.name}>
+            <Typography variant="body2">{column.label}</Typography>
+          </MenuItem>
+        )) || []
+      },
+      {
+        component: Field.MultiSelect,
+        name: "limit.values",
+        label: "בחר ערכים",
+        variant: "filled",
+        InputLabelProps: { shrink: true },
+        helperText: "בחר את הערכים המתאימים",
+        options: availableValues.map((column) => ({
+          value: column,
+          label: column
+        })) || [],
+        checkbox: true,
+        chip: true,
+        step: 3
+      }
+    ] : [])
 
 ]
 
@@ -307,10 +322,10 @@ const infoStudents = useSuspenseQuery(apiInfoStudents()).data || [];
       name: 'screens'
     },
     {
-      label: 'עמודה וערכים',
+      label: 'הגבלות משתמש',
       component: <MasterStep fields={fileds} number={3} />,
       icon: "mdi:filter",
-    name: 'limit'
+      name: 'limit'
     },
     {
       name: 'complete',
@@ -344,7 +359,7 @@ export function NewDialog({ open, onClose, onComplete, existingUser, editMode=fa
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <NewDefinitionStep
-        existingUser={existingUser?.details}
+        existingUser={existingUser}
         onComplete={handleWizardComplete}
         editMode={editMode}
       />

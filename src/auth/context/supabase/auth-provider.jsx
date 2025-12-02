@@ -24,6 +24,17 @@ export function AuthProvider({ children }) {
       } = await supabase.auth.getSession();
 
       if (error) {
+        // Check if the error is due to user from JWT sub claim not existing
+        if (
+          error.message.includes('User from sub claim') ||
+          error.message.includes('does not exist') ||
+          error.code === 'invalid_jwt' ||
+          error.status === 401
+        ) {
+          console.warn('User session invalid: User from JWT sub claim does not exist. Signing out...');
+          // Sign out the user to clear the invalid session
+          await supabase.auth.signOut().catch(e => console.error('Sign out error:', e));
+        }
         setState({ user: null, loading: false });
         console.error(error);
         throw error;

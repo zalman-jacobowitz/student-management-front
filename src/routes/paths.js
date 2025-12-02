@@ -33,7 +33,7 @@ export const paths = {
   },
   // DASHBOARD
   dashboard: {
-    root:`${ROOTS.DASHBOARD}/סקירה`,
+    root:`${ROOTS.DASHBOARD}/הכנסת-נתונים`,
     initialization: `${ROOTS.DASHBOARD}/איתחול`,
     insert: `${ROOTS.DASHBOARD}/הכנסת-נתונים`,
     users: `${ROOTS.DASHBOARD}/הרשאות-משתמשים`,

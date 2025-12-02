@@ -24,6 +24,7 @@ export function MultiField({fields, ...other}) {
               helperText={field.helperText}
               id={field.id}
               defaultValue={field.defaultValue}
+              onClick={field.onClick}
               {...other}
             />
           );

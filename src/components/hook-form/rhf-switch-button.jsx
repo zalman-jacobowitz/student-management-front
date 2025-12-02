@@ -4,7 +4,7 @@ import { Box, alpha, Typography, ToggleButton, Grid } from "@mui/material";
 
 import { Iconify } from "src/components/iconify";
 
-export function RHFSwitchButton({ name, label, icon, ...other }) {
+export function RHFSwitchButton({ name, label, icon,onClick= () => {}, ...other }) {
     const { setValue, watch } = useFormContext();
     const value = watch(name) || false;
 
@@ -18,6 +18,7 @@ export function RHFSwitchButton({ name, label, icon, ...other }) {
       <ToggleButton
         value={name}
         selected={value}
+        onClick={onClick}
         onChange={handleChange}
         sx={{
           py: 1.5,
