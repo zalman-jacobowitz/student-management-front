@@ -6,43 +6,58 @@ import useInsertStore from "../insert-state";
 import { InsertListView } from "../insert-screen/insert-screen";
 
 import { InsertForm } from "../form-event/insert-form-defind-event";
+import { Box, Button, Icon, Link, Typography } from "@mui/material";
+import { Iconify } from "src/components/iconify";
+import { paths } from "src/routes/paths";
+import { RouterLink } from "src/routes/components";
 
 
 const formSteps = [
   {
     target: '.insert-form__card',
-    title: 'טופס רישום',
-    content: 'מלא את פרטי האירוע',
+    title: 'כאן נתחיל את רישום הנוכחות',
+    content: 'בחר את היום ואת הסדר שעליו אתה הולך לעשות רישום נוכחות',
     placement: 'bottom',
     disableBeacon: true
   },
   {
-    target: '.insert-form__alert',
-    title: 'אירוע שנבחר',
-    content: 'זהו האירוע שנבחרת לרישום',
-    placement: 'bottom',
-  },
-  {
     target: '.insert-form__date-picker',
-    title: 'תאריך עברי',
-    content: 'בחר את התאריך העברי',
+    title: 'יום הרישום',
+    content: 'בחר את יום הרישום. ברירת המחדל היא היום',
     placement: 'bottom',
   },
   {
     target: '.insert-form__event-select',
-    title: 'בחירת אירוע',
-    content: 'בחר אירוע מהרשימה',
+    title: 'בחירת סדר',
+    content: <Box>
+      <Typography variant="body2" sx={{ mt: 1 }}>
+      בחר את הסדר שעליו אתה רוצה לעשות רישום נוכחות.
+      </Typography>
+      <Button
+        variant="soft"
+        className="insert-form__prev-events-button"
+        sx={{ mt: 2 }}
+        
+        color="success"
+      >
+        <Iconify icon="solar:alarm-bold-duotone" sx={{ mr: 1 }} />
+            <Link component={RouterLink} href={paths.dashboard.templates} variant="subtitle2">
+           לחץ כאן לשנות את הזמנים    
+            </Link>
+      </Button>
+    </Box>,
+
     placement: 'bottom',
   },
   {
     target: '.insert-form__prev-events-button',
-    title: 'אירועים קיימים',
-    content: 'לחץ כדי לבחור מאירועים קודמים',
+    title: 'כאן ניתן לראות את הסדרים שנעשה בהם רישום',
+    content: 'אם הסדר הרצוי כבר קיים, ניתן לבחור אותו מרשימת הסדרים הקודמים',
     placement: 'bottom',
   },
   {
     target: '.insert-form__submit-button',
-    title: 'שליחת הטופס',
+    title: 'התחל רישום נוכחות',
     content: 'לחץ כדי להתחיל ברישום',
     placement: 'bottom',
   },
