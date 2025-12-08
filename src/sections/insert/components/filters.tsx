@@ -257,16 +257,17 @@ export function InsertFilters({
     filters,
     open,
     onClose,
+    infoColumns,
     ...other
   }: InsertFiltersProps) {
 
-    const infoColumns = demoInfoColumns
 
     const methods = useForm({defaultValues: getDefaultFilters(infoColumns)});
 
     const { handleSubmit, reset } = methods;
 
     const onSubmit = (data: any) => {
+      console.log('data from filters', data);
       if (Object.keys(data).length === 0) {
         reset();
         handleFilter({});

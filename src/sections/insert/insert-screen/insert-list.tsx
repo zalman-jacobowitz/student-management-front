@@ -711,11 +711,12 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
   }, [])
 
 
-  const lastEventsData = useLastEventsData();
+  
 
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Box
+        className="insert-list__container"
         data-testid="student-list"
         gap={1}
         display="grid"
@@ -733,12 +734,14 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
               key={student.student_id}
               name={student.student_id}
               color={enhancedStudent.color}
+              
               icon={enhancedStudent.icon}
               label={enhancedStudent.label}
               tooltip={enhancedStudent.tooltip}
               onClick={() => handleOnClick(enhancedStudent.type, student, currentData)}
               primary={student.primary}
               secondary={student.secondary}
+              
             />
 
           ) : convertedData ? (
@@ -753,6 +756,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
         <ButtonGreen
           type="submit"
           variant="extended"
+          className="insert-list__submit-button"
           data-testid="update-button"
           sx={{ mt: 2 }}
           onClick={() => { }}

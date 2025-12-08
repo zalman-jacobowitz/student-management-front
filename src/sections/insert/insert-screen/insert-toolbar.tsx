@@ -282,7 +282,7 @@ export function InsertToolbar({
   const handleFilterClick = () => {
     const nextIndex = (filterIndex + 1) % FILTER_OPTIONS.length;
     setFilterIndex(nextIndex);
-    handleFilter('data', FILTER_OPTIONS[nextIndex].value);
+    handleFilter({'data': FILTER_OPTIONS[nextIndex].value});
   };
 
   const summaryDialog = useBoolean();

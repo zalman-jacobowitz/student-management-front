@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useCallback, useState } from "react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 
 import { updateData } from "src/hooks/use-update";
 import { useBoolean } from "src/hooks/use-boolean";
@@ -29,33 +29,33 @@ import { Iconify } from "src/components/iconify";
 
 
 function useInsertForm() {
-  
+
   const infoStudents = useSuspenseQuery(apiInfoStudents()).data;
   const infoColumns = useSuspenseQuery(apiInfoColumns()).data;
   // מקבל את נתוני הרישום - ואת פרטי הסדר
   const { selectedEvent } = useInsertStore();
-  
+
   // פונקציית עידכון התלמידים
   const queryClient = useQueryClient();
-  const { mutateAsync } = useMutation(dataStudentsEventUpdate({queryClient, tamplateData: selectedEvent})); 
-  
+  const { mutateAsync } = useMutation(dataStudentsEventUpdate({ queryClient, tamplateData: selectedEvent }));
+
   // טכניקות של react-hook-form לניהול הטופס
   const methods = useForm();
   const { reset, watch } = methods;
 
   const crnt = useSuspenseQuery(apiDataStudentsEvent());
   const currentData = mergeWithStudents(infoStudents, crnt.data, infoColumns);
-  
+
 
   useEffect(() => {
     reset(formValues(crnt.data))
   }, [selectedEvent, crnt.data, reset]);
 
-  const handleUpdate = useCallback(async (data: any, mode = 'update')=>{
+  const handleUpdate = useCallback(async (data: any, mode = 'update') => {
     console.table(data);
-    
+
     await updateData({
-      data: {data, eventDetails: selectedEvent},
+      data: { data, eventDetails: selectedEvent },
       mode,
       mutateAsync
     })
@@ -64,15 +64,15 @@ function useInsertForm() {
 
   // פילטרים לתצוגת התלמידים
   const [filters, setFilters] = useState<{ [key: string]: any }>({});
-  
+
   const handleFilter = (data: any) => {
-    setFilters((prev) => ({...data}));
+    setFilters((prev) => ({ ...data }));
   }
 
 
 
   return {
-    
+
     methods,
     handleUpdate,
     handleFilter,
@@ -82,11 +82,11 @@ function useInsertForm() {
     currentData,
     reset,
     watch
-}
+  }
 }
 
 
-export function InsertListView({}) {
+export function InsertListView({ }) {
   const {
     methods,
     handleUpdate,
@@ -96,7 +96,7 @@ export function InsertListView({}) {
     reset,
     watch
   } = useInsertForm();
-  
+
   const dialogDelay = useBoolean();
   const exceptionDialog = useBoolean();
 
@@ -106,32 +106,45 @@ export function InsertListView({}) {
   const [selectedLabel, selectLabel] = useState({});
 
   useEffect(() => {
-   if (!dialogDelay.value){
-    selectLabel({})
-  }
+    if (!dialogDelay.value) {
+      selectLabel({})
+    }
   }, [dialogDelay.value])
 
   const [sortBy, setSortBy] = useState<string | null>(null);
 
   const [filters, setFilters] = useState<{ [key: string]: any }>({});
-  
-  const handleFilters = useCallback((key: string, value: any) => {
-    setFilters((prev) => ({...prev, [key]: value}));
+
+  const handleFilters = useCallback((filterDict: { [key: string]: any }) => {
+    setFilters((prev) => ({ ...prev, ...filterDict }));
   }, []);
 
 
   const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent, onBack } = useInsertStore(state => state);
 
 
-  
+
   // קבלת שם האירוע הקודם
   const prevEventName = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.event_name : '';
   const prevEventDay = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.day : '';
-  
+
   // קבלת שם האירוע הבא
   const nextEventName = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.event_name : '';
   const nextEventDay = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.day : '';
-  
+
+  // WITH ICON
+  const searchFilter = (
+    
+    <TextField
+      fullWidth
+      placeholder="חיפוש..."
+      value={filters.search || ''}
+      onChange={(e) => handleFilters({ search: e.target.value })}
+      InputProps={{
+        startAdornment: <Iconify icon="solar:magnifer-line-duotone" mr={1} width={20} style={{ ml: 8, color: 'text.disabled' }} />,
+      }}
+    />
+  )
 
   return (
     <DashboardContent sx={{}} disablePadding={false} >
@@ -150,30 +163,30 @@ export function InsertListView({}) {
           }}
         >
           {/* Left Section - Previous Event Button */}
-          
+
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             {prevEventDay &&
-            <FabButton
-              icon=""
-              
-              subLabel={<Typography variant="h5" color="text.primary">סדר {prevEventName}</Typography>}
-              label={<Typography variant="body2">{inHebrew(prevEventDay, 'Dm')}</Typography>}
-              color="default"
-              variant="outlinedExtended"
-              onClick={prevEvent}
-              testId="prev-event-fab"
-              showSubLabel
-              sizeMultiplier={7}
-            >
-              <Iconify icon="solar:alt-arrow-right-bold" width={24} sx={{ mr: 1, color: 'text.disabled' }} />
-            </FabButton>
-}
+              <FabButton
+                icon=""
+
+                subLabel={<Typography variant="h5" color="text.primary">סדר {prevEventName}</Typography>}
+                label={<Typography variant="body2">{inHebrew(prevEventDay, 'Dm')}</Typography>}
+                color="default"
+                variant="outlinedExtended"
+                onClick={prevEvent}
+                testId="prev-event-fab"
+                showSubLabel
+                sizeMultiplier={7}
+              >
+                <Iconify icon="solar:alt-arrow-right-bold" width={24} sx={{ mr: 1, color: 'text.disabled' }} />
+              </FabButton>
+            }
           </Box>
 
-          
+
           {/* Center Section - Event Title and Date */}
-          
-          
+
+
           <Box sx={{ textAlign: 'center', width: '100%' }}>
             <Typography variant="h3" sx={{ mb: 0 }}>
               סדר {selectedEvent.event_name}
@@ -184,71 +197,76 @@ export function InsertListView({}) {
           </Box>
 
           {/* Right Section - Next Event Button */}
-          
+
           {nextEventDay &&
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <FabButton
-              icon=""
-              iconAfter
-              subLabel={<Typography variant="h5" color="text.primary">סדר {nextEventName}</Typography>}
-              label={<Typography variant="body2">{inHebrew(nextEventDay, 'Dm')}</Typography>}
-              color="default"
-              variant="outlinedExtended"
-              onClick={nextEvent}
-              testId="next-event-fab"
-              showSubLabel
-              sizeMultiplier={7}
-            >
-              <Iconify icon="solar:alt-arrow-left-bold" width={24} sx={{ ml: 1, color: 'text.disabled' }} onClick={onBack} />
-          
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <FabButton
+                icon=""
+                iconAfter
+                subLabel={<Typography variant="h5" color="text.primary">סדר {nextEventName}</Typography>}
+                label={<Typography variant="body2">{inHebrew(nextEventDay, 'Dm')}</Typography>}
+                color="default"
+                variant="outlinedExtended"
+                onClick={nextEvent}
+                testId="next-event-fab"
+                showSubLabel
+                sizeMultiplier={7}
+              >
+                <Iconify icon="solar:alt-arrow-left-bold" width={24} sx={{ ml: 1, color: 'text.disabled' }} onClick={onBack} />
+
               </FabButton>
             </Box>
-            }
+          }
         </Box>
 
-      <InsertToolbar
-        exceptionDialog={exceptionDialog}
-        selectedLabel={selectedLabel}
-        dialogDelay={dialogDelay} 
-        handleDelete={(data: any)=> handleUpdate(data, 'delete')}
-        currentData={currentData}
-        setSortBy={setSortBy}
-        reset={reset}
-        handleFilter={handleFilters}
-  
-        filters={filters}
-        summaryMode={summaryMode}
-        infoColumns={infoColumns}
-        infoStudents={infoStudents}
-      />
-      <Divider />
-<CardContent>
-      {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
+        <InsertToolbar
+          exceptionDialog={exceptionDialog}
+          selectedLabel={selectedLabel}
+          dialogDelay={dialogDelay}
+          handleDelete={(data: any) => handleUpdate(data, 'delete')}
+          currentData={currentData}
+          setSortBy={setSortBy}
+          reset={reset}
+          handleFilter={handleFilters}
 
-      <InsertList
-        infoColumns={infoColumns}
-        summaryMode={summaryMode.value}
-        selectLabel={selectLabel}
-        dialogDelay={dialogDelay}
-        exceptionDialog={exceptionDialog}
-        currentData={applyFilters(currentData, filters, sortBy)}
-        methods={methods}
-        handleUpdate={handleUpdate}
-        filters={filters}
-      />
-      </CardContent>
+          filters={filters}
+          summaryMode={summaryMode}
+          infoColumns={infoColumns}
+          infoStudents={infoStudents}
+        />
+        <Divider />
+
+
+        <CardContent>
+          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {searchFilter}
+          </Box>
+          {!currentData.length && <EmptyContent title="לא נמצאו תלמידים" filled sx={{ py: 10 }} imgUrl="" action={null} slotProps={{}} description="" />}
+
+          <InsertList
+            infoColumns={infoColumns}
+            summaryMode={summaryMode.value}
+            selectLabel={selectLabel}
+            dialogDelay={dialogDelay}
+            exceptionDialog={exceptionDialog}
+            currentData={applyFilters(currentData, filters, sortBy, infoStudents)}
+            methods={methods}
+            handleUpdate={handleUpdate}
+            filters={filters}
+          />
+        </CardContent>
       </Card>
 
     </DashboardContent>
-);
+  );
 }
 
 
-function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: string | null) {
-  
-  const { data } = filters;
+function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: string | null, infoStudents: any[]) {
+
+  const { data, search } = filters;
   let filteredData = [...oldData];
-  
+
   if (data) {
 
     filteredData = filteredData.filter((item) => {
@@ -260,6 +278,27 @@ function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: s
       return true;
     });
   }
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filteredData = filteredData.filter((item) => {
+      const fullName = `${item.primary}`.toLowerCase();
+      return fullName.includes(searchLower)
+    });
+  }
+  
+  Object.keys(filters).forEach(column => {
+    if (['data', 'search'].includes(column)) return;
+    const value = filters[column];
+    if (!value || value.length === 0) return;
+    console.log('Filtering by', filters);
+    filteredData = filteredData.filter((item) => {
+      const all=infoStudents.find(stu=>stu.student_id===item.student_id);
+      console.log('item[column]', all[column], 'value', value, 'column', column, 'all', all);
+      return all[column] ? all[column].includes(value) : true;
+    }
+    )
+  })
+
   if (sortBy) {
     if (sortBy === 'up') {
       filteredData.sort((a, b) => a.primary.localeCompare(b.primary));
@@ -271,5 +310,5 @@ function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: s
   }
 
   return filteredData;
-  
+
 }

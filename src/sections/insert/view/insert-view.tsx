@@ -61,9 +61,6 @@ const formSteps = [
     content: 'לחץ כדי להתחיל ברישום',
     placement: 'bottom',
   },
-];
-
-const listSteps = [
   {
     target: '.insert-list__form',
     title: 'רישום נוכחות',
@@ -87,7 +84,8 @@ const listSteps = [
 
 export default function InsertViewWrapper() {
   const { screen } = useInsertStore();
-  const walktourSteps = screen === 'form' ? formSteps : listSteps;
+  const walktourSteps = formSteps
+  
   const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
 
   return (
