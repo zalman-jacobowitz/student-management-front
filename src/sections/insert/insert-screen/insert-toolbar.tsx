@@ -452,7 +452,7 @@ export function InsertToolbar({
         infoColumns={infoColumns}
         handleFilter={handleFilter}
         filters={filters}
-        table={currentData}
+        infoStudents={infoStudents}
       />
 
       <DelayDialog

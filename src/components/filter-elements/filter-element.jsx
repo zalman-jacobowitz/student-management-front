@@ -11,7 +11,7 @@ example for multiple select:
 
  */
 export function FilterElement({ name, info, isFilter }) {
-  const type = isFilter ? info.filter_type : info.type
+  const type = info.type
   switch (type) {
 
     case 'multiple':
@@ -27,7 +27,8 @@ export function FilterElement({ name, info, isFilter }) {
         />
       );
     case 'select':
-      return (
+    console.log('info in select filter', info);  
+    return (
         <Field.Select name={name} label={info.label}>
           {info.options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
