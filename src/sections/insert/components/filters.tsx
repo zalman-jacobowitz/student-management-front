@@ -208,7 +208,7 @@ const demoInfoColumns = [
 const getDefaultFilters = (infoColumns: any[]) => {
   const filters = {}
   infoColumns.forEach(col => {
-      filters[col.name] = col.filter_type === 'multiple' ? [] : '';
+      filters[col.name] = col.type === 'select' ? [] : '';
   })
   return filters
 }

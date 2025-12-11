@@ -14,13 +14,13 @@ export function FilterElement({ name, info, isFilter }) {
   const type = info.type
   switch (type) {
 
-    case 'multiple':
+    case 'select':
       
     return (
           <Field.MultiSelect
             chip
+            multiple
             checkbox
-            value={[]}
             name={name}
             label={info.label}
             options={info.options}

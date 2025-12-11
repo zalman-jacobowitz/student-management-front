@@ -290,11 +290,13 @@ function applyFilters(oldData: any[], filters: { [key: string]: any }, sortBy: s
     if (['data', 'search'].includes(column)) return;
     const value = filters[column];
     if (!value || value.length === 0) return;
-    console.log('Filtering by', filters);
+
     filteredData = filteredData.filter((item) => {
-      const all=infoStudents.find(stu=>stu.student_id===item.student_id);
-      console.log('item[column]', all[column], 'value', value, 'column', column, 'all', all);
-      return all[column] ? all[column].includes(value) : true;
+      const all = infoStudents.find(stu=>stu.student_id===item.student_id);
+      if (all && all[column]) {
+        return Array.isArray(value) ? value.includes(all[column]) : all[column] === value;
+      }
+      return false;
     }
     )
   })
