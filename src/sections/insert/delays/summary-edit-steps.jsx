@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Dialog, MenuItem, Typography } from '@mui/material';
+import { Drawer, MenuItem, Typography } from '@mui/material';
 import { Field } from 'src/components/hook-form';
 import { StepsProvider } from 'src/components/steps-form/steps-provider';
 import { MasterStep } from 'src/components/steps-form/dynamiv-component';
@@ -323,12 +323,14 @@ export function SummaryEditDialog({ open, onClose, onComplete, startDate, endDat
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <SummaryEditStep
-        onComplete={handleWizardComplete}
-        startDate={startDate}
-        endDate={endDate}
-      />
-    </Dialog>
+    <Drawer open={open} onClose={onClose} anchor="right">
+      <div style={{ width: 400, padding: 24 }}>
+        <SummaryEditStep
+          onComplete={handleWizardComplete}
+          startDate={startDate}
+          endDate={endDate}
+        />
+      </div>
+    </Drawer>
   );
 }
