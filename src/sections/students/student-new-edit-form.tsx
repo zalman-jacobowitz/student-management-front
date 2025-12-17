@@ -113,11 +113,12 @@ function StudentsNewEditFormDialogContent({columns, student, onClose, existingSt
           variant="contained"
           loading={isSubmitting}
           className="student-form-submit"
+          data-testid="student-form-submit"
         >
           עדכן
         </LoadingButton>
         
-        <Button variant="outlined" color="inherit" onClick={onClose} className="student-form-cancel">
+        <Button variant="outlined" color="inherit" onClick={onClose} className="student-form-cancel" data-testid="student-form-cancel">
           ביטול
         </Button>
       </DialogActions>
@@ -156,6 +157,7 @@ export function StudentsNewEditFormDialog(
       open={open}
       title={title}
       className={className}
+      data-testid="student-form-dialog"
       content={
         <StudentsNewEditFormDialogContent 
           columns={columns} 

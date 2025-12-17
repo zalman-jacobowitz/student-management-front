@@ -117,7 +117,7 @@ function RemoveActionDialog({ deleteData, handleDelete }: RemoveActionDialogProp
     <ConfirmDialog
         open={deleteData.value}
         onClose={deleteData.onFalse}
-        action={<Button variant="contained" color="inherit" onClick={handleDelete} >אישור</Button>}
+        action={<Button variant="contained" color="inherit" onClick={handleDelete} data-testid="delete-confirm-button">אישור</Button>}
         title="מחיקת נתונים"
         content="האם אתה בטוח שברצונך למחוק את הנתונים?"
       />

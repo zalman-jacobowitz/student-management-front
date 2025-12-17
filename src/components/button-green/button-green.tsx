@@ -20,6 +20,7 @@ export function ButtonGreen({ number=0, value = 90,icon="solar:arrow-up-bold", s
       aria-label="Back to top"
       onClick={onClick}
       variant={variant || 'circular'}
+      data-testid="add-button"
       sx={{
 
         position: 'fixed',

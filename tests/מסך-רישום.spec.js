@@ -13,6 +13,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('בסיס', () => {
 test('נוכחות', async ({ page }) => {    
     // לחיצה על כפתור מחיקה של התבנית הראשונה ברשימה
+    
 })
 
 test('איחורים', async ({ page }) => {
