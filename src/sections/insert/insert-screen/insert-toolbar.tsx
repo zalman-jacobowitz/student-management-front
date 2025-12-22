@@ -478,9 +478,7 @@ export function InsertToolbar({
       <SummaryEditDialog
             open={summaryDialog.value}
             onClose={summaryDialog.onFalse}
-                    onComplete={() => {
-          summaryDialog.onFalse();
-      }}
+            onComplete={summaryDialog.onFalse}
 
       />
     </>

@@ -8,6 +8,7 @@ import useInsertStore from "../insert-state";
 
 import { newApplyFilters } from "../components/filters";
 import { useCallback } from "react";
+import { exportDataToCSV } from "src/utils/files/download-tamplate";
 import { ProgressBar } from "src/components/progress-bar";
 import { RenderCell } from "src/sections/summary/summary-datagrid-view";
 import { Label } from "src/components/label";
@@ -710,8 +711,107 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
     }
   }, [])
 
+  const handleExportCSV = useCallback(() => {
+    if (!convertedData) {
+      console.warn('No converted data available for export');
+      return;
+    }
 
-  
+    // בניית headers דינמיים מהנתונים
+    const headers = ['שם מלא'];
+    const allDaysAndEvents = new Set<string>();
+
+    // איסוף כל הימים והאירועים הייחודיים
+    Object.entries(convertedData).forEach(([studentId, dayData]) => {
+      Object.entries(dayData).forEach(([day, eventData]) => {
+        Object.keys(eventData).forEach(event => {
+          allDaysAndEvents.add(`${day} | ${event}`);
+        });
+      });
+    });
+
+    // הוספת כל היום-אירוע ל-headers
+    const sortedDaysEvents = Array.from(allDaysAndEvents).sort();
+    headers.push(...sortedDaysEvents);
+
+    // בניית הנתונים לייצוא
+    const exportData = currentData.map(student => {
+      const studentSummary = convertedData[student.student_id];
+      const row: any = {
+        'שם מלא': student.primary
+      };
+
+      // מילוי הערכים לכל יום ואירוע
+      sortedDaysEvents.forEach(dayEvent => {
+        const [day, event] = dayEvent.split(' | ');
+        if (studentSummary && studentSummary[day] && studentSummary[day][event] !== undefined) {
+          row[dayEvent] = studentSummary[day][event];
+        } else {
+          row[dayEvent] = '';
+        }
+      });
+
+      return row;
+    });
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    exportDataToCSV(exportData, headers, `students-summary-${timestamp}.csv`);
+  }, [convertedData, currentData]);
+
+  console.log('convertedData: ', convertedData);
+  /*
+  sample of convertedData:
+  const convertedData = {
+    "1149-N": {
+        "י״ב כסלו": {
+            "חסידות בוקר": 0,
+            "תפילה": 0
+        },
+        "י״ג כסלו": {
+            "חסידות בוקר": 0
+        },
+        "כ׳ כסלו": {
+            "חסידות בוקר": 100
+        }
+    },
+    "1152-K": {
+        "י״ב כסלו": {
+            "חסידות בוקר": 100,
+            "תפילה": 100
+        },
+        "י״ג כסלו": {
+            "חסידות בוקר": 100
+        },
+        "כ׳ כסלו": {
+            "חסידות בוקר": 100
+        }
+    },
+    "1571-L": {
+        "י״ב כסלו": {
+            "חסידות בוקר": 0,
+            "תפילה": 0
+        },
+        "י״ג כסלו": {
+            "חסידות בוקר": 0
+        },
+        "כ׳ כסלו": {
+            "חסידות בוקר": 100
+        }
+    },
+    "1607-H": {
+        "י״ב כסלו": {
+            "חסידות בוקר": 0,
+            "תפילה": 0
+        },
+        "י״ג כסלו": {
+            "חסידות בוקר": 0
+        },
+        "כ׳ כסלו": {
+            "חסידות בוקר": 100
+        }
+    }
+}
+  */
 
   return (
     <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -762,6 +862,17 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           onClick={() => { }}
           icon="solar:upload-square-bold-duotone"
           text="עדכן נוכחות"
+        />
+        <ButtonGreen
+          type="button"
+          variant="extended"
+          className="insert-list__export-button"
+          data-testid="export-button"
+          sx={{ mt: 2 }}
+          number={2}
+          onClick={handleExportCSV}
+          icon="solar:download-square-bold-duotone"
+          text="ייצוא לCSV"
         />
       </Box>
     </Form>

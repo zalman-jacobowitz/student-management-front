@@ -39,7 +39,7 @@ export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onC
     }
     );
     return (
-    <Box sx={{ p: 5, width: 1, mx: 'auto'}} >
+    <Box sx={{ p: 0, width: 1, mx: 'auto'}} >
       <Form methods={methods} onSubmit={submit}>
         <InitStepper steps={steps} activeStep={activeStep} />
         

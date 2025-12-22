@@ -112,21 +112,18 @@ export function useSummaryForm() {
   const {setSummary} = useInsertStore();
   const onSubmit = useCallback(async (dataFORM) => {
     try {
-
-        // Perform some specific logic if 'event_name' is included in group_by
         dataFORM.group_by = dataFORM.group_by === 'event_name' ? ['event_name', 'day'] : ['day', 'event_name'];
-      // range of days
         dataFORM.days = generateDaysOptions(dataFORM.start, dataFORM.end).map(day => day.value);
         console.log({dataFORM});
-      setSummary(dataFORM);
-      toast.promise(
-        Promise.resolve(dataFORM),
-        {
-          loading: 'מעבד...',
-          success: 'הנתונים הוגשו בהצלחה!',
-          error: 'ההגשה נכשלה!',
-        }
-      );
+        setSummary(dataFORM);
+        toast.promise(
+          Promise.resolve(dataFORM),
+          {
+            loading: 'מעבד...',
+            success: 'הנתונים הוגשו בהצלחה!',
+            error: 'ההגשה נכשלה!',
+          }
+        );
 
       return new Promise((resolve) => resolve(dataFORM));
     } catch (error) {
@@ -214,7 +211,6 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         </MenuItem>,
       ],
     },
-    ...(showCustomFields ? [
       {
         step: 1,
         name: 'events',
@@ -228,7 +224,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         chip: true,
       },
       {
-        step: 2,
+        step: 1,
         name: 'start',
         label: 'תאריך התחלה',
         component: Field.HebrewDatePicker,
@@ -236,7 +232,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         InputLabelProps: { shrink: true },
       },
       {
-        step: 2,
+        step: 1,
         name: 'end',
         label: 'תאריך סיום',
         component: Field.HebrewDatePicker,
@@ -244,7 +240,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         InputLabelProps: { shrink: true },
       },
       {
-        step: 3,
+        step: 1,
         name: 'group_by',
         label: 'קבץ לפי',
         component: Field.Select,
@@ -258,7 +254,7 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
         )),
       },
       {
-        step: 3,
+        step: 1,
         name: 'type',
         label: 'סוג החישוב',
         component: Field.Select,
@@ -271,7 +267,6 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
           </MenuItem>
         )),
       }
-    ] : []),
   ];
 
   const steps = [
@@ -281,20 +276,6 @@ export function SummaryEditStep({ onComplete, startDate = DEFAULT_VALUES.start, 
       icon: 'mdi:template-outline',
       name: 'templateType',
     },
-    ...(showCustomFields ? [
-      {
-        label: 'אירועים ותאריכים',
-        component: <MasterStep fields={fields} number={2} />,
-        icon: 'mdi:calendar-range',
-        name: 'events',
-      },
-      {
-        label: 'קיבוץ וחישוב',
-        component: <MasterStep fields={fields} number={3} />,
-        icon: 'mdi:chart-box-outline',
-        name: 'group_by',
-      }
-    ] : []),
     {
       name: 'complete',
       component: <></>,
