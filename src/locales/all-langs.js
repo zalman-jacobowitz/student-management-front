@@ -5,6 +5,7 @@ import {
   viVN as viVNCore,
   zhCN as zhCNCore,
   arSA as arSACore,
+  enUS as enUSCore,
 } from '@mui/material/locale';
 // date pickers (MUI)
 import {
@@ -86,7 +87,17 @@ export const allLangs = [
     systemValue: {
       components: { ...heILCore.components, ...heILDate.components, ...heILDataGrid.components },
     },
-  }
+  },
+  {
+    value: 'yi',
+    label: 'Yiddish',
+    countryCode: 'IL',
+    adapterLocale: 'he',
+    numberFormat: { code: 'he-IL', currency: 'ILS' },
+    systemValue: {
+      components: { ...heILCore.components, ...heILDate.components, ...heILDataGrid.components },
+    },
+  },
 ];
 
 /*

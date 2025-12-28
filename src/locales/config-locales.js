@@ -1,5 +1,5 @@
 export const fallbackLng = 'he';
-export const languages = ['en', 'fr', 'vi', 'cn', 'ar', 'he'];
+export const languages = ['en', 'fr', 'vi', 'cn', 'ar', 'he', 'yi'];
 export const defaultNS = 'common';
 export const cookieName = 'i18next';
 
@@ -49,5 +49,10 @@ export const changeLangMessages = {
     success: 'השפה השתנתה בהצלחה!',
     error: 'לא הצלחנו לשנות את השפה!',
     loading: 'טוען...',
+  },
+  yi: {
+    success: 'שפּראַך האט זיך געענדערט!',
+    error: 'טעות בייִ ענדערן שפּראַך!',
+    loading: 'לאָדינג...',
   },
 };
