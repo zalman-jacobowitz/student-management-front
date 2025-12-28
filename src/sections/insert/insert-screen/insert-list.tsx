@@ -863,17 +863,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
           icon="solar:upload-square-bold-duotone"
           text="עדכן נוכחות"
         />
-        <ButtonGreen
-          type="button"
-          variant="extended"
-          className="insert-list__export-button"
-          data-testid="export-button"
-          sx={{ mt: 2 }}
-          number={2}
-          onClick={handleExportCSV}
-          icon="solar:download-square-bold-duotone"
-          text="ייצוא לCSV"
-        />
+
       </Box>
     </Form>
   );

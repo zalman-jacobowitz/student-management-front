@@ -477,7 +477,7 @@ export function UploadTableView({dataJson}) {
     // השתמשו בנתונים המקומיים במקום קריאות API שלא ניתנות להרצה
     const templates = useSuspenseQuery(apiTemplates());
     const infoStudents = useSuspenseQuery(apiInfoStudents());
-    const convertedData = convertTableDataToObjects(dataJson[0].json.tables[0]);
+    const convertedData = convertTableDataToObjects(dataJson);
     const tableStructure = generateTableStructure(Object.keys(convertedData[0]));
     
     const merged = mergeWithStudents(infoStudents.data, convertedData, infoColumnsMock);
@@ -566,12 +566,27 @@ export function UploadTableView({dataJson}) {
         students.forEach(student => {
             Object.keys(student).forEach(item => {
                 const KEY = tableStructure.allFields[item]
+                console.log('KEY', KEY);
+                const tamplte_data = templates.data.find(t => t.event_id === KEY?.event);
                 if (!KEY) return;
-                allData.push({...KEY, student_id: student.id, data: Number(student[item]) });
+                allData.push({...KEY,...tamplte_data, student_id: student.id, data: Number(student[item]) });
             })
             
         })
-        handleUpdate(allData)
+                const uniqueEvents = Array.from(
+            new Map(
+                allData.map(item => [`${item.day}-${item.event}`, item ])
+            ).values()
+        ).sort((a, b) => a.day - b.day || a.event - b.event);
+        console.log('Unique Events:', uniqueEvents);
+        uniqueEvents.forEach(async (eventData) => {
+            const forApi = {
+                eventDetails: eventData,
+                data: allData.filter(d => d.event === eventData.event && d.day === eventData.day)
+            }  
+            await handleUpdate(forApi, 'update')
+        })
+        
         console.table(allData);
     }
 

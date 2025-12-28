@@ -42,7 +42,7 @@ const groups = {
 */
 const groups = {
   'ניהול נוכחות': ['insert', 'exceptions', 'users'],
-  'ניהול נתונים': ['info', 'profile'],
+  'ניהול נתונים': ['info', 'profile', 'scan'],
   'ניהול זמנים': ['templates', 'days'],
 };
 function screensFormat(data, isAdmin = false) {

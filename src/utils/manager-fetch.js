@@ -2,7 +2,7 @@ import axios from "axios"
 
 import { supabase } from "src/auth/supabase"
 
-const local = !true // true for local, false for production
+const local = true // true for local, false for production
 const api = axios.create({
   baseURL: local
     ? "http://localhost:8080/"

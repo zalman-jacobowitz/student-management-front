@@ -83,7 +83,6 @@ function formatTemplates(table){
     event_start: item.event_start,
     event_end: item.event_end,
     template_name: 'רגיל',
-    active: 1,
     template_id
   }));
 
