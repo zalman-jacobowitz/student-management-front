@@ -10,6 +10,7 @@ import { alpha as hexAlpha } from '@mui/material/styles';
 import { paths } from 'src/routes/paths';
 
 import { useUserDetails } from 'src/hooks/use-user-details';
+import { useTranslate } from 'src/locales/use-locales';
 
 import { CONFIG } from 'src/config-global';
 import { varAlpha, bgGradient } from 'src/theme/styles';
@@ -22,6 +23,7 @@ import { useAuthContext, useMockedUser } from 'src/auth/hooks';
 
 export function NavUpgrade({ sx, ...other }) {
   const { user } = useMockedUser();
+  const { t } = useTranslate();
   
   const { userDetails, isLoading, error } = useUserDetails();
   
@@ -46,7 +48,7 @@ export function NavUpgrade({ sx, ...other }) {
               borderBottomLeftRadius: 2,
             }}
           >
-            { admin.user?.role === 'admin' ? 'מנהל' : 'משתמש' }
+            { admin.user?.role === 'admin' ? t('users.admin') : t('nav.user') }
           </Label>
         </Box>
 
@@ -56,7 +58,7 @@ export function NavUpgrade({ sx, ...other }) {
             noWrap
             sx={{ color: 'var(--layout-nav-text-primary-color)' }}
           >
-           {isLoading ? 'טוען...' : `${name.firstName} ${name.lastName}`}
+           {isLoading ? t('nav.loading') : `${name.firstName} ${name.lastName}`}
           </Typography>
 
           <Typography
@@ -64,12 +66,12 @@ export function NavUpgrade({ sx, ...other }) {
             noWrap
             sx={{ color: 'var(--layout-nav-text-disabled-color)' }}
           >
-            {userDetails?.user_metadata?.email || 'מנהל'}
+            {userDetails?.user_metadata?.email || t('users.admin')}
           </Typography>
         </Stack>
 
         <Button variant="contained" href={paths.comingSoon} target="_blank" rel="noopener">
-          עדכן
+          {t('nav.update')}
         </Button>
       </Stack>
     </Stack>
@@ -79,6 +81,8 @@ export function NavUpgrade({ sx, ...other }) {
 // ----------------------------------------------------------------------
 
 export function UpgradeBlock({ sx, ...other }) {
+  const { t } = useTranslate();
+
   return (
     <Stack
       sx={{
@@ -122,7 +126,7 @@ export function UpgradeBlock({ sx, ...other }) {
 
       <Stack alignItems="flex-start" sx={{ position: 'relative' }}>
         <Box component="span" sx={{ typography: 'h5', color: 'common.white' }}>
-          לנהל את הנתונים
+          {t('screens.insert')}
         </Box>
 
         <Box
@@ -134,11 +138,11 @@ export function UpgradeBlock({ sx, ...other }) {
             typography: 'subtitle2',
           }}
         >
-          תעשה סדר במוסד שלך!
+          {t('groups.dataManagement')}
         </Box>
 
         <Button variant="contained" size="small" color="warning">
-          שדרג לפרימיום
+          {t('nav.update')}
         </Button>
       </Stack>
     </Stack>

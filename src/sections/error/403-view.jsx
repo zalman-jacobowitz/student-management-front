@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/routes/components';
+import { useTranslate } from 'src/locales/use-locales';
 
 import { SimpleLayout } from 'src/layouts/simple';
 import { ForbiddenIllustration } from 'src/assets/illustrations';
@@ -14,18 +15,20 @@ import { varBounce, MotionContainer } from 'src/components/animate';
 // ----------------------------------------------------------------------
 
 export function View403() {
+  const { t } = useTranslate();
+
   return (
     <SimpleLayout content={{ compact: true }}>
       <Container component={MotionContainer}>
         <m.div variants={varBounce().in}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            אין הרשאה
+            {t('errors.forbidden')}
           </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary' }}>
-            העמוד שאתה מנסה לגשת אליו מוגבל בגישה. אנא פנה למנהל המערכת שלך.
+            {t('errors.forbiddenMessage')}
           </Typography>
         </m.div>
 
@@ -34,7 +37,7 @@ export function View403() {
         </m.div>
 
         <Button component={RouterLink} href="/" size="large" variant="contained">
-          חזרה לדף הבית
+          {t('errors.goHome')}
         </Button>
       </Container>
     </SimpleLayout>

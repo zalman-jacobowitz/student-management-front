@@ -17,11 +17,131 @@
     "scan": "סקאַן דאָקומענטס",
     "download": "דאַװנלאָד טעמפּלעט",
     "summary": "אַטענדאַנס סאָמאַרי",
-    "tests": "טעסטס"
+    "tests": "טעסטס",
+    "initialization": "אִניטשאַליזיישן"
   },
   "groups": {
     "attendance": "אַטענדאַנס מאַנאַדזשמענט",
     "dataManagement": "דאַטאַ מאַנאַדזשמענט",
     "timeManagement": "טיים מאַנאַדזשמענט"
+  },
+  "common": {
+    "save": "שפּאַרן",
+    "cancel": "אַבטראָן",
+    "delete": "אויסמעקן",
+    "edit": "רעדאַקטירן",
+    "add": "צוגעבן",
+    "search": "זוכן",
+    "filter": "פֿילטער",
+    "export": "עקספּאָרטירן",
+    "import": "אימפּאָרטירן",
+    "noData": "קיין דאַטן",
+    "loading": "לאָדינג...",
+    "error": "גרייעס",
+    "success": "הצלחה",
+    "required": "דער פעלד איז פארפלעקט",
+    "confirm": "קאָנפירם",
+    "back": "צו רוק",
+    "next": "קומענדיק",
+    "previous": "פרעװיאָוס",
+    "finish": "ענדיקן"
+  },
+  "attendance": {
+    "present": "זיכער",
+    "absent": "אַװעק",
+    "delayed": "ספּיד",
+    "exceptional": "ענטשולדיקט אַװעק",
+    "presentTooltip": "סטודענט איז זיכער געװען",
+    "absentTooltip": "סטודענט איז אַװעק געװען",
+    "delayedTooltip": "סטודענט איז ספּיד געװען",
+    "exceptionalTooltip": "סטודענט איז אַװעק געװען מיט ענטשולדיקונג"
+  },
+  "time": {
+    "hours": "שעות",
+    "hour": "שעה",
+    "minutes": "מינוטן",
+    "minutes_short": "מין"
+  },
+  "exceptions": {
+    "startDate": "סטאַרט דאַטע",
+    "startTime": "סטאַרט טיים",
+    "endDate": "סוף דאַטע",
+    "endTime": "סוף טיים",
+    "reason": "סיבה",
+    "students": "סטודענטן"
+  },
+  "users": {
+    "firstName": "ערשטער נאָמען",
+    "lastName": "לעצטער נאָמען",
+    "email": "ימײל",
+    "country": "לאַנד",
+    "username": "בענוצער נאָמען",
+    "role": "ראָלע",
+    "admin": "אַדמין"
+  },
+  "errors": {
+    "forbidden": "ניט ערלויבט",
+    "forbiddenMessage": "דער בלאַט וואָס דו פרובירט צו געהן איז רעסטריקטיד. בעט קונטאַקט דײַן סיסטעם אַדמיניסטראַטאָר.",
+    "notFound": "בלאַט ניט געפּונען",
+    "serverError": "סערװער ער",
+    "goHome": "געהן צו בית"
+  },
+  "initialization": {
+    "welcome": "וועלקום צו סיסטעם אִניטשאַליזיישן!",
+    "enterEventName": "ענטער ייװענט נאָמען",
+    "enterEventNamePlaceholder": "ווי ײַן בײַשפּיל: ייװענט אַ, מאָרגן ייװענט עטק.",
+    "enterEventStart": "ענטער ייװענט סטאַרט טיים",
+    "selectColumnForNames": "סעלעקט דער קאָלומן מיט סטודענט ערשטער נאָמען דאָ. דאָס וועט העלפן דעם סיסטעם צו יידענטיפֿײ כל סטודענט."
+  },
+  "columns": {
+    "table": "טאַבל",
+    "columnName": "קאָלומן נאָמען",
+    "columnDescription": "קאָלומן דעסקריפּשן",
+    "columnType": "קאָלומן טיפּ",
+    "filterType": "פֿילטער טיפּ",
+    "hidden": "הידן",
+    "required": "רעקווייערד",
+    "order": "אָרדער",
+    "description": "דעסקריפּשן",
+    "typeText": "פֿרײַ טעקסט",
+    "typeNumber": "נומער",
+    "typeSelect": "סעלעקט",
+    "typeRelationship": "באַציִונג",
+    "typeDate": "דאַטע",
+    "typeHidden": "הידן",
+    "typeAddress": "אַדרעס",
+    "typeCheckbox": "טשעקבאָקס",
+    "access": "אַקסעססיבל",
+    "regular": "רעגולער",
+    "visible": "וויזיבל",
+    "mandatory": "מאַנדאַטאָרי",
+    "notMandatory": "נאָט מאַנדאַטאָרי",
+    "primary": "פּרימערי",
+    "secondary": "סעקאָנדערי"
+  },
+  "templates": {
+    "name": "נאָמען",
+    "firstName": "ערשטער נאָמען",
+    "lastName": "לעצטער נאָמען",
+    "gender": "מיניות",
+    "yearOfBirth": "יאָר אָף בערטש",
+    "required": "דער פעלד איז פארפלעקט"
+  },
+  "upload": {
+    "templateExample": "טעמפּלעט פֿיל",
+    "beforeUpload": "בעפֿאָר דאַװנלאָדינג אַ פַיל, ווי קענט ניץ דאַװנלאָד אַן עמפּטי טעמפּלעט.",
+    "fillTemplate": "פֿיל דעם טעמפּלעט מיט דאַטן און דאַן דאַװנלאָד אים."
+  },
+  "nav": {
+    "loading": "לאָדינג...",
+    "user": "באַנוצער",
+    "update": "דאָסאָ"
+  },
+  "overview": {
+    "goodMorning": "גוטן מאָרגן",
+    "goodAfternoon": "גוטן טאָג",
+    "goodEvening": "גוטן אָװנט",
+    "welcomeDescription": "ווילקום צום סיסטעם! דאָ קענסטו באַנוצן דאַטן, שאַפֿן קאַסטאָמאַיזד רעפּאָרטס, און מער.",
+    "start": "העלן"
   }
 }

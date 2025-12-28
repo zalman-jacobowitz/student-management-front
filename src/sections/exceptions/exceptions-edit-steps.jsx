@@ -4,6 +4,7 @@ import { useForm, FormProvider } from "react-hook-form";
 
 import { Alert, Stack, Dialog, Typography, Box, Button, MenuItem, Divider, Grid } from "@mui/material";
 import { Field, Form } from "src/components/hook-form";
+import { useTranslate } from "src/locales/use-locales";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -180,7 +181,7 @@ function exceptionsDataServerFromat(data) {
 
   return listEvents
 }
-function useExceptionDefinition({ exception }) {
+function useExceptionDefinition({ exception, t }) {
   const queryClient = useQueryClient();
   const updateException = useMutation(exceptionsUpdate({ queryClient }));
 
@@ -217,6 +218,7 @@ function useExceptionDefinition({ exception }) {
 
 
 export function ExceptionDefinitionStep({ onComplete, exception, editMode = false, mode = 'base' }) {
+  const { t } = useTranslate();
   const studentsData = useSuspenseQuery(apiInfoStudents());
   const { selectedEvent } = useInsertStore();
   
@@ -239,13 +241,13 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   const WizardSchema = z.object({
     exception_id: z.string().optional(),
-    exception_type: z.string().min(1, 'יש לבחור סוג אישור'),
-    from_day: z.string().min(1, 'תאריך התחלה נדרש'),
-    from_hour: z.string().min(1, 'שעת התחלה נדרשת'),
-    to_day: z.string().min(1, 'תאריך סיום נדרש'),
-    to_hour: z.string().min(1, 'שעת סיום נדרשת'),
-    reason: z.string().min(1, 'סיבה נדרשת'),
-    students: z.array(z.string()).min(1, 'יש לבחור לפחות תלמיד אחד'),
+    exception_type: z.string().min(1, t('common.required')),
+    from_day: z.string().min(1, t('exceptions.startDate') + ' ' + t('common.required')),
+    from_hour: z.string().min(1, t('exceptions.startTime') + ' ' + t('common.required')),
+    to_day: z.string().min(1, t('exceptions.endDate') + ' ' + t('common.required')),
+    to_hour: z.string().min(1, t('exceptions.endTime') + ' ' + t('common.required')),
+    reason: z.string().min(1, t('exceptions.reason') + ' ' + t('common.required')),
+    students: z.array(z.string()).min(1, t('exceptions.students') + ' ' + t('common.required')),
   });
 
   const methods = useForm({
@@ -255,7 +257,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 
   const { handleSubmit, watch, setValue, formState: { isSubmitting } } = methods;
 
-  const { onSubmit: handleExceptionSubmit } = useExceptionDefinition({ exception });
+  const { onSubmit: handleExceptionSubmit } = useExceptionDefinition({ exception, t });
   
   const exceptionType = watch('exception_type');
 
@@ -290,12 +292,12 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
           </Typography>
           <SelectStudents
             infoStudents={students}
-            label="בחירת תלמידים"
+            label={t('exceptions.students')}
           />
 
           <Field.Text
             name="reason"
-            label="סיבה"
+            label={t('exceptions.reason')}
             variant="outlined"
             fullWidth
           />
@@ -303,7 +305,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
 { mode === 'event' && (
           <Field.Select
             name="exception_type"
-            label="סוג האישור"
+            label={t('exceptions.reason')}
           >
             {getExceptionTypeOptions(selectedEvent).map((option) =>
               option.divider ? (
@@ -334,7 +336,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
                     <Field.HebrewDatePicker
                       disabled={exceptionType !== 'custom'}
                   name="from_day"
-                  label="תאריך התחלה"
+                  label={t('exceptions.startDate')}
                 />
               </Box>
 
@@ -342,7 +344,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
                 <Field.Text
                 disabled={exceptionType !== 'custom'}
                   name="from_hour"
-                  label="שעת התחלה"
+                  label={t('exceptions.startTime')}
                   type="time"
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -356,7 +358,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
                 <Field.HebrewDatePicker
                 disabled={exceptionType !== 'custom'}
                   name="to_day"
-                  label="תאריך סיום"
+                  label={t('exceptions.endDate')}
                 />
               </Box>
 
@@ -364,7 +366,7 @@ export function ExceptionDefinitionStep({ onComplete, exception, editMode = fals
                 <Field.Text
                   name="to_hour"
                   disabled={exceptionType !== 'custom'}
-                  label="שעת סיום"
+                  label={t('exceptions.endTime')}
                   type="time"
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}

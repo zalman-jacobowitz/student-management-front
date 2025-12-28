@@ -17,11 +17,131 @@
     "scan": "סריקת דפים",
     "download": "הורדת תבנית",
     "summary": "סיכום נוכחות",
-    "tests": "מבחנים"
+    "tests": "מבחנים",
+    "initialization": "איתחול"
   },
   "groups": {
     "attendance": "ניהול נוכחות",
     "dataManagement": "ניהול נתונים",
     "timeManagement": "ניהול זמנים"
+  },
+  "common": {
+    "save": "שמור",
+    "cancel": "ביטול",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "add": "הוסף",
+    "search": "חיפוש",
+    "filter": "סינון",
+    "export": "ייצוא",
+    "import": "ייבוא",
+    "noData": "אין נתונים",
+    "loading": "טוען...",
+    "error": "שגיאה",
+    "success": "בוצע בהצלחה",
+    "required": "שדה זה נדרש",
+    "confirm": "אישור",
+    "back": "חזור",
+    "next": "הבא",
+    "previous": "הקודם",
+    "finish": "סיום"
+  },
+  "attendance": {
+    "present": "היה",
+    "absent": "חיסר",
+    "delayed": "איחר",
+    "exceptional": "נעדר באישור",
+    "presentTooltip": "התלמיד היה נוכח",
+    "absentTooltip": "התלמיד היה חסר",
+    "delayedTooltip": "התלמיד איחר",
+    "exceptionalTooltip": "התלמיד נעדר באישור"
+  },
+  "time": {
+    "hours": "שעות",
+    "hour": "שעה",
+    "minutes": "דקות",
+    "minutes_short": "דק'"
+  },
+  "exceptions": {
+    "startDate": "תאריך התחלה",
+    "startTime": "שעת התחלה",
+    "endDate": "תאריך סיום",
+    "endTime": "שעת סיום",
+    "reason": "סיבה",
+    "students": "תלמידים"
+  },
+  "users": {
+    "firstName": "שם פרטי",
+    "lastName": "שם משפחה",
+    "email": "אימייל",
+    "country": "מדינה",
+    "username": "שם משתמש",
+    "role": "תפקיד",
+    "admin": "מנהל"
+  },
+  "errors": {
+    "forbidden": "אין הרשאה",
+    "forbiddenMessage": "העמוד שאתה מנסה לגשת אליו מוגבל בגישה. אנא פנה למנהל המערכת שלך.",
+    "notFound": "עמוד לא נמצא",
+    "serverError": "שגיאת שרת",
+    "goHome": "חזור לעמוד הבית"
+  },
+  "initialization": {
+    "welcome": "ברוכים הבאים לאיתחול המערכת!",
+    "enterEventName": "הכנס את שם הסדר",
+    "enterEventNamePlaceholder": "לדוגמא: סדר א, סדר בוקר וכן הלאה",
+    "enterEventStart": "הכנס את זמן התחלת הסדר",
+    "selectColumnForNames": "בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד."
+  },
+  "columns": {
+    "table": "טבלה",
+    "columnName": "שם עמודה",
+    "columnDescription": "תיאור עמודה",
+    "columnType": "סוג עמודה",
+    "filterType": "סינון",
+    "hidden": "הסתרה",
+    "required": "חובה",
+    "order": "סדר",
+    "description": "תיאור",
+    "typeText": "טקסט חופשי",
+    "typeNumber": "מספר",
+    "typeSelect": "בחירה",
+    "typeRelationship": "קשר",
+    "typeDate": "תאריך",
+    "typeHidden": "מוסתר",
+    "typeAddress": "כתובת",
+    "typeCheckbox": "תיבת סימון",
+    "access": "נגיש",
+    "regular": "רגיל",
+    "visible": "גלוי",
+    "mandatory": "חובה",
+    "notMandatory": "לא חובה",
+    "primary": "ראשי",
+    "secondary": "משני"
+  },
+  "templates": {
+    "name": "שם",
+    "firstName": "שם פרטי",
+    "lastName": "שם משפחה",
+    "gender": "מגדר",
+    "yearOfBirth": "שנת לידה",
+    "required": "שדה זה נדרש"
+  },
+  "upload": {
+    "templateExample": "תבנית קובץ",
+    "beforeUpload": "לפני העלאת קובץ, תוכל להוריד תבנית ריקה הכוללת את כל העמודות הנדרשות למערכת.",
+    "fillTemplate": "מלא את התבנית בנתונים ולאחר מכן העלה אותה בטופס למטה."
+  },
+  "nav": {
+    "loading": "טוען...",
+    "user": "משתמש",
+    "update": "עדכן"
+  },
+  "overview": {
+    "goodMorning": "בוקר טוב",
+    "goodAfternoon": "צהריים טובים",
+    "goodEvening": "ערב טוב",
+    "welcomeDescription": "ברוך הבא למערכת! כאן תוכל לנהל נתונים, ליצור דוחות מותאמים אישית, ועוד.",
+    "start": "התחל"
   }
 }

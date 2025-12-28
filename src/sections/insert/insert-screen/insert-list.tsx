@@ -3,6 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Car
 
 import { Form, Field } from "src/components/hook-form";
 import { ButtonGreen } from "src/components/button-green";
+import { useTranslate } from "src/locales/use-locales";
 
 import useInsertStore from "../insert-state";
 
@@ -99,12 +100,12 @@ const colorMap = {
 };
 
 
-const text = {
-  exceptional: 'נעדר באישור',
-  delayed: 'איחר',
-  100: 'היה',
-  0: 'חיסר',
-}
+const getTextMap = (t) => ({
+  exceptional: t('attendance.exceptional'),
+  delayed: t('attendance.delayed'),
+  100: t('attendance.present'),
+  0: t('attendance.absent'),
+});
 
 const demoDataSummary = {
     "1313-R": {
@@ -384,7 +385,7 @@ const demoDataSummary = {
         }
     }
 }
-function CountShows({ count }: {}) {
+function CountShows({ count, t }: {count?: any, t?: any}) {
   /*
   מציג את האירועים עם צבע אייקון לפי מצב נוכחות
   בזה אחר זה ללא כיתוב של האירוע אלא רק הTOLLTIP
@@ -405,6 +406,8 @@ function CountShows({ count }: {}) {
     true: 'solar:check-circle-bold-duotone',
     false: 'solar:check-circle-bold-duotone',
   };
+
+  const text = getTextMap(t);
 
   return <>
     {Object.entries(count).map(([eventName, status]) => (
@@ -456,18 +459,18 @@ function convert(data) {
   return result;
 }
 
-const getColorByStatus = (student) => {
+const getColorByStatus = (student, t) => {
 
   if (student.delay) {
-    return { color: 'warning', label: 'איחר', icon: 'solar:check-circle-bold-duotone', type: 'delay', tooltip: 'התלמיד איחר' };
+    return { color: 'warning', label: t('attendance.delayed'), icon: 'solar:check-circle-bold-duotone', type: 'delay', tooltip: t('attendance.delayedTooltip') };
   }
   if (student.reason) {
-    return { color: 'default', label: 'נעדר באישור', icon: 'solar:check-circle-bold-duotone', type: 'exceptional', tooltip: 'התלמיד נעדר באישור' };
+    return { color: 'default', label: t('attendance.exceptional'), icon: 'solar:check-circle-bold-duotone', type: 'exceptional', tooltip: t('attendance.exceptionalTooltip') };
   }
   if (Number(student.data)) {
-    return { color: 'success', label: 'היה', icon: 'solar:check-circle-bold-duotone', type: 'present', tooltip: 'התלמיד היה נוכח' };
+    return { color: 'success', label: t('attendance.present'), icon: 'solar:check-circle-bold-duotone', type: 'present', tooltip: t('attendance.presentTooltip') };
   }
-  return { color: 'error', label: 'חיסר', icon: 'solar:check-circle-bold-duotone', type: 'absent', tooltip: 'התלמיד היה חסר' };
+  return { color: 'error', label: t('attendance.absent'), icon: 'solar:check-circle-bold-duotone', type: 'absent', tooltip: t('attendance.absentTooltip') };
 };
 
 
@@ -665,6 +668,7 @@ function useLastEventsData() {
   };
 export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDialog, dialogDelay, currentData, methods, handleUpdate, filters }: InsertListProps) {
   // הכנה של ערכי ברירת מחדל
+  const { t } = useTranslate();
 
   const { summary } = useInsertStore();
   const summaryData = useSuspenseQuery(apiSummary(summary));
@@ -718,7 +722,7 @@ export function InsertList({ infoColumns, summaryMode, selectLabel, exceptionDia
     }
 
     // בניית headers דינמיים מהנתונים
-    const headers = ['שם מלא'];
+    const headers = [t('templates.name')];
     const allDaysAndEvents = new Set<string>();
 
     // איסוף כל הימים והאירועים הייחודיים

@@ -1,6 +1,7 @@
 {
   "demo": {
     "lang": "English",
+    "selectLang": "Select Language",
     "description": "The starting point for your next project is based on MUI. Easy customization helps you build apps faster and better."
   },
   "screens": {
@@ -16,11 +17,131 @@
     "scan": "Scan Documents",
     "download": "Download Template",
     "summary": "Attendance Summary",
-    "tests": "Tests"
+    "tests": "Tests",
+    "initialization": "Initialization"
   },
   "groups": {
     "attendance": "Attendance Management",
     "dataManagement": "Data Management",
     "timeManagement": "Time Management"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "noData": "No Data",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Done Successfully",
+    "required": "This field is required",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish"
+  },
+  "attendance": {
+    "present": "Present",
+    "absent": "Absent",
+    "delayed": "Delayed",
+    "exceptional": "Excused Absence",
+    "presentTooltip": "Student was present",
+    "absentTooltip": "Student was absent",
+    "delayedTooltip": "Student was delayed",
+    "exceptionalTooltip": "Student was absent with excuse"
+  },
+  "time": {
+    "hours": "hours",
+    "hour": "hour",
+    "minutes": "minutes",
+    "minutes_short": "min"
+  },
+  "exceptions": {
+    "startDate": "Start Date",
+    "startTime": "Start Time",
+    "endDate": "End Date",
+    "endTime": "End Time",
+    "reason": "Reason",
+    "students": "Students"
+  },
+  "users": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "country": "Country",
+    "username": "Username",
+    "role": "Role",
+    "admin": "Admin"
+  },
+  "errors": {
+    "forbidden": "Forbidden",
+    "forbiddenMessage": "The page you are trying to access is restricted. Please contact your system administrator.",
+    "notFound": "Page Not Found",
+    "serverError": "Server Error",
+    "goHome": "Go to Home"
+  },
+  "initialization": {
+    "welcome": "Welcome to System Initialization!",
+    "enterEventName": "Enter Event Name",
+    "enterEventNamePlaceholder": "For example: Event A, Morning Event etc.",
+    "enterEventStart": "Enter Event Start Time",
+    "selectColumnForNames": "Select the column containing student first names here. This will help the system correctly identify each student."
+  },
+  "columns": {
+    "table": "Table",
+    "columnName": "Column Name",
+    "columnDescription": "Column Description",
+    "columnType": "Column Type",
+    "filterType": "Filter Type",
+    "hidden": "Hidden",
+    "required": "Required",
+    "order": "Order",
+    "description": "Description",
+    "typeText": "Free Text",
+    "typeNumber": "Number",
+    "typeSelect": "Select",
+    "typeRelationship": "Relationship",
+    "typeDate": "Date",
+    "typeHidden": "Hidden",
+    "typeAddress": "Address",
+    "typeCheckbox": "Checkbox",
+    "access": "Accessible",
+    "regular": "Regular",
+    "visible": "Visible",
+    "mandatory": "Required",
+    "notMandatory": "Not Required",
+    "primary": "Primary",
+    "secondary": "Secondary"
+  },
+  "templates": {
+    "name": "Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "gender": "Gender",
+    "yearOfBirth": "Year of Birth",
+    "required": "This field is required"
+  },
+  "upload": {
+    "templateExample": "Template File",
+    "beforeUpload": "Before uploading a file, you can download an empty template that includes all required columns for the system.",
+    "fillTemplate": "Fill the template with data and then upload it in the form below."
+  },
+  "nav": {
+    "loading": "Loading...",
+    "user": "User",
+    "update": "Update"
+  },
+  "overview": {
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening",
+    "welcomeDescription": "Welcome to the system! Here you can manage data, create customized reports, and more.",
+    "start": "Start"
   }
 }
