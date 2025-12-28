@@ -52,7 +52,7 @@ export function AuthCenteredLayout({ sx, children, header }) {
                   color="inherit"
                   sx={{ typography: 'subtitle2' }}
                 >
-                  Need help?
+                  עזרה
                 </Link>
                 {/* -- Settings button -- */}
                 <SettingsButton />

@@ -8,5 +8,10 @@
     "title": "Blog",
     "caption": "Custom keyboard shortcuts."
   },
-  "subheader": "Sub header"
+  "subheader": "Sub header",
+  "groups": {
+    "attendance": "Attendance Management",
+    "dataManagement": "Data Management",
+    "timeManagement": "Time Management"
+  }
 }

@@ -1,0 +1,26 @@
+{
+  "demo": {
+    "lang": "France",
+    "description": "Le point de départ pour votre prochain projet est basé sur MUI. La personnalisation facile vous aide à construire des applications plus rapidement et mieux."
+  },
+  "screens": {
+    "overview": "Aperçu",
+    "insert": "Données de présence",
+    "profile": "Profil personnel",
+    "info": "Liste des étudiants",
+    "users": "Utilisateurs",
+    "templates": "Modèles",
+    "days": "Jours",
+    "exceptions": "Approbations",
+    "details": "Enregistrements",
+    "scan": "Scanner des documents",
+    "download": "Télécharger le modèle",
+    "summary": "Résumé de la présence",
+    "tests": "Tests"
+  },
+  "groups": {
+    "attendance": "Gestion des présences",
+    "dataManagement": "Gestion des données",
+    "timeManagement": "Gestion du temps"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "demo": {
+    "lang": "Hebrew",
+    "selectLang": "בחר שפה",
+    "description": "נקודת ההתחלה לפרויקט הבא שלך מבוססת על MUI. התאמה אישית קלה עוזרת לך לבנות אפליקציות מהר וטוב יותר."
+  },
+  "screens": {
+    "overview": "סקירה כללית",
+    "insert": "נתוני נוכחות",
+    "profile": "פרופיל אישי",
+    "info": "רשימת תלמידים",
+    "users": "משתמשים",
+    "templates": "תבניות",
+    "days": "ימים",
+    "exceptions": "אישורים",
+    "details": "רישומים",
+    "scan": "סריקת דפים",
+    "download": "הורדת תבנית",
+    "summary": "סיכום נוכחות",
+    "tests": "מבחנים"
+  },
+  "groups": {
+    "attendance": "ניהול נוכחות",
+    "dataManagement": "ניהול נתונים",
+    "timeManagement": "ניהול זמנים"
+  }
+}

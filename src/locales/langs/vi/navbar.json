@@ -1,0 +1,17 @@
+{
+  "app": "Ứng dụng",
+  "job": "Công việc",
+  "user": "Người dùng",
+  "travel": "Du lịch",
+  "invoice": "Hóa đơn",
+  "blog": {
+    "title": "Blog",
+    "caption": "Phím tắt tùy chỉnh."
+  },
+  "subheader": "Tiêu đề phụ",
+  "groups": {
+    "attendance": "Quản lý điểm danh",
+    "dataManagement": "Quản lý dữ liệu",
+    "timeManagement": "Quản lý thời gian"
+  }
+}

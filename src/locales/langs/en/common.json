@@ -2,5 +2,25 @@
   "demo": {
     "lang": "English",
     "description": "The starting point for your next project is based on MUI. Easy customization helps you build apps faster and better."
+  },
+  "screens": {
+    "overview": "Overview",
+    "insert": "Attendance Data",
+    "profile": "Personal Profile",
+    "info": "Students List",
+    "users": "Users",
+    "templates": "Templates",
+    "days": "Days",
+    "exceptions": "Approvals",
+    "details": "Records",
+    "scan": "Scan Documents",
+    "download": "Download Template",
+    "summary": "Attendance Summary",
+    "tests": "Tests"
+  },
+  "groups": {
+    "attendance": "Attendance Management",
+    "dataManagement": "Data Management",
+    "timeManagement": "Time Management"
   }
 }
