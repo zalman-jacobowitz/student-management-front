@@ -17,7 +17,7 @@ import useInsertStore from "../insert-state";
 import { FabButton, InsertToolbar } from "./insert-toolbar";
 import { InsertListHeader } from "./insert-header";
 import { InsertFilters } from "../components/filters";
-import { formValues, insertTamplate } from "../functions";
+import { formValues, insertTemplate } from "../functions";
 import { useLoadCurrentData } from "./functions-insert-load-data";
 import { apiInfoStudents } from "src/actions/info_students";
 import { apiInfoColumns } from "src/actions/info_columns";

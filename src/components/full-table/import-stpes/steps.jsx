@@ -30,7 +30,7 @@ import { columnsDetails } from 'src/utils/uinqe_usege/columnsValid';
 
 // ----------------------------------------------------------------------
 
-function TamplateExample({typeFile}){
+function TemplateExample({typeFile}){
   return (
     <Card sx={{ p: 3, mb: 2 }}>
     <Typography variant="subtitle1" gutterBottom>
@@ -91,7 +91,7 @@ export function InitImportFile({oldData}) {
           העלאת קובץ מאקסל עם נתוני תלמידים בוצעה בהצלחה
         </Alert>
       ) : null}
-      {!oldData.length && <TamplateExample typeFile='excel'/>}
+      {!oldData.length && <TemplateExample typeFile='excel'/>}
       <Upload
         multiple={false}
         accept={{

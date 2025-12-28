@@ -52,7 +52,7 @@ const walktourSteps = [
 ];
 
 //-----------------------------------------------------------------------
-function useTamplatesStep() {
+function useTemplatesStep() {
 
   const { control, watch } = useFormContext();
 
@@ -105,7 +105,7 @@ export function TemplateDefinitionStep() {
     setShowWalktour,
     handleStartTour
 
-  } = useTamplatesStep()
+  } = useTemplatesStep()
 
   const walktourConfig = useWalktour({ 
     steps: walktourSteps, 

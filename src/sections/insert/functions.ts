@@ -37,7 +37,7 @@ export function descriptionColumns(getColumns: any[]): { primary: string[]; seco
   }
 }
 
-export function insertTamplate(infoStudents: any[], selectedEvent: any): any[] {
+export function insertTemplate(infoStudents: any[], selectedEvent: any): any[] {
     if (infoStudents.length && selectedEvent) {
 
         return infoStudents.map((item) => ({

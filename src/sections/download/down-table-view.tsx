@@ -106,9 +106,9 @@ const mockData = Array.from({ length: 10 }, (_, i) => ({
     }))
 
 
+
 export function DownTableView() {
-    const templates = useSuspenseQuery(apiTemplates())
-    console.log({ data: templates.data })
+    const templates: ta = useSuspenseQuery(apiTemplates()).data 
 
     const infoStudents = useSuspenseQuery(apiInfoStudents());
     const infoColumns = useSuspenseQuery(apiInfoColumns());
@@ -262,8 +262,15 @@ export function DownTableView() {
             <div id='content'>
                 <Card>
                     <CardContent>
+                      
                         <Box sx={{ width: '100%' }} padding={2}>
-                            {templates.data.map((template) => (<Typography variant="h6">{template.event_id}. {template.event_name}</Typography>))}
+                            {templates.map((template) => (
+                              <Box key={template.event_id}>
+                              <Typography variant="h6"> {template.event_id} - סדר {template.event_name} 
+                              </Typography>
+                              <Typography variant="body2">{template.template_name}</Typography>
+                              </Box>
+                            ))}
                         </Box>
                     <DataGrid
                         

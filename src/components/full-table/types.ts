@@ -8,7 +8,7 @@ export type InfoStudent = {
   [key: string]: string;
 }
 
-type Row =  InfoColumn | InfoStudent | User | Tamplate
+type Row =  InfoColumn | InfoStudent | User | Template
 export type Table = Row[]
  
 
@@ -72,7 +72,7 @@ export interface InfoColumn {
   width?: number;
 }
 
-export interface Tamplate {
+export interface Template {
   template_id: string;
   tamplate_name: string;
   event_id: string;
