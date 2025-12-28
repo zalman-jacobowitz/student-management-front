@@ -109,7 +109,7 @@ function useTemplateDefinition({ template, dialog, template_id_default, template
         return
       }
       
-      const templateData = mode === "update" ? templateDataServerFromat(templates, data, template?.template_id) : templates
+      const templateData = mode === "update" ? templateDataServerFromat(templates, data, template?.template_id) :data
 
       const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  mode })
 
