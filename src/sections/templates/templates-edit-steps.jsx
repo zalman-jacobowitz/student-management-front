@@ -125,7 +125,6 @@ export function EventsSelectionStep() {
 ]
 */
 export function TemplateDefinitionStep({onSubmit, onComplete, template }) {
-  console.log('TEMPLATES: ', template)
 
   // ערכים בהתאם לנתונים קיימים או חדשים
   const initialValues = {
