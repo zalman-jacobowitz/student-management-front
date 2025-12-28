@@ -40,7 +40,7 @@ export const allLangs = [
   },
   {
     value: 'fr',
-    label: 'French',
+    label: 'Français',
     countryCode: 'FR',
     adapterLocale: 'fr',
     numberFormat: { code: 'fr-Fr', currency: 'EUR' },
@@ -50,7 +50,7 @@ export const allLangs = [
   },
   {
     value: 'he',
-    label: 'Hebrew',
+    label: 'עברית',
     countryCode: 'IL',
     adapterLocale: 'he',
     numberFormat: { code: 'he-IL', currency: 'ILS' },
@@ -60,7 +60,7 @@ export const allLangs = [
   },
   {
     value: 'yi',
-    label: 'Yiddish',
+    label: 'ייִדיש',
     countryCode: 'IL',
     adapterLocale: 'he',
     numberFormat: { code: 'he-IL', currency: 'ILS' },

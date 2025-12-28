@@ -10,6 +10,11 @@ import { DashboardContent } from "src/layouts/dashboard";
 import { useUserDetails } from "src/hooks/use-user-details";
 import { useTranslate } from "src/locales/use-locales";
 import { AppFeatured } from "./app-featured";
+import { AppWidgetSummary } from "./app-widget-summary";
+import { AppCurrentDownload } from "./app-current-download";
+import { AppAreaInstalled } from "./app-area-installed";
+import { AppNewInvoice } from "./app-new-invoice";
+import { useTheme } from "@emotion/react";
 
 function getGreetingByTimeInIsrael(t) {
   // הגדרת אזור הזמן של ישראל
@@ -58,6 +63,8 @@ function OverviewView() {
     slidesToShow: { xs: 1, sm: 2, md: '32%' },
   }, [Autoplay({ playOnInit: false, delay: 2000 })])
 
+  const theme = useTheme();
+
     return (
     <DashboardContent maxWidth="xl">
       <Grid container spacing={3}>
@@ -76,7 +83,7 @@ function OverviewView() {
         <Grid item xs={12} md={4}>
             <AppFeatured list={_appFeatured} />
         </Grid>
-                <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4}>
           <AppWidgetSummary
             title="Total active users"
             percent={2.6}
@@ -87,6 +94,98 @@ function OverviewView() {
             }}
           />
         </Grid>
+        
+        <Grid item xs={12} md={4}>
+          <AppWidgetSummary
+            title="Total installed"
+            percent={0.2}
+            total={4876}
+            chart={{
+              colors: [theme.vars.palette.info.main],
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [20, 41, 63, 33, 28, 35, 50, 46],
+            }}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <AppWidgetSummary
+            title="Total downloads"
+            percent={-0.1}
+            total={678}
+            chart={{
+              colors: [theme.vars.palette.error.main],
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [18, 19, 31, 8, 16, 37, 12, 33],
+            }}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={4}>
+          <AppCurrentDownload
+            title="Current download"
+            subheader="Downloaded by operating system"
+            chart={{
+              series: [
+                { label: 'Mac', value: 12244 },
+                { label: 'Window', value: 53345 },
+                { label: 'iOS', value: 44313 },
+                { label: 'Android', value: 78343 },
+              ],
+            }}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={8}>
+          <AppAreaInstalled
+            title="Area installed"
+            subheader="(+43%) than last year"
+            chart={{
+              categories: [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec',
+              ],
+              series: [
+                {
+                  name: '2022',
+                  data: [
+                    { name: 'Asia', data: [12, 10, 18, 22, 20, 12, 8, 21, 20, 14, 15, 16] },
+                    { name: 'Europe', data: [12, 10, 18, 22, 20, 12, 8, 21, 20, 14, 15, 16] },
+                    { name: 'Americas', data: [12, 10, 18, 22, 20, 12, 8, 21, 20, 14, 15, 16] },
+                  ],
+                },
+                {
+                  name: '2023',
+                  data: [
+                    { name: 'Asia', data: [6, 18, 14, 9, 20, 6, 22, 19, 8, 22, 8, 17] },
+                    { name: 'Europe', data: [6, 18, 14, 9, 20, 6, 22, 19, 8, 22, 8, 17] },
+                    { name: 'Americas', data: [6, 18, 14, 9, 20, 6, 22, 19, 8, 22, 8, 17] },
+                  ],
+                },
+                {
+                  name: '2024',
+                  data: [
+                    { name: 'Asia', data: [6, 20, 15, 18, 7, 24, 6, 10, 12, 17, 18, 10] },
+                    { name: 'Europe', data: [6, 20, 15, 18, 7, 24, 6, 10, 12, 17, 18, 10] },
+                    { name: 'Americas', data: [6, 20, 15, 18, 7, 24, 6, 10, 12, 17, 18, 10] },
+                  ],
+                },
+              ],
+            }}
+          />
+        </Grid>
+
+
     </Grid>
     </DashboardContent>
     )
