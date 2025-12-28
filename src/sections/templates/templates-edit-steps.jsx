@@ -65,7 +65,7 @@ export function EventsSelectionStep() {
         type="button"
         variant="outlined"
         startIcon={<Iconify icon="mdi:plus" />}
-        onClick={() => append({ event_name: '', event_id: shortId, event_start: '', event_end: '' , new: true})}
+        onClick={() => append({ event_name: '', event_id: '', event_start: '', event_end: '' , new: true})}
       >
         הוסף אירוע
       </Button>

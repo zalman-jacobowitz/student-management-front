@@ -71,7 +71,8 @@ function TemplateView({ row, onEdit, onSubmit }) {
 // note: צריך לקבל גם את טבלת הסדרים כדי לדעת אם יש מספר גבוה שנמחק
 function getNewShortId(templates) {
   // קבלת כל ה-IDs הקיימים של התבניות ובדיקה מי הגבוהה ביותר והוספת 1
-  const existingIds = templates.map(t => parseInt(t.template_id, 10)).filter(id => !isNaN(id));
+  const existingIds = templates.map(t => parseInt(t.event_id, 10))
+
   const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
   return maxId
 }
@@ -81,7 +82,6 @@ function templateDataServerFromat(templates, data, templateId=null) {
   const { events, template_name } = data
 
   const listEvents = []
-
   data.events.map((event, index) => listEvents.push({
     template_id,
     template_name,
@@ -109,7 +109,7 @@ function useTemplateDefinition({ template, dialog, template_id_default, template
         return
       }
       
-      const templateData = mode === "update" ? templateDataServerFromat(templates, data, template?.template_id) : data
+      const templateData = mode === "update" ? templateDataServerFromat(templates, data, template?.template_id) : templates
 
       const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  mode })
 
