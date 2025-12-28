@@ -41,7 +41,7 @@ const groups = {
 };
 */
 const groups = {
-  'ניהול נוכחות': ['insert', 'exceptions', 'users'],
+  'ניהול נוכחות': ['overview', 'insert', 'exceptions', 'users'],
   'ניהול נתונים': ['info', 'profile', 'scan'],
   'ניהול זמנים': ['templates', 'days'],
 };

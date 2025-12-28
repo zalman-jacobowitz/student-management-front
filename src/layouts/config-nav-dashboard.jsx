@@ -42,7 +42,7 @@ const ICONS = {
 
 
 export const screenOptions = {
-  overview:       { title: 'סקירה כללית', path: paths.dashboard.root, icon: ICONS.dashboard, regularIcon: 'material-symbols:dashboard' },
+  overview:       { title: 'סקירה כללית', path: paths.dashboard.overview, icon: ICONS.dashboard, regularIcon: 'material-symbols:dashboard' },
   insert:         { title: 'נתוני נוכחות',     path: paths.dashboard.insert,             icon: ICONS.calendar, regularIcon: 'material-symbols:edit-document' },
   profile:        { title: 'פרופיל אישי', path: paths.dashboard.profile(undefined),     icon: ICONS.user, regularIcon: 'material-symbols:person' },
   info:           { title: 'רשימת תלמידים', path: paths.dashboard.list, icon: ICONS.user, regularIcon: 'material-symbols:group' },
@@ -59,6 +59,7 @@ export const screenOptions = {
   download: { title: 'הורדת תבנית', path: paths.dashboard.download, icon: ICONS.mail, regularIcon: 'material-symbols:download' },
   summary: { title: 'סיכום נוכחות', path: paths.dashboard.summary, icon: ICONS.analytics, regularIcon: 'material-symbols:summary' },
   tests: { title: 'מבחנים', path: paths.dashboard.tests, icon: ICONS.analytics, regularIcon: 'material-symbols:summary' },
+  
 
 }
 
