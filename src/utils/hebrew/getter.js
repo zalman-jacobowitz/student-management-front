@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import hebrewData from './hebrew.json';
 
 /**
@@ -52,14 +53,13 @@ export function readHebrewJson(day) {
  * } or null if not found
  */
 
-function describeHebrew(day){
+function describeHebrew(day, t) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
         const dateToCheck = new Date(day);
         dateToCheck.setHours(0, 0, 0, 0);
         
-        // מחזיר: היום אתמול לפני X ימים או בעתיד
         const diffTime = today - dateToCheck;
         
         const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -67,67 +67,67 @@ function describeHebrew(day){
         const absDiffTime = Math.abs(diffTime);
         const diffDays = Math.floor(absDiffTime / MS_PER_DAY);
         
-        // Dictionary for past dates
+        // Dictionary for past dates with i18n support
         const pastDescriptions = {
-            0: 'היום',
-            1: 'אתמול',
-            2: 'לפני יומיים',
-            7: 'שבוע שעבר'
+            0: t ? t('dateRelative.today') : 'היום',
+            1: t ? t('dateRelative.yesterday') : 'אתמול',
+            2: t ? t('dateRelative.twoDaysAgo') : 'לפני יומיים',
+            7: t ? t('dateRelative.lastWeek') : 'שבוע שעבר'
         };
         
-        // Dictionary for future dates
+        // Dictionary for future dates with i18n support
         const futureDescriptions = {
-            0: 'היום',
-            1: 'מחר',
-            2: 'בעוד יומיים',
-            7: 'שבוע הבא'
+            0: t ? t('dateRelative.today') : 'היום',
+            1: t ? t('dateRelative.tomorrow') : 'מחר',
+            2: t ? t('dateRelative.inTwoDays') : 'בעוד יומיים',
+            7: t ? t('dateRelative.nextWeek') : 'שבוע הבא'
         };
         
         if (isFuture) {
             // Handle future dates
             if (futureDescriptions[diffDays]) return futureDescriptions[diffDays];
-            if (diffDays < 7) return `בעוד ${diffDays} ימים`;
-            if (diffDays <= 14) return 'בעוד שבועיים';
+            if (diffDays < 7) return t ? `${diffDays} ${t('dateRelative.inDays')}` : `בעוד ${diffDays} ימים`;
+            if (diffDays <= 14) return t ? t('dateRelative.inTwoWeeks') : 'בעוד שבועיים';
             if (diffDays <= 30) {
                 const weeks = Math.ceil(diffDays / 7);
-                return `בעוד ${weeks} שבועות`;
+                return t ? `${weeks} ${t('dateRelative.inWeeks')}` : `בעוד ${weeks} שבועות`;
             }
             // Month calculations (after day 30)
-            if (diffDays <= 60) return 'בעוד חודש';
-            if (diffDays <= 90) return 'בעוד חודשיים';
-            if (diffDays <= 365) return 'בשנה הבאה';
+            if (diffDays <= 60) return t ? t('dateRelative.inMonth') : 'בעוד חודש';
+            if (diffDays <= 90) return t ? t('dateRelative.inTwoMonths') : 'בעוד חודשיים';
+            if (diffDays <= 365) return t ? t('dateRelative.nextYear') : 'בשנה הבאה';
             const months = Math.ceil(diffDays / 30);
-            return `בעוד ${months} חודשים`;
+            return t ? `${months} ${t('dateRelative.inMonths')}` : `בעוד ${months} חודשים`;
         } else {
             // Handle past dates
             if (pastDescriptions[diffDays]) return pastDescriptions[diffDays];
-            if (diffDays < 7) return `לפני ${diffDays} ימים`;
-            if (diffDays <= 14) return 'לפני שבועיים';
+            if (diffDays < 7) return t ? `${diffDays} ${t('dateRelative.daysAgo')}` : `לפני ${diffDays} ימים`;
+            if (diffDays <= 14) return t ? t('dateRelative.twoWeeksAgo') : 'לפני שבועיים';
             if (diffDays <= 30) {
                 const weeks = Math.ceil(diffDays / 7);
-                return `לפני ${weeks} שבועות`;
+                return t ? `${weeks} ${t('dateRelative.weeksAgo')}` : `לפני ${weeks} שבועות`;
             }
             // Month calculations (after day 30)
-            if (diffDays <= 60) return 'לפני חודש';
-            if (diffDays <= 90) return 'לפני חודשיים';
-            if (diffDays <= 365) return 'שנה שעברה';
+            if (diffDays <= 60) return t ? t('dateRelative.monthAgo') : 'לפני חודש';
+            if (diffDays <= 90) return t ? t('dateRelative.twoMonthsAgo') : 'לפני חודשיים';
+            if (diffDays <= 365) return t ? t('dateRelative.lastYear') : 'שנה שעברה';
             const months = Math.ceil(diffDays / 30);
-            return `לפני ${months} חודשים`;
+            return t ? `${months} ${t('dateRelative.monthsAgo')}` : `לפני ${months} חודשים`;
         }
 }
 
 
-export function inHebrew(day, full=false, desc=false) {
+export function inHebrew(day, full=false, desc=false, t=null) {
     /**
      * @param {string} day - date in format YYYY-MM-DD
      * @return {Object|string|null} - Hebrew date information or formatted string
      * if full is 'Dm' returns "יום_עברי חודש_עברי"
      * if full is 'Dms' returns "יום_בשבוע יום_עברי חודש_עברי"
      */
-    
+
     const hebrewJson = readHebrewJson(day);
     if (desc){
-        return describeHebrew(day);
+        return describeHebrew(day, t);
     }
     if (full === 'Dm'){
         return `${hebrewJson?.יום_עברי} ${hebrewJson?.חודש_עברי}`;

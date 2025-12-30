@@ -4,6 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { Box, Button, Typography } from "@mui/material";
 
 import { getAllYear } from "src/utils/hebrew/getter";
+import { useTranslate } from "src/locales/use-locales";
 
 
 /*
@@ -49,15 +50,7 @@ export function getMonthDates(monthName, allDates) {
 
 }
 
-function CalendarHeader({ monthName, onMonthChange }) {
-    
-    /*
-    
-            <Button onClick={() => onMonthChange(-1)}>Previous</Button>
-            <h2>{monthName}</h2>
-            <Button onClick={() => onMonthChange(1)}>Next</Button>
-        
-    */
+function CalendarHeader({ monthName, onMonthChange, t }) {
     return (
         <Box
             display="flex"
@@ -66,33 +59,31 @@ function CalendarHeader({ monthName, onMonthChange }) {
             sx={{ padding: 2 }}
         >
             <Button variant="outlined" onClick={() => onMonthChange(-1)}>
-                {'<'} הקודם
+                {'<'} {t('calendar.previous')}
             </Button>
             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
-               חודש {monthName} 
+               {t('calendar.month')} {monthName} 
             </Typography>
             <Button variant="outlined" onClick={() => onMonthChange(1)}>
-                הבא {'>'}
+                {t('calendar.next')} {'>'}
             </Button>
         </Box>
 
     );
 }
 
-function CalendarGrid({ monthDates, selectedDate, setSelectedDate, onClose, name }) {
-    /*
-    last version:
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px' }}>
-            {monthDates.map((date, index) => (
-                <div key={index} style={{ padding: '10px', border: '1px solid #ccc' }}>
-                    <p>{date['יום_עברי']}</p>
-                </div>
-            ))}
-        </div>
-    */
+function CalendarGrid({ monthDates, selectedDate, setSelectedDate, onClose, name, t }) {
     const { setValue, watch } = useFormContext();
 
-   const daysOfWeek = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+    const daysOfWeek = [
+        t('calendar.sunday'),
+        t('calendar.monday'),
+        t('calendar.tuesday'),
+        t('calendar.wednesday'),
+        t('calendar.thursday'),
+        t('calendar.friday'),
+        t('calendar.saturday')
+    ];
     return (
     <Box
         gap={1}
@@ -143,14 +134,32 @@ function CalendarGrid({ monthDates, selectedDate, setSelectedDate, onClose, name
 }
 
 export function HebrewDateCal({selectedDate, setSelectedDate, onClose, name}){
-    // import all dates
-
-
+    const { t } = useTranslate();
     const [selectedMonth, setSelectedMonth] = useState(selectedDate['חודש_עברי'] || 'תשרי');
 
-    const allDates = getAllYear('תשפ״ו'); // Example year
+    const allDates = getAllYear('תשפ״ו');
     const hebrewMonths = [...new Set(allDates.map(date => date['חודש_עברי']))]
     const monthDates = getMonthDates(selectedMonth, allDates);
+    
+    const getMonthDisplayName = (monthName) => {
+        const hebrewToEnglish = {
+            'תשרי': 'Tishrei',
+            'חשוון': 'Cheshvan',
+            'כסלו': 'Kislev',
+            'טבת': 'Tevet',
+            'שבט': 'Shevat',
+            'אדר': 'Adar',
+            'ניסן': 'Nisan',
+            'אייר': 'Iyar',
+            'סיוון': 'Sivan',
+            'תמוז': 'Tammuz',
+            'אב': 'Av',
+            'אלול': 'Elul'
+        };
+        const englishName = hebrewToEnglish[monthName];
+        return t(`hebrewMonths.${englishName}`);
+    };
+    
     const handleMonthChange = (direction) => {
         const currentIndex = hebrewMonths.indexOf(selectedMonth);
         const newIndex = currentIndex + direction;
@@ -160,10 +169,8 @@ export function HebrewDateCal({selectedDate, setSelectedDate, onClose, name}){
     };
     return (
         <>
-            <CalendarHeader monthName={selectedMonth} onMonthChange={handleMonthChange} />
-            <CalendarGrid name={name} monthDates={monthDates} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onClose={onClose}/>
+            <CalendarHeader monthName={getMonthDisplayName(selectedMonth)} onMonthChange={handleMonthChange} t={t} />
+            <CalendarGrid name={name} monthDates={monthDates} selectedDate={selectedDate} setSelectedDate={setSelectedDate} onClose={onClose} t={t} />
         </>
     );
-
-
 }

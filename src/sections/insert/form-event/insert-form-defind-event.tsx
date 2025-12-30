@@ -21,6 +21,7 @@ import useInsertStore from '../insert-state';
 import { InsertFormPastEvents } from './insert-form-past-events';
 import { apiListEvents } from 'src/actions/list_of_events';
 import { inHebrew } from 'src/utils/hebrew/getter';
+import { useTranslate } from 'src/locales/use-locales';
 
 
 
@@ -45,9 +46,15 @@ function mergeCurrentWithPastEvents(currentData, pastEvent, today) {
 
 function useInsertForm() {
 
+  const { t } = useTranslate();
   const { setEventDetails, setAllEvents } = useInsertStore();
   
   // טופס לבחירה של סדר מסויים לביצוע רישום
+  const EventSchema = zod.object({
+    event: zod.string().min(1, { message: t('insertForm.eventRequired') }),
+    day: zod.string().min(1, { message: t('insertForm.dayRequired') })
+  });
+  
   const methods = useForm({
     mode: 'onChange',
     resolver: zodResolver(EventSchema),
@@ -88,11 +95,13 @@ function useInsertForm() {
     eventsToday,
     isSubmitting,
     reset,
-    listOfTimes
+    listOfTimes,
+    t
   };
 }
 
 export function InsertForm() {
+  
   
   const {
     methods,
@@ -100,7 +109,8 @@ export function InsertForm() {
     reset,
     eventsToday,
     isSubmitting,
-    listOfTimes
+    listOfTimes,
+    t
   } = useInsertForm();
 
   const dialogPrevEvents = useBoolean(false);
@@ -111,7 +121,7 @@ export function InsertForm() {
 
   const renderSelectDay = (
     <Field.HebrewDatePicker
-      label="תאריך עברי"
+      label={t('insertForm.hebrewDate')}
       name="day"
       data-testid="hebrew-date-picker"
       className="insert-form__date-picker"
@@ -123,7 +133,7 @@ export function InsertForm() {
       defaultValue={eventsToday.length? eventsToday[0].event_id: ''} 
       fullWidth
       name="event"
-      label="אירוע"
+      label={t('insertForm.event')}
       variant="filled"
       InputLabelProps={{ shrink: true }}
       data-testid="event-select"
@@ -152,7 +162,7 @@ export function InsertForm() {
     ))}
     </Field.Select>
   );
-
+  
 
   return (
     <ComponentContainer sx={{}} className="insert-form__container">
@@ -160,15 +170,15 @@ export function InsertForm() {
 
         <Form methods={methods} onSubmit={onSubmit} className="insert-form__form">
           <CardHeader
-            title="רישום אירוע"
-            subheader="בחר אירוע לרישום"
+            title={t('insertForm.title')}
+            subheader={t('insertForm.subtitle')}
             className="insert-form__header"
           />
 
           <CardContent sx={{ mb: 3 }} className="insert-form__content">
             <Stack direction="column" spacing={2} className="insert-form__content-stack">
                         <Alert severity="info" sx={{ mb: 2 }} className="insert-form__alert">
-            האירוע שנבחר: {selectedEvent?.event_name} ({inHebrew(selectedDay, true, true)})
+            {t('insertForm.selectedEvent')}: {selectedEvent?.event_name} ({inHebrew(selectedDay, true, true, t)})
           </Alert>
               {renderSelectDay}
               {renderSelectEvent}
@@ -182,7 +192,7 @@ export function InsertForm() {
               data-testid="existing-events-button"
               className="insert-form__prev-events-button"
             >
-              בחר אירוע קיים
+              {t('insertForm.chooseExisting')}
             </Button>
             <LoadingButton
               type="submit"
@@ -191,12 +201,12 @@ export function InsertForm() {
               data-testid="start-registration"
               className="insert-form__submit-button"
             >
-              התחל רישום
+              {t('insertForm.startRegistration')}
             </LoadingButton>
           </CardActions>
           <ConfirmDialog
             open={dialogPrevEvents.value}
-            title="עריכת אירועים קודמים"
+            title={t('insertForm.editPastEvents')}
             className="insert-form__confirm-dialog"
            content={
             <InsertFormPastEvents

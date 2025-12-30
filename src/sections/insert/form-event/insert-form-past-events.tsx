@@ -7,6 +7,7 @@ import { inHebrew } from "src/utils/hebrew/getter";
 import { apiListEvents } from "src/actions/list_of_events";
 
 import { LoadingScreen } from "src/components/loading-screen";
+import { useTranslate } from "src/locales";
 
 interface InsertFormPastEventsProps {
   students_ids?: string[];
@@ -18,6 +19,7 @@ interface InsertFormPastEventsProps {
 
 export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
 
+  const { t } = useTranslate();
 
   return (
     
@@ -40,7 +42,7 @@ export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, re
             }}
           >
             <ListItemText
-              primary={`${inHebrew(option.day, 'Dms')} (${inHebrew(option.day, true, true)})`}
+              primary={`${inHebrew(option.day, 'Dms', false, t)} (${inHebrew(option.day, true, true, t)})`}
               secondary={`${option.event_name} (${option.event_start} - ${option.event_end})`}
             />
           </ListItemButton>
