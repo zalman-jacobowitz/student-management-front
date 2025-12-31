@@ -483,7 +483,8 @@ function presentage(arr){
 
 
 function SummaryMode({ student = {}, enhancedStudent = {}, summary = {} }: { children: React.ReactNode }) {
-  const { color, label, icon, tooltip } = getColorByStatus(student);
+  const { t } = useTranslate();
+  const { color, label, icon, tooltip } = getColorByStatus(student, t );
   const SLabel = (
     <Tooltip title={tooltip}>
       <Label

@@ -5,11 +5,23 @@ import { hasParams, removeParams, isExternalLink, removeLastSlash } from '../uti
 
 export function useActiveLink(itemPath, deep = true) {
   const pathname = removeLastSlash(usePathname());
+  
+  // Normalize URLs to handle encoded Hebrew/international characters
+  const normalizeUrl = (url) => {
+    try {
+      return decodeURIComponent(url);
+    } catch {
+      return url;
+    }
+  };
 
-  const pathHasParams = hasParams(itemPath);
+  const normalizedPathname = normalizeUrl(pathname);
+  const normalizedItemPath = normalizeUrl(itemPath);
+  
+  const pathHasParams = hasParams(normalizedItemPath);
 
   /* Start check */
-  const notValid = itemPath.startsWith('#') || isExternalLink(itemPath);
+  const notValid = normalizedItemPath.startsWith('#') || isExternalLink(normalizedItemPath);
 
   if (notValid) {
     return false;
@@ -21,7 +33,7 @@ export function useActiveLink(itemPath, deep = true) {
    */
   const isDeep = deep || pathHasParams;
 
-  // console.info(isDeep ? '[deep]   :' : '[normal] :', itemPath, '-?-', pathname);
+  // console.info(isDeep ? '[deep]   :' : '[normal] :', normalizedItemPath, '-?-', normalizedPathname);
 
   if (isDeep) {
     /**
@@ -31,7 +43,7 @@ export function useActiveLink(itemPath, deep = true) {
      * @match pathname = '/dashboard/user/list'
      * @match pathname = '/dashboard/user/e99f09a7-dd88-49d5-b1c8-1daf80c2d7b15/edit'
      */
-    const defaultActive = pathname.includes(itemPath);
+    const defaultActive = normalizedPathname.includes(normalizedItemPath);
 
     /**
      * [1] Deep: has params
@@ -39,9 +51,9 @@ export function useActiveLink(itemPath, deep = true) {
      * @match pathname = '/dashboard/test'
      */
 
-    const originItemPath = removeParams(itemPath);
+    const originItemPath = removeParams(normalizedItemPath);
 
-    const hasParamsActive = pathHasParams && originItemPath === pathname;
+    const hasParamsActive = pathHasParams && originItemPath === normalizedPathname;
 
     return defaultActive || hasParamsActive;
   }
@@ -51,5 +63,5 @@ export function useActiveLink(itemPath, deep = true) {
    * @itemPath 			 = '/dashboard/calendar'
    * @match pathname = '/dashboard/calendar'
    */
-  return pathname === itemPath;
+  return normalizedPathname === normalizedItemPath;
 }

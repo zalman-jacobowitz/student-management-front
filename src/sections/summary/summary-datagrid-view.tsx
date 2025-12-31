@@ -196,6 +196,7 @@ function generateColumnGrouping(data, formData) {
 }
 
 export function SummaryDataGrid({ formData }) {
+  console.log('Rendering SummaryDataGrid with formData:', formData);
   const summaryData = useSuspenseQuery(apiSummary(formData));
   
   const infoStudents = useSuspenseQuery(apiInfoStudents());
@@ -381,11 +382,15 @@ export function SummaryDataGridViewWrapper() {
   // For demo purposes, using sample form data
   // In real implementation, this would come from the form
   const sampleFormData = {
+    // אירועים
     events: ['1', '2'],
+    // טווח תאריכים
     start: '2025-11-01',
     end: '2025-11-30',
+    // סוג סיכום - יומי או סדרי או גם וגם
     group_by: ['day', 'event'],
     type: 'mean',
+    // רשימת ימים ספציפית
     days: [
       '2025-11-01',
       '2025-11-02',
@@ -403,9 +408,27 @@ export function SummaryDataGridViewWrapper() {
       '2025-11-14'
     ]
   };
+  /* 
+  finally
+  the results look like this:
+  student_id | event | date       | data
+  ----------------------------------------
+  123        | 1     | 2025-11-01 | 0
+  123        | 1     | 2025-11-02 | 0
+  123        | 2     | 2025-11-01 | 1
+  123        | 2     | 2025-11-02 | 1
+  456        | 1     | 2025-11-01 | 0
+  456        | 1     | 2025-11-02 | 1
+  --------------------------------------
+  then we pivot it to different format for datagrid.
+  we can do group by day or event or merge both
+  
+  ואז לעשות את הסיכומים בכל המערכת על הבסיס הזה
+  */
 
   const walktourSteps = [
     // TODO: Add walktour steps here
+    
   ];
 
   const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
