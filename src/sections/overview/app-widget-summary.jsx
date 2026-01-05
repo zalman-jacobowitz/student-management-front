@@ -8,8 +8,62 @@ import { Iconify } from 'src/components/iconify';
 import { Chart, useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
+import Autoplay from 'embla-carousel-autoplay';
 
-export function AppWidgetSummary({ title, percent, total, chart, sx, ...other }) {
+import Link from '@mui/material/Link';
+
+import Typography from '@mui/material/Typography';
+
+import { varAlpha } from 'src/theme/styles';
+
+import { Image } from 'src/components/image';
+import {
+  Carousel,
+  useCarousel,
+  CarouselDotButtons,
+  CarouselArrowBasicButtons,
+} from 'src/components/carousel';
+import { Grid } from '@mui/material';
+
+// ----------------------------------------------------------------------
+
+export function AppWidgetSummary({ list, sx, ...other }) {
+  const carousel = useCarousel({
+    align: 'center',
+    loop: true,
+    dragFree: true,
+    slideSpacing: '20px',
+    direction: 'rtl',
+    slidesToShow: { xs: 1, sm: 2, md: '32%' },
+  }, [Autoplay({ playOnInit: false, delay: 2000 })]);
+
+  return (
+    <>
+
+
+         
+<Box sx={{ position: 'relative', p: 0, m: 0 }}>
+      <Carousel carousel={carousel}>
+        {list.map((item) => (
+        
+          <CarouselItem title={item.title} percent={item.percent} total={item.total} chart={item.chart} sx={item.sx} {...other} />
+        ))}
+        
+      </Carousel>
+                  <CarouselDotButtons
+              scrollSnaps={carousel.dots.scrollSnaps}
+              selectedIndex={carousel.dots.selectedIndex}
+              onClickDot={carousel.dots.onClickDot}
+              sx={{ top: 16, right: 16, position: 'absolute', color: 'common.white' }}
+            />
+      </Box>
+    </>
+  );
+}
+
+// ----------------------------------------------------------------------
+
+export function CarouselItem({ title, percent, total, chart, sx, ...other }) {
   const theme = useTheme();
 
   const chartColors = chart.colors ?? [theme.palette.primary.main];
@@ -43,7 +97,7 @@ export function AppWidgetSummary({ title, percent, total, chart, sx, ...other })
         {fPercent(percent)}
       </Box>
       <Box component="span" sx={{ typography: 'body2', color: 'text.secondary' }}>
-        last 7 days
+        יותר מ-7 ימים
       </Box>
     </Box>
   );
@@ -60,7 +114,7 @@ export function AppWidgetSummary({ title, percent, total, chart, sx, ...other })
     >
       <Box sx={{ flexGrow: 1 }}>
         <Box sx={{ typography: 'subtitle2' }}>{title}</Box>
-        <Box sx={{ mt: 1.5, mb: 1, typography: 'h3' }}>{fNumber(total)}</Box>
+        <Box sx={{ mt: 1.5, mb: 1, typography: 'h3' }}>{fNumber(total)}%</Box>
         {renderTrending}
       </Box>
 

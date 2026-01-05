@@ -10,7 +10,7 @@ import { RegularChart } from "../charts/regular-chart";
 
 
 
-function groupBy(data, groupByColumns, aggregateColumn = null, aggregateFunction = 'mean') {
+export function groupBy(data, groupByColumns, aggregateColumn = null, aggregateFunction = 'mean') {
   if (!data || data.length === 0) return [];
 
   // המרת groupByColumns למערך אם הוא מחרוזת יחידה

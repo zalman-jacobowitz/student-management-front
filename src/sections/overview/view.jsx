@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { LoadingScreen } from "src/components/loading-screen";
 import { AppWelcome } from "./dash-welcome";
 import { Button, Grid } from "@mui/material";
@@ -15,6 +15,12 @@ import { AppCurrentDownload } from "./app-current-download";
 import { AppAreaInstalled } from "./app-area-installed";
 import { AppNewInvoice } from "./app-new-invoice";
 import { useTheme } from "@emotion/react";
+import { useAppAreaInstalledData } from "./hooks/use-app-area-installed-data";
+import { Scrollbar } from "src/components/scrollbar";
+import { SummaryEditDialog } from "../insert/delays/summary-edit-steps";
+import { useBoolean } from "src/hooks/use-boolean";
+import { AppSummaryEditDialog } from "./app-summary-edit-steps";
+import { groupBy } from "../profile/profile-main";
 
 function getGreetingByTimeInIsrael(t) {
   // הגדרת אזור הזמן של ישראל
@@ -52,8 +58,7 @@ function OverviewView() {
   const { t } = useTranslate();
   const { userDetails } = useUserDetails()
   const email = userDetails?.user_metadata?.display_name || '';
-  console.log('User Details in OverviewView:', userDetails);
-    const user = { email };
+   const user = { email };
     const carousel = useCarousel({
     align: 'center',
     loop: true,
@@ -64,6 +69,25 @@ function OverviewView() {
   }, [Autoplay({ playOnInit: false, delay: 2000 })])
 
   const theme = useTheme();
+  const [summaryDetails, setSummaryDetails] = useState(null);
+  const appAreaData = useAppAreaInstalledData(summaryDetails);
+  
+  const groupedSeries = groupBy(appAreaData.mergedData, appAreaData.selectedSeries, 'data', 'average');
+  
+  console.log('groupedSeries', groupedSeries);
+  const listDashData = appAreaData.chartData.series[0].data.map((item) => ({
+          title: item.fullName,
+            percent: 2.6,
+            total: groupedSeries.find((series) => series[appAreaData.selectedSeries] === item.name)?.data_average || 0,
+            
+            chart:{
+              categories: appAreaData.uniqueColumns,
+              series: item.data,
+            }
+          }));
+
+
+    const summaryDialog = useBoolean(false);
 
     return (
     <DashboardContent maxWidth="xl">
@@ -74,7 +98,7 @@ function OverviewView() {
             description={t('overview.welcomeDescription')}
             img={<Image alt="" src={`${CONFIG.assetsDir}/assets/images/about/sign-page-abstract-concept-illustration-b.png`} ratio="8/6" sx={{ borderRadius: 1 }} />}
             action={
-              <Button variant="contained" color="primary" onClick={carousel.autoplay.onTogglePlay}>
+              <Button variant="contained" color="primary" onClick={summaryDialog.onTrue}>
                 {t('overview.start')}
               </Button>
             }
@@ -83,116 +107,40 @@ function OverviewView() {
         <Grid item xs={12} md={4}>
             <AppFeatured list={_appFeatured} />
         </Grid>
-        <Grid item xs={12} md={4}>
-          <AppWidgetSummary
-            title="Total active users"
-            percent={2.6}
-            total={18765}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [15, 18, 12, 51, 68, 11, 39, 37],
-            }}
-          />
-        </Grid>
-        
-        <Grid item xs={12} md={4}>
-          <AppWidgetSummary
-            title="Total installed"
-            percent={0.2}
-            total={4876}
-            chart={{
-              colors: [theme.vars.palette.info.main],
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [20, 41, 63, 33, 28, 35, 50, 46],
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <AppWidgetSummary
-            title="Total downloads"
-            percent={-0.1}
-            total={678}
-            chart={{
-              colors: [theme.vars.palette.error.main],
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [18, 19, 31, 8, 16, 37, 12, 33],
-            }}
-          />
+        <Grid item xs={12} md={12}>
+          <AppWidgetSummary list={listDashData}/>
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
           <AppCurrentDownload
-            title="Current download"
-            subheader="Downloaded by operating system"
-            chart={{
-              series: [
-                { label: 'Mac', value: 12244 },
-                { label: 'Window', value: 53345 },
-                { label: 'iOS', value: 44313 },
-                { label: 'Android', value: 78343 },
-              ],
-            }}
+            title="יחס בין סדרים"
+            subheader="בהתקנות בחודש האחרון"
+            data={appAreaData}
           />
         </Grid>
 
         <Grid item xs={12} md={6} lg={8}>
           <AppAreaInstalled
-            title="Area installed"
-            subheader="(+43%) than last year"
-            chart={{
-              categories: [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec',
-              ],
-              series: [
-                {
-                  name: '2022',
-                  data: [
-                    { name: 'Asia', data: [12, 10, 18, 22, 20, 12, 8, 21, 20, 14, 15, 16] },
-                    { name: 'Europe', data: [12, 10, 18, 22, 20, 12, 8, 21, 20, 14, 15, 16] },
-                    { name: 'Americas', data: [12, 10, 18, 22, 20, 12, 8, 21, 20, 14, 15, 16] },
-                  ],
-                },
-                {
-                  name: '2023',
-                  data: [
-                    { name: 'Asia', data: [6, 18, 14, 9, 20, 6, 22, 19, 8, 22, 8, 17] },
-                    { name: 'Europe', data: [6, 18, 14, 9, 20, 6, 22, 19, 8, 22, 8, 17] },
-                    { name: 'Americas', data: [6, 18, 14, 9, 20, 6, 22, 19, 8, 22, 8, 17] },
-                  ],
-                },
-                {
-                  name: '2024',
-                  data: [
-                    { name: 'Asia', data: [6, 20, 15, 18, 7, 24, 6, 10, 12, 17, 18, 10] },
-                    { name: 'Europe', data: [6, 20, 15, 18, 7, 24, 6, 10, 12, 17, 18, 10] },
-                    { name: 'Americas', data: [6, 20, 15, 18, 7, 24, 6, 10, 12, 17, 18, 10] },
-                  ],
-                },
-              ],
-            }}
+            title="סיכום מפורט"
+            subheader="יותר מהתקנות בחודש האחרון"
+            data={appAreaData}
           />
         </Grid>
 
 
     </Grid>
+          <AppSummaryEditDialog
+            setSummaryDetails={setSummaryDetails}
+            open={summaryDialog.value}
+            onClose={summaryDialog.onFalse}
+            onComplete={summaryDialog.onFalse}
+          />
     </DashboardContent>
     )
 }
 
 export function OverviewWrapper() {
- 
+
   return (
     <Suspense fallback={<LoadingScreen />}>
       

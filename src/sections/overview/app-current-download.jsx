@@ -6,11 +6,27 @@ import CardHeader from '@mui/material/CardHeader';
 import { fNumber } from 'src/utils/format-number';
 
 import { Chart, useChart, ChartLegends } from 'src/components/chart';
+import { groupBy } from '../profile/profile-main';
 
 // ----------------------------------------------------------------------
 
-export function AppCurrentDownload({ title, subheader, chart, ...other }) {
+export function AppCurrentDownload({ title, subheader, data, ...other }) {
   const theme = useTheme();
+  const chart = { series: [], categories: [] };
+  const {summaryData, group_by} = data ?? {};
+
+  const groupedData = groupBy(
+    summaryData,
+    group_by,
+    'data',
+    'average'
+  );
+  console.log({groupedData})
+
+  chart.series = groupedData.map((item) => ({
+    label: item[group_by],
+    value: item.data_average,
+  }));
 
   const chartColors = chart.colors ?? [
     theme.palette.primary.lighter,

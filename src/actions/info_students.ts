@@ -9,11 +9,10 @@ import { apiFetch } from 'src/utils/manager-fetch';
 
 
 export function apiInfoStudents() {
-  const postData = { table_name: 'info_students', mode: 'select', data: [] };
   return queryOptions({
     queryKey: ['info_students'],
     queryFn: async () => {
-      const res =  await apiFetch('all', postData);
+      const res =  await apiFetch('info_students', {mode: 'select'});
       console.log('apiInfoStudents', res);
       return res?.data ?? null;
     },
@@ -36,8 +35,7 @@ export const infoStudentsUpdate = ({queryClient}: InfoStudentsUpdateProps) => ({
   mutationKey: ['info_students'],
   mutationFn: async ({ data, mode='update'}) => {
     console.log('infoStudentsUpdate', data, mode);
-    const res = await apiFetch('all', {
-      table_name: 'info_students',
+    const res = await apiFetch('info_students', {
       mode,
       data,
       });
