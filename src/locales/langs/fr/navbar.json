@@ -1,0 +1,17 @@
+{
+  "app": "Application",
+  "job": "Emploi",
+  "user": "Utilisateur",
+  "travel": "Voyage",
+  "invoice": "Facture",
+  "blog": {
+    "title": "Blog",
+    "caption": "Raccourcis clavier personnalisés."
+  },
+  "subheader": "Sous-titre",
+  "groups": {
+    "attendance": "Gestion des présences",
+    "dataManagement": "Gestion des données",
+    "timeManagement": "Gestion du temps"
+  }
+}

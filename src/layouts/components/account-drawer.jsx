@@ -37,7 +37,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
 
   const pathname = usePathname();
 
-  const email = userDetails?.user_metadata?.stepUser?.email
+  const email = userDetails?.user_metadata?.user?.email
 
   const [open, setOpen] = useState(false);
 
@@ -72,12 +72,13 @@ export function AccountDrawer({ data = [], sx, ...other }) {
       {email?.charAt(0).toUpperCase()}
     </AnimateAvatar>
   );
+  const display_name = userDetails?.user_metadata?.user.firstName + ' ' + userDetails?.user_metadata?.user.lastName
 
   return (
     <>
       <AccountButton
         onClick={handleOpenDrawer}
-        photoURL={userDetails?.user_metadata?.stepUser?.photoURL}
+        photoURL={''}
         displayName={email}
         sx={sx}
         {...other}
@@ -102,7 +103,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             {renderAvatar}
 
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {userDetails?.user_metadata?.stepUser?.username} {userDetails?.user_metadata?.stepUser?.fullName}
+              {display_name}
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>

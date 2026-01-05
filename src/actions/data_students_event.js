@@ -5,7 +5,7 @@ import { apiFetch } from "src/utils/manager-fetch";
 
 export function apiDataStudentsEvent(eventDetailsOverride = null) {
   const eventDetails = eventDetailsOverride || useInsertStore.getState().selectedEvent;
-  console.log({eventDetails})
+
   const postData = { table_name: 'data_students', mode: 'select', data: eventDetails };
   return queryOptions({
       queryKey: ['data_students', eventDetails],
@@ -55,6 +55,20 @@ export function apiLastEvents() {
         const res =  await apiFetch('all', postData);
         console.log('res: ', res)
         const data = res?.data?.map(e=> ({...e, data: Number(e.data)})) ?? null;
+        return data;
+      }
+    });
+  }
+
+export function apiBank({data}) {
+
+  const postData = { table_name: 'bank', mode: 'select', data: data };
+  return queryOptions({
+      queryKey: ['bank', data],
+      queryFn: async () => {
+        const res =  await apiFetch('all', postData);
+        console.log('res: ', res)
+        const data = res.data
         return data;
       }
     });

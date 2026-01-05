@@ -6,18 +6,20 @@ import { inHebrew } from "src/utils/hebrew/getter";
 
 import { apiListEvents } from "src/actions/list_of_events";
 
-import { InsertFormEventLoading } from "./insert-form-past-loading";
 import { LoadingScreen } from "src/components/loading-screen";
+import { useTranslate } from "src/locales";
 
 interface InsertFormPastEventsProps {
-  students_ids: string[];
+  students_ids?: string[];
   dialogPrevEvents?: any;
   methods?: any;
   reset?: (option: any) => void;
+  listOfTimes?: any;
 }
 
 export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, reset}: InsertFormPastEventsProps) {
 
+  const { t } = useTranslate();
 
   return (
     
@@ -31,16 +33,17 @@ export function InsertFormPastEvents({listOfTimes, dialogPrevEvents, methods, re
           {listOfTimes.data?.map((option: any) => (
             <ListItemButton
               data-testid="event-list-item" 
-              selected={option.event === methods.watch('event') && option.day === methods.watch('day')}
+              selected={option.event_id === methods.watch('event') && option.day === methods.watch('day')}
               key={option.event} 
               onClick={() => {
-                reset(option)
+                reset({day: option.day, event: option.event_id})
+                
                 dialogPrevEvents.onFalse(); 
             }}
           >
             <ListItemText
-              primary={option.event_name}
-              secondary={inHebrew(option.day, true)}
+              primary={`${inHebrew(option.day, 'Dms', false, t)} (${inHebrew(option.day, true, true, t)})`}
+              secondary={`${option.event_name} (${option.event_start} - ${option.event_end})`}
             />
           </ListItemButton>
         ))}

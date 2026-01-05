@@ -1,12 +1,12 @@
 
 import jsPDF from 'jspdf';
-import { head } from 'lodash';
+import { head, template } from 'lodash';
 import html2canvas from 'html2canvas';
 import React, { Suspense } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Checkbox, IconButton, TableCell, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Checkbox, Grid, IconButton, TableCell, TextField, Typography } from '@mui/material';
 
 import { getElul } from 'src/utils/hebrew/getter';
 
@@ -19,10 +19,12 @@ import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { LoadingScreen } from 'src/components/loading-screen';
+import { useWalktour, Walktour } from "src/components/walktour";
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
 
 import { descriptionColumns, getDesc } from '../insert/functions';
+import { InfoColumn, InfoStudent, Template } from 'src/serverTypes';
 
 
 const templatesMock = [
@@ -105,15 +107,14 @@ const mockData = Array.from({ length: 10 }, (_, i) => ({
     }))
 
 
-export function DownTableView() {
-    const templates = useSuspenseQuery(apiTemplates())
-    console.log({ data: templates.data })
 
-    const infoStudents = useSuspenseQuery(apiInfoStudents());
-    const infoColumns = useSuspenseQuery(apiInfoColumns());
+export function DownTableView() {
+    const templates: Template[] = useSuspenseQuery(apiTemplates()).data 
+    const infoStudents: InfoStudent[] = useSuspenseQuery(apiInfoStudents()).data;
+    const infoColumns: InfoColumn[] = useSuspenseQuery(apiInfoColumns()).data;
 
     // מכפיל את התוכן במערך mockData בחמישה
-    const extendedMockData = infoStudents.data.map((item, index) => ({
+    const extendedMockData = infoStudents.map((item, index) => ({
         id: item.student_id,
         '1-1': true,
         '1-2': true,
@@ -125,7 +126,7 @@ export function DownTableView() {
         '3-2': true,
         '3-3': true
     }))
-    const merged = mergeWithStudents(infoStudents.data, extendedMockData, infoColumns.data)
+    const merged = mergeWithStudents(infoStudents, extendedMockData, infoColumns)
 
     console.log({ merged })
     // בניית כל העמודות
@@ -253,6 +254,9 @@ export function DownTableView() {
   
   pdf.save('table.pdf');
 };
+    // קבלת רשימת תבניות ייחודיות - כולל שם התבנית ומזהה: template_id, template_name
+    const uniqueTemplates = Array.from(new Set(templates.map(t => t.template_id)));
+    
 
     return (
         <>
@@ -261,9 +265,25 @@ export function DownTableView() {
             <div id='content'>
                 <Card>
                     <CardContent>
-                        <Box sx={{ width: '100%' }} padding={2}>
-                            {templates.data.map((template) => (<Typography variant="h6">{template.event_id}. {template.event_name}</Typography>))}
-                        </Box>
+                        <Grid container spacing={2} sx={{ mb: 2 }}>
+                          {uniqueTemplates.map((templateId) => {
+
+                            const oneTemplates = templates.filter(t => t.template_id === templateId);
+                            
+                            return (
+                            <Grid key={templateId} item xs={12} sm={6} md={4} lg={3} >
+                              <Typography variant="body2">{templates.find(t => t.template_id === templateId)?.template_name}</Typography>
+                            {oneTemplates.map((template) => (
+                              <>
+                                <Typography variant="h6"> {template.event_id} - סדר {template.event_name} </Typography>
+                                
+                              </>
+                            ))
+                          }
+                            </Grid>
+                            )})}
+                        </Grid>
+                      
                     <DataGrid
                         
                         density='compact'
@@ -322,10 +342,18 @@ export function DownTableView() {
     );
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
+
 export function DownloadViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DownTableView />
+      <>
+        <DownTableView />
+        {walktour}
+      </>
     </Suspense>
   );
 }

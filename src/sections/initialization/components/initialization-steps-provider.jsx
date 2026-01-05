@@ -32,7 +32,6 @@ function StepsHandler({ steps, defaultValues, WizardSchema, onSubmit, watch, wat
   }, [watchValues, watch, methods]);
   
   const submit = handleSubmit(async (data) => {
-    console.log('INITIALIZATION SUBMIT: ', data);
     const result = await onSubmit(data);
     if (result) {
       handleNext();

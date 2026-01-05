@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 import { useFormContext } from 'react-hook-form';
 
-import { Box, Typography, Button, Link, Container } from '@mui/material';
+import { Box, Typography, Button, Link, Container, Stack } from '@mui/material';
 
 import { readFile } from 'src/utils/files/read-file';
 import { downloadTemplateExcel, downloadTemplateCSV } from 'src/utils/files/download-tamplate';
@@ -17,7 +17,7 @@ import { Walktour } from 'src/components/walktour/walktour.jsx';
 
 // ----------------------------------------------------------------------
 
-      const walktourSteps = [
+  const walktourSteps = [
       {
           target: '#download-template',
         title: 'לחץ על אחד הכפתורים להורדה של דוגמא לקובץ פרטי תלמידים',
@@ -115,13 +115,14 @@ export function StudentFileUploadStep() {
 
   
   
+  
   const renderTemplatesDownload = (
-    <Container maxWidth='sm'>
-      <Box sx={{ mb: 3 }} id='download-template'>
-        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+    <Container maxWidth="sm">
+      <Box id='download-template'>
+        <Typography variant="subtitle2">
           הורד תבנית קובץ:
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
             variant="outlined"
             size="small"
@@ -129,17 +130,10 @@ export function StudentFileUploadStep() {
           >
             הורד תבנית Excel
           </Button>
-          <Button
-            variant="outlined" 
-            size="small"
-            onClick={() => handleDownloadTemplate('csv')}
-          >
-            הורד תבנית CSV
-          </Button>
-        </Box>
+        </Stack>
       </Box>
-      </Container>
-  )
+    </Container>
+  );
   const viewer = useBoolean();
 
   useEffect(() => {
@@ -150,37 +144,44 @@ export function StudentFileUploadStep() {
 
 
   const renderUpload = (
-    <Container maxWidth='sm'>
+    <Container maxWidth="sm">
       <Box id='upload-file'>
-    <Upload
-
-        multiple={false}
-        files={watchedFile ? [watchedFile] : []}
-        onDrop={handleFileUpload}
-        onRemove={handleRemoveFile}
-        accept={{
-          'text/csv': ['.csv'],
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-          'application/vnd.ms-excel': ['.xls']
-        }}
-        maxSize={5000000}
-        placeholder={
-          <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              גרור את הקובץ לכאן או
-            </Typography>
-            <Link variant="body1" underline="hover" sx={{ cursor: 'pointer' }}>
-              בחר קובץ מהמחשב
-            </Link>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              נתמכים: Excel (.xlsx, .xls) ו-CSV (עד 5MB)
-            </Typography>
-          </Box>
-        }
-      />
+        <Upload
+          multiple={false}
+          files={watchedFile ? [watchedFile] : []}
+          onDrop={handleFileUpload}
+          onRemove={handleRemoveFile}
+          accept={{
+            'text/csv': ['.csv'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+            'application/vnd.ms-excel': ['.xls']
+          }}
+          maxSize={5000000}
+          placeholder={
+            <Box sx={{ textAlign: 'center', py: 3 }}>
+              <Typography variant="h6">
+                גרור את הקובץ לכאן או
+              </Typography>
+              <Link 
+                variant="body1" 
+                underline="hover" 
+                sx={{ cursor: 'pointer' }}
+              >
+                בחר קובץ מהמחשב
+              </Link>
+              <Typography 
+                variant="body2" 
+                color="text.secondary" 
+                sx={{ mt: 1 }}
+              >
+                נתמכים: Excel (.xlsx, .xls) ו-CSV (עד 5MB)
+              </Typography>
+            </Box>
+          }
+        />
       </Box>
-      </Container>
-  )
+    </Container>
+  );
 
 
   const renderTemplatesViewer = (
@@ -192,12 +193,12 @@ export function StudentFileUploadStep() {
   );
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 2 }}>
       { !watchedFile && renderTemplatesDownload}
       { !watchedFile && renderUpload }
       { watchedFile && renderTemplatesViewer }
       
-      <Walktour {...useWalktour({steps: walktourSteps})} />
+      <Walktour {...useWalktour({steps: walktourSteps, defaultRun: true})} />
     </Box>
   );
 }

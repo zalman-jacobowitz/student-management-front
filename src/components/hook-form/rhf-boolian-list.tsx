@@ -18,12 +18,15 @@ export function RHFBoolianList({ name, primary, secondary, onClick, color=null, 
     <Controller
       key={name}
       name={name}
+      
             control={control}
             render={({ field }) => (
               <Button
+
               onClick={()=>{field.onChange(!field.value)}}
               color={field.value && !color ? 'primary' : 'inherit'}
               variant={field.value && !color ? "soft" as any : "outlined"}
+              className="insert-list__form"
             >
               {icon && label &&
               <ListItemIcon>

@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח השנה העברי</title>
+    <style>
+        /* Calendar Styles for Google Sheets Sidebar */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 10px;
+            direction: rtl;
+        }
+
+        .calendar-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .calendar-header h2 {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .nav-button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #1565c0;
+        }
+
+        .nav-button:active {
+            background-color: #0d47a1;
+        }
+
+        /* Days of Week Header */
+        .calendar-days-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: #555;
+            padding: 5px;
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background-color: white;
+        }
+
+        .calendar-day:hover:not(.empty) {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.empty {
+            background-color: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .calendar-day.today {
+            background-color: #ffd700;
+            border-color: #ffa500;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .calendar-day.selected {
+            background-color: #1976d2;
+            color: white;
+            border-color: #0d47a1;
+        }
+
+        .calendar-day.selected:hover {
+            background-color: #1565c0;
+        }
+
+        /* Selected Date Info */
+        .selected-date-info {
+            background-color: #f5f5f5;
+            padding: 12px;
+            border-radius: 4px;
+            border-right: 4px solid #1976d2;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .selected-date-info p {
+            margin: 5px 0;
+        }
+
+        .selected-date-info strong {
+            color: #1976d2;
+        }
+
+        /* Confirm Button */
+        .calendar-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .confirm-button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .confirm-button:hover {
+            background-color: #45a049;
+        }
+
+        .confirm-button:active {
+            background-color: #3d8b40;
+        }
+
+        .confirm-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .cancel-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .cancel-button:hover {
+            background-color: #da190b;
+        }
+
+        .cancel-button:active {
+            background-color: #ba0000;
+        }
+
+        /* Options Dropdown */
+        #optionsSelect {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+        #optionsSelect:hover {
+            border-color: #1976d2;
+        }
+
+        #optionsSelect:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        #optionsSelect option {
+            padding: 8px;
+        }
+
+        /* Loading Spinner */
+        #loadingSpinner {
+            font-size: 13px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .calendar-container {
+                max-width: 100%;
+                padding: 10px;
+            }
+
+            .calendar-header h2 {
+                font-size: 14px;
+            }
+
+            .nav-button {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .calendar-day {
+                font-size: 11px;
+            }
+
+            .day-header {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <!-- Header with navigation -->
+        <div class="calendar-header">
+            <button id="prevBtn" class="nav-button">← הקודם</button>
+            <h2 id="monthYearTitle">חודש תשרי תשפ״ו</h2>
+            <button id="nextBtn" class="nav-button">הבא →</button>
+        </div>
+
+        <!-- Day headers (Days of week) -->
+        <div class="calendar-days-header">
+            <div class="day-header">שבת</div>
+            <div class="day-header">שישי</div>
+            <div class="day-header">חמישי</div>
+            <div class="day-header">רביעי</div>
+            <div class="day-header">שלישי</div>
+            <div class="day-header">שני</div>
+            <div class="day-header">ראשון</div>
+        </div>
+
+        <!-- Calendar grid -->
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Selected date info -->
+        <div class="selected-date-info" id="selectedDateInfo">
+            <p>בחר יום כדי לראות פרטים</p>
+        </div>
+
+        <!-- Options dropdown (hidden by default) -->
+        <div id="optionsContainer" style="display: none; margin-top: 15px;">
+            <label for="optionsSelect" style="display: block; margin-bottom: 8px; font-weight: 600; color: #1976d2;">
+                בחר אפשרות:
+            </label>
+            <select id="optionsSelect" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 14px; direction: rtl; text-align: right;">
+                <option value="">-- בחר --</option>
+            </select>
+            <div id="loadingSpinner" style="display: none; margin-top: 10px; text-align: center; color: #1976d2;">
+                <p>טוען אפשרויות...</p>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="calendar-actions" id="calendarActions" style="display: none;">
+            <button class="confirm-button" id="confirmBtn">אישור</button>
+            <button class="cancel-button" id="cancelBtn">ביטול</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // HEBREW CALENDAR UTILITIES
+        // ============================================
+        
+        const HEBREW_MONTHS = [
+            'תשרי',
+            'חשוון',
+            'כסלו',
+            'טבת',
+            'שבט',
+            'אדר',
+            'ניסן',
+            'אייר',
+            'סיוון',
+            'תמוז',
+            'אב',
+            'אלול'
+        ];
+
+        const HEBREW_YEARS = [
+            'תשפ״ד',
+            'תשפ״ה',
+            'תשפ״ו',
+            'תשפ״ז',
+            'תשפ״ח'
+        ];
+
+        const DAYS_OF_WEEK = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
+        let HEBREW_DATA = [];
+
+        function convertToHebrewDate(gregorianDate) {
+            const dateStr = gregorianDate.toISOString().slice(0, 10);
+            return {
+                יום: dateStr,
+                יום_בשבוע: DAYS_OF_WEEK[gregorianDate.getDay()],
+                יום_עברי: gregorianDate.getDate().toString(),
+                חודש_עברי: HEBREW_MONTHS[gregorianDate.getMonth()],
+                שנה_עברית: HEBREW_YEARS[2],
+            };
+        }
+
+        function getPaddingStart(monthDates) {
+            if (!monthDates || monthDates.length === 0) {
+                return [];
+            }
+
+            const firstDate = monthDates[0];
+            const firstDayOfWeek = firstDate['יום_בשבוע'];
+            const paddingDays = [];
+            
+            const startIndex = DAYS_OF_WEEK.indexOf(firstDayOfWeek);
+            for (let i = 0; i < startIndex; i++) {
+                paddingDays.push({
+                    יום: '',
+                    יום_בשבוע: DAYS_OF_WEEK[i],
+                    יום_עברי: '',
+                    חודש_עברי: '',
+                    שנה_עברית: '',
+                    פרשת_השבוע: ''
+                });
+            }
+            
+            return paddingDays;
+        }
+
+        function getMonthDates(monthName, allDates) {
+            const monthDates = allDates.filter(date => date['חודש_עברי'] === monthName);
+            const paddedDates = getPaddingStart(monthDates);
+            return paddedDates.concat(monthDates);
+        }
+
+        function getAvailableYears(allDates) {
+            const years = allDates.map(date => date['שנה_עברית']);
+            return [...new Set(years)];
+        }
+
+        function getMonthsForYear(year, allDates) {
+            const yearDates = allDates.filter(date => date['שנה_עברית'] === year);
+            const months = yearDates.map(date => date['חודש_עברי']);
+            return [...new Set(months)];
+        }
+
+        function getTodayHebrew(allDates) {
+            const today = new Date().toISOString().slice(0, 10);
+            return allDates.find(day => day.יום === today) || null;
+        }
+
+        function generateWeekRows(monthDates) {
+            const weeks = [];
+            for (let i = 0; i < monthDates.length; i += 7) {
+                weeks.push(monthDates.slice(i, i + 7));
+            }
+            return weeks;
+        }
+
+        function formatHebrewDate(dateObj) {
+            if (!dateObj.יום_עברי) return '';
+            return `${dateObj.יום_עברי} ${dateObj.חודש_עברי} ${dateObj.שנה_עברית}`;
+        }
+
+        function formatGregorianDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr + 'T00:00:00Z');
+            const options = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
+            return date.toLocaleDateString('he-IL', options);
+        }
+
+        function getDayName(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr + 'T00:00:00Z');
+            return DAYS_OF_WEEK[date.getUTCDay()];
+        }
+
+        // ============================================
+        // HEBREW CALENDAR CLASS
+        // ============================================
+        
+        const hebrew = [] 
+
+        class HebrewCalendar {
+            constructor(options = {}) {
+                this.dataSource = hebrew.length > 0 ? hebrew : (options.dataSource || []);
+                this.hebrewYears = [];
+                this.hebrewMonths = [];
+                this.currentYear = null;
+                this.currentMonth = null;
+                this.selectedDate = null;
+                this.today = null;
+                this.formFieldName = options.formFieldName || null;
+                this.onConfirm = options.onConfirm || null;
+                this.dateSelectedCallback = null;
+                this.selectedOption = null;
+
+                this.initializeCalendar();
+                this.attachEventListeners();
+                this.render();
+            }
+            callExcelEndpoint(day) {
+  // החלף את ה-URL ל-URL של ngrok או השרת שלך
+  const serverUrl = "https://student-648757147624.europe-west1.run.app";
+  const endpoint = "/excel";
+  
+
+  // הנתונים שצריך לשלוח
+  const payload = {
+    data: {day: day},
+    mode: 'select',
+    table_name: 'events_today',
+    client: 'zalmanjacob@gmail.com'
+  };
+  
+  const options = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  
+  try {
+
+    const response =  UrlFetchApp.fetch(serverUrl + endpoint, options);
+    const result = JSON.parse(response.getContentText());
+        alert(JSON.stringify(result))
+    console.log('Response Status: ' + response.getResponseCode());
+    console.log('Response: ' + JSON.stringify(result, null, 2));
+    
+    return result;
+  } catch (error) {
+    alert('Error: ' + error.toString());
+    return null;
+  }
+}
+
+            initializeCalendar() {
+                if (!this.dataSource || this.dataSource.length === 0) {
+                    console.warn('Hebrew calendar data not loaded. Using empty array.');
+                    this.dataSource = hebrew || [];
+                }
+
+                this.hebrewYears = getAvailableYears(this.dataSource);
+                this.today = getTodayHebrew(this.dataSource);
+                
+                if (this.today) {
+                    this.currentYear = this.today['שנה_עברית'];
+                    this.currentMonth = this.today['חודש_עברי'];
+                } else {
+                    this.currentYear = this.hebrewYears[0] || 'תשפ״ו';
+                    this.hebrewMonths = getMonthsForYear(this.currentYear, this.dataSource);
+                    this.currentMonth = this.hebrewMonths[0] || 'תשרי';
+                }
+            }
+
+            attachEventListeners() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const confirmBtn = document.getElementById('confirmBtn');
+                const cancelBtn = document.getElementById('cancelBtn');
+                const optionsSelect = document.getElementById('optionsSelect');
+
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => this.previousMonth());
+                }
+
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => this.nextMonth());
+                }
+
+                if (confirmBtn) {
+                    confirmBtn.addEventListener('click', () => this.confirm());
+                }
+
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', () => this.cancel());
+                }
+
+                if (optionsSelect) {
+                    optionsSelect.addEventListener('change', (e) => {
+                        this.selectedOption = e.target.value;
+                        // Update form data if applicable
+                        if (this.formFieldName && this.selectedDate) {
+                            window.hebrewCalendarFormData = {
+                                fieldName: this.formFieldName,
+                                date: this.selectedDate,
+                                selectedOption: this.selectedOption
+                            };
+                        }
+                    });
+                }
+            }
+
+            previousMonth() {
+                const months = getMonthsForYear(this.currentYear, this.dataSource);
+                const currentIndex = months.indexOf(this.currentMonth);
+
+                if (currentIndex > 0) {
+                    this.currentMonth = months[currentIndex - 1];
+                } else {
+                    const yearIndex = this.hebrewYears.indexOf(this.currentYear);
+                    if (yearIndex > 0) {
+                        this.currentYear = this.hebrewYears[yearIndex - 1];
+                        const prevYearMonths = getMonthsForYear(this.currentYear, this.dataSource);
+                        this.currentMonth = prevYearMonths[prevYearMonths.length - 1];
+                    }
+                }
+                this.render();
+            }
+
+            nextMonth() {
+                const months = getMonthsForYear(this.currentYear, this.dataSource);
+                const currentIndex = months.indexOf(this.currentMonth);
+
+                if (currentIndex < months.length - 1) {
+                    this.currentMonth = months[currentIndex + 1];
+                } else {
+                    const yearIndex = this.hebrewYears.indexOf(this.currentYear);
+                    if (yearIndex < this.hebrewYears.length - 1) {
+                        this.currentYear = this.hebrewYears[yearIndex + 1];
+                        const nextYearMonths = getMonthsForYear(this.currentYear, this.dataSource);
+                        this.currentMonth = nextYearMonths[0];
+                    }
+                }
+                this.render();
+            }
+
+            updateDateInfo(dateObj) {
+                const infoDiv = document.getElementById('selectedDateInfo');
+                if (!infoDiv || !dateObj.יום) {
+                    return;
+                }
+
+                const hebrewDate = formatHebrewDate(dateObj);
+                const gregorianDate = formatGregorianDate(dateObj.יום);
+                const dayName = getDayName(dateObj.יום);
+                const parsha = dateObj.פרשת_השבוע ? `<p><strong>פרשה:</strong> ${dateObj.פרשת_השבוע}</p>` : '';
+
+                infoDiv.innerHTML = `
+                    <p><strong>תאריך:</strong> ${hebrewDate}</p>
+                    <p><strong>גרגוריאני:</strong> ${gregorianDate}</p>
+                    <p><strong>יום בשבוע:</strong> ${dayName}</p>
+                    ${parsha}
+                `;
+            }
+
+            render() {
+                this.renderHeader();
+                this.renderCalendarGrid();
+            }
+
+            renderHeader() {
+                const titleElement = document.getElementById('monthYearTitle');
+                if (titleElement) {
+                    titleElement.textContent = `חודש ${this.currentMonth} ${this.currentYear}`;
+                }
+            }
+
+            renderCalendarGrid() {
+                const gridElement = document.getElementById('calendarGrid');
+                if (!gridElement) return;
+
+                const monthDates = getMonthDates(this.currentMonth, this.dataSource);
+                
+                gridElement.innerHTML = '';
+
+                monthDates.forEach((dateObj, index) => {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+
+                    if (!dateObj.יום) {
+                        dayElement.classList.add('empty');
+                    } else {
+                        if (this.today && dateObj.יום === this.today.יום) {
+                            dayElement.classList.add('today');
+                        }
+
+                        if (this.selectedDate && dateObj.יום === this.selectedDate.יום) {
+                            dayElement.classList.add('selected');
+                        }
+
+                        dayElement.addEventListener('click', () => this.selectDate(dateObj));
+                    }
+
+                    dayElement.textContent = dateObj.יום_עברי || '';
+                    gridElement.appendChild(dayElement);
+                });
+            }
+
+            async loadDataFromJSON(jsonPath) {
+                try {
+                    const response = await fetch(jsonPath);
+                    this.dataSource = await response.json();
+                    this.initializeCalendar();
+                    this.render();
+                } catch (error) {
+                    console.error('Error loading calendar data:', error);
+                }
+            }
+
+            getSelectedDate() {
+                return this.selectedDate;
+            }
+
+            onDateSelected(callback) {
+                this.dateSelectedCallback = callback;
+            }
+
+            selectDate(dateObj) {
+                if (!dateObj.יום) return;
+                
+                this.selectedDate = dateObj;
+                this.render();
+                this.updateDateInfo(dateObj);
+                this.showActionButtons();
+
+                if (this.dateSelectedCallback) {
+                    this.dateSelectedCallback(dateObj);
+                }
+            }
+
+            showActionButtons() {
+                const actionsDiv = document.getElementById('calendarActions');
+                if (actionsDiv) {
+                    actionsDiv.style.display = 'flex';
+                }
+            }
+
+            hideActionButtons() {
+                const actionsDiv = document.getElementById('calendarActions');
+                if (actionsDiv) {
+                    actionsDiv.style.display = 'none';
+                }
+            }
+            
+            confirm() {
+      
+                if (!this.selectedDate) return;
+
+                // Call Excel endpoint if provided
+                if (this.callExcelEndpoint) {
+                  
+                    google.script.run(this.loadOptionsFromEndpoint(this.selectedDate.יום))
+                } else if (this.onConfirm) {
+                    // Fire confirmation callback if no endpoint
+                    this.onConfirm(this.selectedDate);
+                }
+                
+                // Also fire the form submission if using with forms
+                if (this.formFieldName) {
+                    window.hebrewCalendarFormData = {
+                        fieldName: this.formFieldName,
+                        date: this.selectedDate,
+                        selectedOption: this.selectedOption
+                    };
+                }
+            }
+
+            loadOptionsFromEndpoint(day) {
+               
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                const optionsContainer = document.getElementById('optionsContainer');
+                const optionsSelect = document.getElementById('optionsSelect');
+
+                // Show loading state
+                if (loadingSpinner) {
+                    loadingSpinner.style.display = 'block';
+                }
+
+                try {
+                   
+                    // Call the endpoint function with the selected day
+                    const options = this.callExcelEndpoint(day);
+                    alert(day)
+                    alert(JSON.stringify(options))
+                    if (Array.isArray(options) && options.length > 0) {
+                        // Clear existing options except the default
+                        optionsSelect.innerHTML = '<option value="">-- בחר --</option>';
+
+                        // Add options from the response
+                        options.forEach(option => {
+                            const optionElement = document.createElement('option');
+                            if (typeof option === 'object' && option.value !== undefined) {
+                                optionElement.value = option.value;
+                                optionElement.textContent = option.label || option.value;
+                            } else {
+                                optionElement.value = option;
+                                optionElement.textContent = option;
+                            }
+                            optionsSelect.appendChild(optionElement);
+                        });
+
+                        // Show options container
+                        if (optionsContainer) {
+                            optionsContainer.style.display = 'block';
+                        }
+                    } else {
+                        console.warn('No options returned from endpoint');
+                        if (this.onConfirm) {
+                            this.onConfirm(this.selectedDate);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading options from endpoint:', error);
+                    if (this.onConfirm) {
+                        this.onConfirm(this.selectedDate);
+                    }
+                } finally {
+                    // Hide loading state
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                }
+            }
+
+            cancel() {
+                this.selectedDate = null;
+                this.selectedOption = null;
+                this.render();
+                this.hideActionButtons();
+                
+                // Hide options container
+                const optionsContainer = document.getElementById('optionsContainer');
+                if (optionsContainer) {
+                    optionsContainer.style.display = 'none';
+                }
+
+                const optionsSelect = document.getElementById('optionsSelect');
+                if (optionsSelect) {
+                    optionsSelect.value = '';
+                }
+                
+                const infoDiv = document.getElementById('selectedDateInfo');
+                if (infoDiv) {
+                    infoDiv.innerHTML = '<p>בחר יום כדי לראות פרטים</p>';
+                }
+            }
+        }
+
+        // Initialize calendar when DOM is ready
+        if (typeof document !== 'undefined') {
+            document.addEventListener('DOMContentLoaded', () => {
+                // Get options from parent window/container if available
+                const options = {
+                    onConfirm: window.onHebrewCalendarConfirm || null,
+                    formFieldName: window.hebrewCalendarFieldName || null
+                };
+
+                window.hebrewCalendar = new HebrewCalendar(options);
+            });
+        }
+    </script>
+</body>
+</html>

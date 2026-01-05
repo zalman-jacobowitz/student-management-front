@@ -1,8 +1,7 @@
 
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 
 import { PageTitle } from "src/components/layout";
-import { LabelSummary } from "src/components/display";
 
 import { inHebrew } from "src/utils/hebrew/getter";
 
@@ -34,21 +33,62 @@ interface InsertListHeaderProps {
 }
 
 export function InsertListHeader({currentData, watch}: InsertListHeaderProps) {
-  const selectedEvent = useInsertStore(state => state.selectedEvent);
+  const { selectedEvent, currentEventIndex, allEvents, nextEvent, prevEvent } = useInsertStore(state => state);
 
-  const hebDay = inHebrew(selectedEvent.day)
+  // @ts-expect-error - inHebrew accepts string format parameters
+  const hebDay = inHebrew(selectedEvent.day, 'Dms')
   const data = Object.values(watch());
-  console.log('selectedEvent.day:', selectedEvent.day)
+  
+  // קבלת שם האירוע הקודם
+  const prevEventName = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.event_name : '';
+  const prevEventDay = currentEventIndex > 0 ? allEvents[currentEventIndex - 1]?.day : '';
+  
+  // קבלת שם האירוע הבא
+  const nextEventName = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.event_name : '';
+  const nextEventDay = currentEventIndex < allEvents.length - 1 ? allEvents[currentEventIndex + 1]?.day : '';
+  
   return (
     <Box sx={{ mb: 2, textAlign: 'center' }}>
+              <Stack
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={1} 
+          alignItems="center"
+          justifyContent="center"
+          sx={{ flex: 1 }}
+        >
+          <FabButton
+            sx={{ boxShadow: (theme) => theme.customShadows.z8 }}
+            icon="solar:round-alt-arrow-right-bold-duotone"
+            label={prevEventName}
+            subLabel={inHebrew(prevEventDay, 'Dm')}
+            color="default"
+            variant="softExtended"
+            onClick={prevEvent}
+            testId="prev-event-fab"
+            showSubLabel
+            sizeMultiplier={3}
+          />
       <PageTitle
         primary={selectedEvent.event_name}
-        secondary={`${hebDay.יום_עברי} ${hebDay.חודש_עברי}`}
+        secondary={`יום ${hebDay}`}
       />
-      <LabelSummary
-        labels_summary={LABEL_SUMMARY}
-        data={data}
-      />
+          <FabButton
+          
+            icon="solar:round-alt-arrow-left-bold-duotone"
+            iconAfter={true}
+            label={nextEventName}
+            subLabel={inHebrew(nextEventDay, 'Dm')}
+            color="default"
+            variant="softExtended"
+            onClick={nextEvent}
+            testId="next-event-fab"
+            showSubLabel
+            sizeMultiplier={3}
+          />
+        </Stack>
+
+
+
     </Box>
   );
 }

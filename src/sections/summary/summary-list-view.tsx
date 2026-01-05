@@ -22,6 +22,7 @@ import { useSettingsContext } from "src/components/settings";
 import { LoadingScreen } from "src/components/loading-screen";
 import { StepsProvider } from "src/components/steps-form/steps-provider";
 import { MasterStep } from "src/components/steps-form/dynamiv-component";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { TableMainView } from "./summary-list";
 import { SummaryDataGrid } from "./summary-datagrid-view";
@@ -223,7 +224,6 @@ function formatSummary(data, formData){
          e.day_event === dayEvent &&
          e.student_id === studentId
        );
-       console.log('record', record);
        // הוסף את הערך (או 0 אם לא נמצא)
        row[dayEvent] = record ? record.data : 0;
      });
@@ -238,9 +238,7 @@ function formatSummary(data, formData){
 
 
 function SummaryTableView({ formData }){
-  console.log('formData: ', formData);
   const data = useSuspenseQuery(apiSummary(formData));
-  console.log({data});
   return <SummaryDataGrid summaryData={formatSummary(data.data, formData)} formData={formData} />;
 }
 
@@ -264,16 +262,24 @@ function HebrewCalendar(){
   const methods = useForm()
 
   return (
-  <Form methods={methods} onSubmit={(data)=>console.log(data)}>
+  <Form methods={methods} onSubmit={() => {}}>
     <Field.HebrewDatePicker defaultValue="2025-01-01" time={true}/>
   </Form>
   )
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
+
 export function SummaryViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <HebrewCalendar />
+      <>
+        <HebrewCalendar />
+        {walktour}
+      </>
     </Suspense>
   );
 }

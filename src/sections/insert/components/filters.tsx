@@ -208,21 +208,21 @@ const demoInfoColumns = [
 const getDefaultFilters = (infoColumns: any[]) => {
   const filters = {}
   infoColumns.forEach(col => {
-      filters[col.name] = col.filter_type === 'multiple' ? [] : '';
+      filters[col.name] = col.type === 'select' ? [] : '';
   })
   return filters
 }
 
 // החלה של הפילטרים לפי הגדרת הסוג שלהם.
 
-export function newApplyFilters(data: any[], filters: any) {
+export function newApplyFilters(data: any[], filters: any, infoColumns: any[]) {
   if (Object.keys(filters).length === 0 || data.length === 0) {
     return data
   }
   
   let filteredData = data
 
-  demoInfoColumns.forEach(col => {
+  infoColumns.forEach(col => {
     if (filters[col.name] !== '') {
       if (col.filter_type === 'multiple') {
         filteredData = filteredData.filter((student: any) => filters[col.name].includes(student[col.name]))
@@ -251,22 +251,23 @@ export function newApplyFilters(data: any[], filters: any) {
 
 
 export function InsertFilters({
-    // infoColumns,
     handleFilter,
     table,
     filters,
     open,
     onClose,
+    infoStudents = [],
+    infoColumns,
     ...other
   }: InsertFiltersProps) {
 
-    const infoColumns = demoInfoColumns
 
     const methods = useForm({defaultValues: getDefaultFilters(infoColumns)});
 
     const { handleSubmit, reset } = methods;
 
     const onSubmit = (data: any) => {
+      console.log('data from filters', data);
       if (Object.keys(data).length === 0) {
         reset();
         handleFilter({});
@@ -276,11 +277,14 @@ export function InsertFilters({
       onClose();
     }
 
-    const fieldFilters = infoColumns.filter(e => e.filters)
+    console.table(infoColumns);
 
+    const fieldFilters = infoColumns.filter(e => e.filters)
+    console.table(fieldFilters);
     const fieldWithOptions = fieldFilters.map((e: FilterColumn) => {
-      if (e.filter_type === 'multiple') {
-        const options = new Set(table.map((student: any) => student[e.name]))
+      if (e.type === 'select') {
+        const options = new Set(infoStudents.map((student: any) => student[e.name]))
+        console.log('options for field', e.name, options);
         e.options = Array.from(options).map((option: any) => ({
           label: option,
           value: option
@@ -288,7 +292,7 @@ export function InsertFilters({
       }
       return e
     })
-
+    console.log('fieldWithOptions', fieldWithOptions);
     const renderFilters = (
         <>
           {fieldWithOptions.map(col => (

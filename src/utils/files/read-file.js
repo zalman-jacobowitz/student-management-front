@@ -5,10 +5,8 @@ import { fileType } from "./file-type";
 // excel
 export function parseExcel(file, fileData){
   const fileDataArray = new Uint8Array(fileData);
-  console.log('fileDataArray: ', fileDataArray);
       try {
         const workbook = XLSX.read(fileDataArray, { type: 'array' });
-        console.log('workbook: ', workbook);
         
         // Get the first worksheet
         const firstSheetName = workbook.SheetNames[0];
@@ -47,29 +45,67 @@ export function parseExcel(file, fileData){
 
 // csv:
 
-
 // Helper function to parse CSV data
-function parseCSV(file, fileData){
-
-  // eslint-disable-next-line consistent-return
-    try { 
-      const text = fileData;
-      const lines = text.split(/\r?\n/).filter(Boolean);
-      if (!lines.length) return {status: 'error', message: 'הקובץ ריק'};
+function parseCSV(file, fileData) {
+  try {
+    const text = new TextDecoder().decode(new Uint8Array(fileData));
+    const lines = text.trim().split(/\r?\n/).filter(line => line.trim());
+    
+    if (!lines.length) {
+      return { status: 'error', message: 'הקובץ ריק' };
+    }
+    
+    // Find the "Running B" line which marks the start of the second table
+    const secondTableIndex = lines.findIndex(line => 
+      line.trim().startsWith('Running B') || line.includes('Date')
+    );
+    
+    if (secondTableIndex === -1) {
+      // If no second table found, use the first table
       const [headerLine, ...rows] = lines;
       const columns = headerLine.split(',').map(col => col.trim());
+      
       const data = rows.map(line => {
         const values = line.split(',');
         const row = {};
-        columns.forEach((col, i) => { row[col] = (values[i]||'').trim(); });
+        columns.forEach((col, i) => {
+          row[col] = cleanValue(values[i] || '');
+        });
         return row;
       });
-      return {status: 'success', data: {columns, data}};
-    } catch (err) {
-      console.error('שגיאה בפענוח CSV:', err);
-      return {status: 'error', message: err};
+      
+      return { status: 'success', data: { columns, data } };
     }
-  };
+    
+    // Get the lines starting from the second table
+    const secondTableLines = lines.slice(secondTableIndex);
+    const [headerLine, ...rows] = secondTableLines;
+    const columns = headerLine.split(',').map(col => col.trim());
+    
+    const data = rows.map(line => {
+      const values = line.split(',');
+      const row = {};
+      columns.forEach((col, i) => {
+        row[col] = cleanValue(values[i] || '');
+      });
+      return row;
+    }).filter(row => Object.values(row).some(val => val)); // Filter out empty rows
+    
+    return { status: 'success', data: { columns, data } };
+  } catch (err) {
+    console.error('שגיאה בפענוח CSV:', err);
+    return { status: 'error', message: err };
+  }
+}
+
+// Helper function to clean CSV values
+function cleanValue(value) {
+  return value
+    .trim()
+    .replace(/^["']|["']$/g, '') // Remove surrounding quotes
+    .replace(/\\"/g, '"') // Remove escaped quotes
+    .trim();
+}
 
 export function readFile({fileDetils, types=['excel', 'csv'], fileData}){
     const type = fileType(fileDetils)

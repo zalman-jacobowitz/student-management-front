@@ -16,6 +16,7 @@ import { apiInfoColumns } from 'src/actions/info_columns';
 import { apiInfoStudents } from 'src/actions/info_students';
 
 import { LoadingScreen } from 'src/components/loading-screen';
+import { useWalktour, Walktour } from "src/components/walktour";
 import { PageLinksHeader } from 'src/components/layout/header-links';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -86,11 +87,10 @@ function mergeSummaryData(infoStudents, summaryData, infoColumns, formData) {
   return mergedData;
 }
 export function RenderCell({ value }) {
-  console.log({ value });
   const numValue = int(Number(value));
   
   return (
-    <Stack justifyContent="center" padding={0.2} sx={{ typography: 'caption', color: 'text.secondary' }}>
+    <Stack justifyContent="center" p={0} m={0} sx={{ typography: 'caption', color: 'text.secondary' }}>
       <LinearProgress
         value={numValue}
         variant="determinate"
@@ -99,9 +99,10 @@ export function RenderCell({ value }) {
           (numValue < 80 && 'warning') ||
           'success'
         }
-        sx={{ mb: 1, width: 1, height: 6, maxWidth: 80 }}
+        sx={{ mb: 0, width: 1, height: 6 }}
+        
       />
-      {numValue}%
+      
     </Stack>
   );
 }
@@ -137,7 +138,6 @@ function generateColumns(data, formData): GridColDef[] {
   const skipFields = ['id', 'student_id', 'primary', 'secondary'];
   Object.keys(firstRow).forEach(key => {
     if (!skipFields.includes(key)) {
-      console.log('Adding column:', key);
       const headerName = formData.group_by === 'day'? inHebrew(key, 'Dm') : key.split('|')[1];
       columns.push({
         field: key,
@@ -196,7 +196,9 @@ function generateColumnGrouping(data, formData) {
 }
 
 export function SummaryDataGrid({ formData }) {
+  console.log('Rendering SummaryDataGrid with formData:', formData);
   const summaryData = useSuspenseQuery(apiSummary(formData));
+  
   const infoStudents = useSuspenseQuery(apiInfoStudents());
   const infoColumns = useSuspenseQuery(apiInfoColumns());
   
@@ -209,7 +211,6 @@ export function SummaryDataGrid({ formData }) {
   
   const columns = generateColumns(mergedData, formData);
   const columnGroupingModel = generateColumnGrouping(mergedData, formData);
-
 
   const generatePDF = async () => {
   
@@ -365,23 +366,80 @@ export function SummaryDataGrid({ formData }) {
   );
 }
 
+
+
+
+function NewSummary({formData}) {
+  // Implementation for NewSummary component
+
+  return <>
+  {JSON.stringify(formData, null, 2)}
+  </>
+}
+
 // Main component with the same form as the original
 export function SummaryDataGridViewWrapper() {
   // For demo purposes, using sample form data
   // In real implementation, this would come from the form
   const sampleFormData = {
-    events: ['event1', 'event2'],
-    start: '2024-01-01',
-    end: '2024-01-31',
-    group_by: 'day',
+    // אירועים
+    events: ['1', '2'],
+    // טווח תאריכים
+    start: '2025-11-01',
+    end: '2025-11-30',
+    // סוג סיכום - יומי או סדרי או גם וגם
+    group_by: ['day', 'event'],
     type: 'mean',
-    days: ['2024-01-01', '2024-01-02', '2024-01-03']
+    // רשימת ימים ספציפית
+    days: [
+      '2025-11-01',
+      '2025-11-02',
+      '2025-11-03',
+      '2025-11-04',
+      '2025-11-05',
+      '2025-11-06',
+      '2025-11-07',
+      '2025-11-08',
+      '2025-11-09',
+      '2025-11-10',
+      '2025-11-11',
+      '2025-11-12',
+      '2025-11-13',
+      '2025-11-14'
+    ]
   };
+  /* 
+  finally
+  the results look like this:
+  student_id | event | date       | data
+  ----------------------------------------
+  123        | 1     | 2025-11-01 | 0
+  123        | 1     | 2025-11-02 | 0
+  123        | 2     | 2025-11-01 | 1
+  123        | 2     | 2025-11-02 | 1
+  456        | 1     | 2025-11-01 | 0
+  456        | 1     | 2025-11-02 | 1
+  --------------------------------------
+  then we pivot it to different format for datagrid.
+  we can do group by day or event or merge both
+  
+  ואז לעשות את הסיכומים בכל המערכת על הבסיס הזה
+  */
+
+  const walktourSteps = [
+    // TODO: Add walktour steps here
+    
+  ];
+
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
 
   return (
     <Container maxWidth={false}>
       <Suspense fallback={<LoadingScreen />}>
-        <SummaryDataGrid formData={sampleFormData} />
+        <>
+          <NewSummary formData={sampleFormData} />
+          {walktour}
+        </>
       </Suspense>
     </Container>
   );

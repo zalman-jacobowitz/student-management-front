@@ -8,7 +8,7 @@ import { apiFetch } from 'src/utils/manager-fetch';
 export function apiUsers() {
   const postData = { table_name: 'users', mode: 'select', data: [] };
   return queryOptions({
-    queryKey: ['users', 1],
+    queryKey: ['users'],
     queryFn: async () => {
       const res =  await apiFetch('all', postData);
       console.log('resUsers:', res)
@@ -22,7 +22,7 @@ export function apiUsers() {
 
 export const usersUpdate = ({queryClient})=>({
   mutationKey: ['users'],
-  mutationFn: async ({data, mode='update'}) => {
+  mutationFn: async (data, mode='update') => {
     const res = await apiFetch('all', {
       table_name: 'users',
       mode,

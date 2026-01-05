@@ -72,6 +72,7 @@ export function RHFMultiSelect({
 }) {
   const { control } = useFormContext();
 
+  console.log('options: ', options);
   const labelId = `${name}-select-label`;
 
   return (

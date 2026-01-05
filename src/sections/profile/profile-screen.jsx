@@ -38,7 +38,7 @@ const TABS = [
 // ----------------------------------------------------------------------
 
 
-function useTamplateEvents(studentData, studentsInfo, student_id){
+function useTemplateEvents(studentData, studentsInfo, student_id){
     const list_of_events = useGetTable('list_of_events', [...studentsInfo].map(e=>e.student_id))
     
     if (list_of_events.data) {
@@ -61,7 +61,7 @@ function useTamplateEvents(studentData, studentsInfo, student_id){
 
 export function ProfileViewScreen({ studentData , studentInfo={}, studentsInfo, mutateAsync }) {
     
-    const tamplateEvents = useTamplateEvents(studentData, studentsInfo, studentInfo.student_id);
+    const tamplateEvents = useTemplateEvents(studentData, studentsInfo, studentInfo.student_id);
 
     const settings = useSettingsContext();
 
@@ -199,7 +199,6 @@ export function ProfileViewScreen({studentId}) {
     const dataStudents = useSuspenseQuery(apiProfile(studentId));
 
     const studentInfo = infoStudents.data.find(e => e.student_id === studentId) || {};
-    console.log({studentInfo});
     const studentData = dataStudents.data || [];
 
     const settings = useSettingsContext();

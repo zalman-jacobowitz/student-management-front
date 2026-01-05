@@ -3,17 +3,27 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Step, StepLabel, Stepper as MuiStepper, Box, Button, Fab, keyframes } from '@mui/material';
 
 import { Iconify } from 'src/components/iconify';
+import { responsiveFontSizes } from 'src/theme/styles';
 
 import { InitializationCustomConnector, InitializationCustomStepIcon } from './initialization-step-styles';
 
 export function InitializationStepper({ steps, activeStep }) {
     const withoutComplete = steps.filter(step => step.name !== 'complete');
     return (
-      <MuiStepper activeStep={activeStep} alternativeLabel connector={<InitializationCustomConnector />} sx={{ mb: 2 }}>
+      <MuiStepper 
+        activeStep={activeStep} 
+        alternativeLabel 
+        connector={<InitializationCustomConnector />} 
+        sx={{ 
+          mb: { sm: 1, md: 1.5, lg: 2 }
+        }}
+      >
         {withoutComplete.map((step, index) => (
           <Step key={step.label}>
-            <StepLabel StepIconComponent={InitializationCustomStepIcon} icon={step.icon} >
-             {step.label}
+            <StepLabel StepIconComponent={InitializationCustomStepIcon} icon={step.icon}>
+              <Box sx={{ ...responsiveFontSizes({ sm: 12, md: 13, lg: 14 }) }}>
+                {step.label}
+              </Box>
             </StepLabel>
           </Step>
         ))}
@@ -57,11 +67,11 @@ export function InitializationStepperActions({steps, activeStep, handleNext, han
       position: 'relative',
       overflow: 'hidden',
       borderRadius: '50px',
-      px: 4,
-      py: 1.5,
-      minWidth: 120,
+      px: { sm: 2, md: 3, lg: 4 },
+      py: { sm: 1, md: 1.25, lg: 1.5 },
+      minWidth: { sm: 100, md: 110, lg: 120 },
       fontWeight: 600,
-      fontSize: '0.95rem',
+      fontSize: { sm: '0.813rem', md: '0.875rem', lg: '0.95rem' },
       textTransform: 'none',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       '&:hover': {
@@ -116,8 +126,8 @@ export function InitializationStepperActions({steps, activeStep, handleNext, han
     };
 
     const fabStyles = {
-      width: 56,
-      height: 56,
+      width: { sm: 48, md: 52, lg: 56 },
+      height: { sm: 48, md: 52, lg: 56 },
       background: 'linear-gradient(135deg, #4caf50 0%, #66bb6a 100%)',
       color: 'white',
       boxShadow: '0 4px 15px 0 rgba(76, 175, 80, 0.4)',
@@ -135,17 +145,20 @@ export function InitializationStepperActions({steps, activeStep, handleNext, han
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        gap: 2,
-        px: { xs: 2, sm: 4, md: 6 }, // Responsive padding from edges
+        gap: { sm: 1, md: 1.5, lg: 2 },
+        px: { sm: 1.5, md: 3, lg: 6 },
+        py: { sm: 1, md: 1.5, lg: 2 },
         maxWidth: '1200px',
-        mx: 'auto'
+        mx: 'auto',
+        flexWrap: { sm: 'wrap', md: 'nowrap', lg: 'nowrap' },
+        width: '100%'
       }}>
         {/* Back Button */}
         {activeStep > 0 && (
           <Button 
             onClick={handleBack}
             startIcon={<Iconify icon="solar:arrow-right-bold" sx={{ transform: 'rotate(180deg)' }} />}
-            sx={secondaryButtonStyles} // Orange color for back button
+            sx={secondaryButtonStyles}
           >
             הקודם
           </Button>
@@ -184,7 +197,11 @@ export function InitializationStepperActions({steps, activeStep, handleNext, han
           <Fab
             sx={fabStyles}
           >
-            <Iconify icon="solar:check-circle-bold" width={28} />
+            <Iconify 
+              icon="solar:check-circle-bold" 
+              width={{ sm: 24, md: 26, lg: 28 }}
+              height={{ sm: 24, md: 26, lg: 28 }}
+            />
           </Fab>
         )}
       </Box>

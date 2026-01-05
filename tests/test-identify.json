@@ -1,0 +1,90 @@
+[
+    {
+        "description": "remove button in student screen",
+        "files": [
+            "src/sections/students/components/student-screen/student-screen.tsx"
+        ],
+        "testId": "remove-button-student",
+        "component": "RemoveAction"
+    },
+    {
+        "description": "add button to create new student",
+        "files": [
+            "src/components/full-table/view.tsx"
+        ],
+        "testId": "add-button",
+        "component": "ButtonGreen"
+    },
+    {
+        "description": "import button in student screen",
+        "files": [
+            "src/components/full-table/buttons.jsx"
+        ],
+        "testId": "import-button",
+        "component": "ImportButton"
+    },
+    {
+        "description": "submit button in student form dialog",
+        "files": [
+            "src/sections/students/student-new-edit-form.tsx"
+        ],
+        "testId": "student-form-submit",
+        "component": "StudentsNewEditFormDialogContent"
+    },
+    {
+        "description": "cancel button in student form dialog",
+        "files": [
+            "src/sections/students/student-new-edit-form.tsx"
+        ],
+        "testId": "student-form-cancel",
+        "component": "StudentsNewEditFormDialogContent"
+    },
+    {
+        "description": "student form dialog container",
+        "files": [
+            "src/sections/students/student-new-edit-form.tsx"
+        ],
+        "testId": "student-form-dialog",
+        "component": "StudentsNewEditFormDialog"
+    },
+    {
+        "description": "student table rows with checkbox selection",
+        "files": [
+            "src/components/full-table/table.tsx"
+        ],
+        "testId": "student-row-checkbox",
+        "component": "FullTableProvider"
+    },
+    {
+        "description": "edit button for student record",
+        "files": [
+            "src/sections/students/students-list-view.tsx"
+        ],
+        "testId": "student-edit-button",
+        "component": "StudentMainViewDynamic"
+    },
+    {
+        "description": "student table header with selection",
+        "files": [
+            "src/components/regular-table/regular-table-selected-header.tsx"
+        ],
+        "testId": "table-selected-header",
+        "component": "TableSelectedHeader"
+    },
+    {
+        "description": "confirm delete dialog button",
+        "files": [
+            "src/components/full-table/table.tsx"
+        ],
+        "testId": "delete-confirm-button",
+        "component": "RemoveActionDialog"
+    },
+    {
+        "description": "upload success alert in import process",
+        "files": [
+            "src/components/full-table/import-stpes/steps.jsx"
+        ],
+        "testId": "upload-success-alert",
+        "component": "ImportSteps"
+    }
+]

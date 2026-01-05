@@ -10,6 +10,7 @@ import { apiTemplates, templatesUpdate } from "src/actions/templates";
 import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { INFO_TEMPLATES } from "./columns";
 import { TemplateDialog } from "./templates-edit-steps";
@@ -28,7 +29,6 @@ const LINKS = [
 ]
 
 function eventsTemplatesByReduce(templates) {
-  console.log('templates::', templates);
   return Object.values(
     templates.reduce((acc, cur) => {
       const { template_id, template_name, client, ...event } = cur;
@@ -68,17 +68,25 @@ function TemplateView({ row, onEdit, onSubmit }) {
   );
 }
 
-function templateDataServerFromat(data, templateId=null) {
+// note: צריך לקבל גם את טבלת הסדרים כדי לדעת אם יש מספר גבוה שנמחק
+function getNewShortId(templates) {
+  // קבלת כל ה-IDs הקיימים של התבניות ובדיקה מי הגבוהה ביותר והוספת 1
+  const existingIds = templates.map(t => parseInt(t.event_id, 10))
+
+  const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+  return maxId
+}
+
+function templateDataServerFromat(templates, data, templateId=null) {
   const template_id = templateId || uuidv4()
   const { events, template_name } = data
 
   const listEvents = []
-
-  data.events.map(event => listEvents.push({
+  data.events.map((event, index) => listEvents.push({
     template_id,
     template_name,
     event_name: event.event_name,
-    event_id: event.event_id || uuidv4(),
+    event_id: event.event_id || getNewShortId(templates) + index + 1,
     event_start: event.event_start,
     event_end: event.event_end
   }))
@@ -86,7 +94,7 @@ function templateDataServerFromat(data, templateId=null) {
   return listEvents
 }
 
-function useTemplateDefinition({ template, dialog, template_id_default }) {
+function useTemplateDefinition({ template, dialog, template_id_default, templates }) {
 
   const queryClient = useQueryClient();
 
@@ -96,15 +104,12 @@ function useTemplateDefinition({ template, dialog, template_id_default }) {
 
   const onSubmit = useCallback(async (data, mode="update") => {
     try {
-      console.log('template data: ', data)
-      console.log('mode: ', template)
       if (template_id_default === data && mode === "delete") {
         toast.error('לא ניתן למחוק את התבנית המוגדרת כברירת מחדל');
         return
       }
       
-      const templateData = mode === "update" ? templateDataServerFromat(data, template?.template_id) : data
-      console.log({templateData})
+      const templateData = mode === "update" ? templateDataServerFromat(templates, data, template?.template_id) :data
 
       const promiseTemplate = updateTemplate.mutateAsync({ data: templateData, mode:  mode })
 
@@ -129,7 +134,7 @@ function TemplatesMainView() {
     const templates = useSuspenseQuery(apiTemplates());
     const days = useSuspenseQuery(apiDays()).data;
     const template_id_default = days?.find(d => d.day === 'default')?.template_id || null;
-    console.log('templates:', templates.data);
+    
     // קיבוץ הסדרים תחת התבניות שלהם
     const events = eventsTemplatesByReduce(templates.data);
     console.log('events:', events);
@@ -139,7 +144,12 @@ function TemplatesMainView() {
     
     // בחירה בשורה מסויימת לעריכה
     const [selectedRow, setSelectedRow] = useState(null);
-    const { onSubmit } = useTemplateDefinition({ template: selectedRow, dialog , template_id_default});
+    const { onSubmit } = useTemplateDefinition({
+        template: selectedRow,
+        dialog ,
+        template_id_default,
+        templates: templates.data
+      });
 
     return (
   
@@ -170,11 +180,18 @@ function TemplatesMainView() {
   );
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
 
 export function TemplatesViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <TemplatesMainView/>
+      <>
+        <TemplatesMainView/>
+        {walktour}
+      </>
     </Suspense>
   );
 }

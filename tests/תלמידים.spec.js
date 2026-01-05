@@ -2,12 +2,41 @@ import { test, expect } from '@playwright/test';
 
 const URL = 'http://localhost:3030/%D7%A0%D7%99%D7%94%D7%95%D7%9C/%D7%A8%D7%A9%D7%99%D7%9E%D7%94';
 
+// Field labels
+const FIELD_LABELS = {
+  firstName: 'שם פרטי',
+  lastName: 'משפחה',
+  class: 'שיעור',
+  email: 'אימייל',
+};
+
+// Test data for adding a student
+const STUDENT_DATA = {
+  add: {
+    firstName: 'ישראל',
+    lastName: 'ישראלי',
+    class: 'א',
+    email: 'israel@example.com',
+  },
+  edit: {
+    firstName: 'שון',
+    lastName: 'שוניביץ',
+    class: 'א',
+    email: 'edited@example.com',
+  },
+};
+
+// Helper function to fill a form field
+async function fillField(page, fieldLabel, value) {
+  const field = page.getByLabel(fieldLabel).last();
+  await expect(field).toBeVisible();
+  await field.fill(value);
+}
 
 test.beforeEach(async ({ page }) => {
   // runs before each test in the file
   // go to: http://localhost:3030/%D7%A0%D7%99%D7%94%D7%95%D7%9C/%D7%A8%D7%A9%D7%99%D7%9E%D7%94
   await page.goto(URL);
-  console.log('beforeEach');  
 });
 
 test.describe('תלמידים', () => {
@@ -21,18 +50,12 @@ test('הוספה', async ({ page }) => {
   await addButton.click();
   // 4. תצפה לשדות ותמלא כל אחד מהם במשהו:
   // | תזהה על ידי פלייסהולדר 
-  const firstNameInput = page.getByLabel('שם פרטי').last();
-  await expect(firstNameInput).toBeVisible();
-  await firstNameInput.fill('ישראל');
-  const lastNameInput = page.getByLabel('משפחה').last();
-  await expect(lastNameInput).toBeVisible();
-  await lastNameInput.fill('ישראלי');
-  const phoneInput = page.getByLabel('שיעור').last();
-  await expect(phoneInput).toBeVisible();
-  await phoneInput.fill('א');
-  const emailInput = page.getByLabel('אימייל').last();
-  await expect(emailInput).toBeVisible();
-  await emailInput.fill('israel@example.com');
+  // הדפס את רשימת השדות בטופס
+
+  await fillField(page, FIELD_LABELS.firstName, STUDENT_DATA.add.firstName);
+  await fillField(page, FIELD_LABELS.lastName, STUDENT_DATA.add.lastName);
+  await fillField(page, FIELD_LABELS.class, STUDENT_DATA.add.class);
+  await fillField(page, FIELD_LABELS.email, STUDENT_DATA.add.email);
 
   // שמירת התלמיד
   const saveButton = page.getByRole('button', { name: 'עדכן' }).last();
@@ -42,7 +65,7 @@ test('הוספה', async ({ page }) => {
   await expect(saveButton).toBeHidden();
   // 6. תצפה לתצוגה של התלמיד ברשימת התלמידים
 
-  const newStudent = page.getByText('ישראלי').first();
+  const newStudent = page.getByText(STUDENT_DATA.add.lastName).first();
   await expect(newStudent).toBeVisible();
   
   /*
@@ -88,18 +111,10 @@ test('עריכה', async ({ page }) => {
 
    // 4. תצפה לשדות ותמלא כל אחד מהם במשהו:
   // | תזהה על ידי פלייסהולדר 
-  const firstNameInput = page.getByLabel('שם פרטי').last();
-  await expect(firstNameInput).toBeVisible();
-  await firstNameInput.fill('שון');
-  const lastNameInput = page.getByLabel('משפחה').last();
-  await expect(lastNameInput).toBeVisible();
-  await lastNameInput.fill('שוניביץ');
-  const phoneInput = page.getByLabel('שיעור').last();
-  await expect(phoneInput).toBeVisible();
-  await phoneInput.fill('א');
-  const emailInput = page.getByLabel('אימייל').last();
-  await expect(emailInput).toBeVisible();
-  await emailInput.fill('edited@example.com');
+  await fillField(page, FIELD_LABELS.firstName, STUDENT_DATA.edit.firstName);
+  await fillField(page, FIELD_LABELS.lastName, STUDENT_DATA.edit.lastName);
+  await fillField(page, FIELD_LABELS.class, STUDENT_DATA.edit.class);
+  await fillField(page, FIELD_LABELS.email, STUDENT_DATA.edit.email);
 
   // שמירת התלמיד
   const saveButton = page.getByRole('button', { name: 'עדכן' }).last();
@@ -109,7 +124,7 @@ test('עריכה', async ({ page }) => {
   await expect(saveButton).toBeHidden();
   // 6. תצפה לתצוגה של התלמיד ברשימת התלמידים
 
-  const newStudent = page.getByText('שוניביץ').first();
+  const newStudent = page.getByText(STUDENT_DATA.edit.lastName).first();
   await expect(newStudent).toBeVisible();
 
 });
@@ -128,11 +143,9 @@ test('מחיקה', async ({ page }) => {
   const rowsInfoBefore = page.locator('.MuiTablePagination-displayedRows').first();
   await expect(rowsInfoBefore).toBeVisible();
   const textBefore = await rowsInfoBefore.textContent();
-  console.log('Rows info before text:', textBefore);
   const matchBefore = textBefore?.match(/of (\d+)/);
   if (matchBefore) {
     const countBefore = parseInt(matchBefore[1], 10);
-    console.log('Number of students before:', countBefore);
   }
   else {
     throw new Error('Could not parse number of students before');
@@ -155,11 +168,9 @@ test('מחיקה', async ({ page }) => {
   const rowsInfo = page.locator('.MuiTablePagination-displayedRows').first();
   await expect(rowsInfo).toBeVisible();
   const textAfter = await rowsInfo.textContent();
-  console.log('Rows info after text:', textAfter);
   const matchAfter = textAfter?.match(/of (\d+)/);
   if (matchAfter) {
     const countAfter = parseInt(matchAfter[1], 10);
-    console.log('Number of students after:', countAfter);
     const countBefore = parseInt(matchBefore[1], 10);
     await page.waitForTimeout(5000);
     expect(countAfter).toBe(countBefore - 1);
@@ -210,7 +221,6 @@ test('ייבוא', async ({ page }) => {
   const rowsInfo = page.locator('.MuiTablePagination-displayedRows').first();
   await expect(rowsInfo).toBeVisible();
   const text = await rowsInfo.textContent();
-  console.log('Rows info after text:', text);
   const matchLength = text?.match(/of (\d+)/);
   // max time for update to happen
   await page.waitForTimeout(10000);

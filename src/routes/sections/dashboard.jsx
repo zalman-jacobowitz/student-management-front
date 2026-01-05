@@ -40,10 +40,11 @@ const UploadReportsPage = lazy(() => import('src/pages/dashboard/uploadReports')
 const DownloadTemplateReportsPage = lazy(() => import('src/pages/dashboard/download'));
 // DetailsPage
 const DetailsPage = lazy(() => import('src/pages/dashboard/details'));
-// tests:
-const TestsPage = lazy(() => import('src/pages/dashboard/tests'));
+
 // overview:
 const OverviewPage = lazy(() => import('src/pages/dashboard/overview'));
+// about
+const AboutPage = lazy(() => import('src/sections/about/view/about-view'));
 
 
 // ----------------------------------------------------------------------
@@ -89,15 +90,18 @@ export const dashboardRoutes = [
       { path: 'העלאת-דוחות-רישום', element: <UploadReportsPage /> },
       { path: 'הורדת-תבנית', element: <DownloadTemplateReportsPage /> },
       { path: 'רישומים', element: <DetailsPage /> },
-      { path: 'מבחנים', element: <TestsPage /> },
       { path: 'סקירה', element: <OverviewPage /> }
     ],
   },
   {
     path: 'ניהול/איתחול',
-    element: CONFIG.auth.skip ? <>{nothingLayoutContent}</> : <AuthGuard>{nothingLayoutContent}</AuthGuard>,
+    element: CONFIG.auth.skip ? <>{simpleLayoutContent}</> : <AuthGuard>{nothingLayoutContent}</AuthGuard>,
     children: [
       { element: <InitializationPage />, index: true },
     ],
+  },
+  {
+    path: 'אודות',
+    element: <AboutPage />,
   },
 ];

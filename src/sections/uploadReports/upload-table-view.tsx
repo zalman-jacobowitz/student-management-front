@@ -21,6 +21,7 @@ import { dataStudentsEventUpdate } from 'src/actions/data_students_event';
 import { useTable } from 'src/components/table';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { useWalktour, Walktour } from "src/components/walktour";
 import { InfoStudent } from 'src/components/full-table/types';
 import { RegularTable } from 'src/components/regular-table/regular-table';
 import { RegularRowProvider } from 'src/components/regular-table/regular-row-provider';
@@ -423,7 +424,6 @@ function generateTableStructure(fields) {
   
   // סינון עמודות שמתחילות במספר ולאחר מכן תו לא-מספרי ואז מספר נוסף
   const eventFields = fields.filter(field => /^\d+[^\d]+\d+$/.test(field));
-  console.log({fields})
   
   // קיבוץ לפי המספר הראשון (יום)
   const groupedByDay = {};
@@ -474,11 +474,10 @@ const getDesc = (student: InfoStudent, desc: string[]): string => desc.map(e => 
 
 
 export function UploadTableView({dataJson}) {
-    console.log({dataJson})
     // השתמשו בנתונים המקומיים במקום קריאות API שלא ניתנות להרצה
     const templates = useSuspenseQuery(apiTemplates());
     const infoStudents = useSuspenseQuery(apiInfoStudents());
-    const convertedData = convertTableDataToObjects(dataJson[0].json.tables[0]);
+    const convertedData = convertTableDataToObjects(dataJson);
     const tableStructure = generateTableStructure(Object.keys(convertedData[0]));
     
     const merged = mergeWithStudents(infoStudents.data, convertedData, infoColumnsMock);
@@ -550,7 +549,6 @@ export function UploadTableView({dataJson}) {
     };
 
     const handleRowUpdate = (newRow) => {
-        console.log('שורה מעודכנת:', newRow); 
         setRows(prevRows => prevRows.map(row => (row.id === newRow.id ? newRow : row)));
         return newRow;
     };
@@ -568,12 +566,27 @@ export function UploadTableView({dataJson}) {
         students.forEach(student => {
             Object.keys(student).forEach(item => {
                 const KEY = tableStructure.allFields[item]
+                console.log('KEY', KEY);
+                const tamplte_data = templates.data.find(t => t.event_id === KEY?.event);
                 if (!KEY) return;
-                allData.push({...KEY, student_id: student.id, data: Number(student[item]) });
+                allData.push({...KEY,...tamplte_data, student_id: student.id, data: Number(student[item]) });
             })
             
         })
-        handleUpdate(allData)
+                const uniqueEvents = Array.from(
+            new Map(
+                allData.map(item => [`${item.day}-${item.event}`, item ])
+            ).values()
+        ).sort((a, b) => a.day - b.day || a.event - b.event);
+        console.log('Unique Events:', uniqueEvents);
+        uniqueEvents.forEach(async (eventData) => {
+            const forApi = {
+                eventDetails: eventData,
+                data: allData.filter(d => d.event === eventData.event && d.day === eventData.day)
+            }  
+            await handleUpdate(forApi, 'update')
+        })
+        
         console.table(allData);
     }
 

@@ -24,6 +24,8 @@ import { FullScreenButton } from './fullscreen-button';
 
 // ----------------------------------------------------------------------
 
+
+
 export function SettingsDrawer({
   sx,
   hideFont,
@@ -91,13 +93,14 @@ export function SettingsDrawer({
         settings.onUpdateField('contrast', settings.contrast === 'default' ? 'hight' : 'default')
       }
     />
-  );
-
+  )
+  const language = localStorage.getItem('i18nextLng') || 'he';
+  
   const renderRTL = (
     <BaseOption
       label="מימין לשמאל"
       icon="align-right"
-      selected={settings.direction === 'rtl'}
+      selected={settings.direction === 'rtl' || ['he', 'yi'].includes(language)}
       onClick={() =>
         settings.onUpdateField('direction', settings.direction === 'ltr' ? 'rtl' : 'ltr')
       }
@@ -152,7 +155,7 @@ export function SettingsDrawer({
     <FontOptions
       value={settings.fontFamily}
       onClickOption={(newValue) => settings.onUpdateField('fontFamily', newValue)}
-      options={[defaultFont, 'Inter Variable', 'DM Sans Variable', 'Nunito Sans Variable']}
+      options={[defaultFont, 'Rubik', 'Alef', 'Varela Round']}
     />
   );
 

@@ -9,9 +9,9 @@
 ### 1. שנה עברית קבועה (Hard-coded Year)
 **קובץ**: `src/components/hebrew-calendar/hebrew-date-picker.jsx:150`
 ```javascript
-const allDates = getAllYear('תשפ״ה')
+const allDates = getAllYear('תשפ״ו')
 ```
-**בעיה**: השנה העברית קבועה לתשפ״ה ולא מתעדכנת אוטומטית
+**בעיה**: השנה העברית קבועה לתשפ״ו ולא מתעדכנת אוטומטית
 **השפעה**: 
 - לא ניתן לבחור תאריכים משנים אחרות
 - הרכיב יפסיק לעבוד כראוי בשנה העברית הבאה
@@ -121,7 +121,7 @@ function getCurrentHebrewYear() {
 ```javascript
 // רכיב בחירת שנה נפרד
 function HebrewYearSelector({ value, onChange }) {
-    const availableYears = ['תשפ״ד', 'תשפ״ה', 'תשפ״ו'];
+    const availableYears = ['תשפ״ד', 'תשפ״ו', 'תשפ״ו'];
     return (
         <Select value={value} onChange={onChange}>
             {availableYears.map(year => (

@@ -10,7 +10,7 @@ import { shortId, uuidv4 } from 'src/utils/uuidv4.js';
 
 import { initUpdate } from 'src/actions/init.ts';
 
-import { StepsProvider } from 'src/components/steps-form';
+import { InitializationStepsProvider } from 'src/components/initialization-steps-form';
 
 import { CompletionStep } from './components/completion-step.jsx';
 import useInitializationStore from './initialization-state.ts';
@@ -83,7 +83,6 @@ function formatTemplates(table){
     event_start: item.event_start,
     event_end: item.event_end,
     template_name: 'רגיל',
-    active: 1,
     template_id
   }));
 
@@ -152,7 +151,8 @@ export function InitializationWizard() {
       // הצגת הודעת ברוכים הבאים- וכפתור ההדרכה
       name: 'welcome',
       label: 'ברוכים הבאים',
-      icon: "solar:hand-wave-bold-duotone",
+      icon: "solar:user-hand-up-bold-duotone",
+      maxWidth: 'xl',
       component: <Welcome />,
     },
     {
@@ -179,6 +179,7 @@ export function InitializationWizard() {
       component: <ColumnSelectionStep />,
       alertHelper: 'בחר את העמודות הנדרשות לניהול התלמידים'
     },
+    /*
     {
       // הגדרת העמודות עצמם
       name: 'columns',
@@ -186,7 +187,9 @@ export function InitializationWizard() {
       icon: "solar:settings-bold-duotone",
       component: <InitializationColumnsView />,
       alertHelper: 'ערוך את הגדרות העמודות לפי הצורך'
-    },
+    }
+    ,
+    */
     {
       // הודעת סיום במקרה של הצלחה
       name: 'complete',
@@ -216,9 +219,6 @@ export function InitializationWizard() {
           info_columns: newFormattedColumns,
           templates: formatTemplates(data.templateData.events)
         }
-      console.log('formattedTables:', formattedTables);
-      
-      console.log('Formatted Tables:', formattedTables);
       
       const promise =   mutate.mutateAsync({data: formattedTables, mode: 'update'});
 
@@ -245,7 +245,7 @@ export function InitializationWizard() {
 
   // החזרה של הטופס איתחול
   return (
-    <StepsProvider
+    <InitializationStepsProvider
       steps={steps}
       defaultValues={defaultValues}
       WizardSchema={InitializationWizardSchema}

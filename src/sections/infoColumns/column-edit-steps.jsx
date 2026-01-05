@@ -39,12 +39,8 @@ export function SelectOptionsStep() {
           {fields.map((item, index) => (
             <Stack key={item.id} direction="row" spacing={2} alignItems="center">
               <Field.Text
-                name={`options[${index}].value`} // שונה
+                name={`options[${index}].value`}
                 placeholder="ערך האפשרות"
-                fullWidth />
-              <Field.Text
-                name={`options[${index}].label`} // שונה
-                placeholder="תווית האפשרות"
                 fullWidth />
               <IconButton onClick={() => remove(index)} color="error">
                 <Iconify icon="mdi:delete" />
@@ -57,7 +53,7 @@ export function SelectOptionsStep() {
         type="button"
         variant="outlined"
         startIcon={<Iconify icon="mdi:plus" />}
-        onClick={() => append({ value: '', label: '' })}
+        onClick={() => append({ value: '' })}
       >
         הוסף אפשרות
       </Button>
@@ -75,14 +71,12 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
 
   const onSubmit = useCallback(async (data) => {
     try {
-      console.log('Column edit data: ', data)
-
       // שמירה על כל השדות הקיימים ועדכון רק השדות שנערכו
       const columnNewDetails = {
         "client": column.client || 0,
         "filters": column.filters || 0, // שמירה על הערך הקיים
         "group_name": column.group_name || 0, // שמירה על הערך הקיים
-        "hidden": data.hidden ? 1 : 0, // עדכון לפי הטופס
+        "hidden": data.hidden,
         "label": column.label || '', // שמירה על הערך הקיים
         "name": data.name || '', // עדכון לפי הטופס
         "required": column.required || 0, // שמירה על הערך הקיים
@@ -92,7 +86,7 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
         "options": data.options || []
       }
       
-      console.log('Updated column details: ', columnNewDetails)
+     
 
       // עדכון אפשרויות בחירה רק אם הסוג הוא select
       if (data.type === 'select') {
@@ -101,13 +95,12 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
           name: data.name, // שימוש בשם החדש אם השתנה
           client: column.client,
           value: option.value,
-          label: option.label
+          label: option.value
         }));
       }
 
       // אם במצב איתחול - החזר את הנתונים ללא שמירה בשרת
       if (isInitializationMode) {
-        console.log('Initialization mode - returning data to parent:', columnNewDetails)
         if (onComplete) {
           onComplete(columnNewDetails);
         }
@@ -133,8 +126,7 @@ function useColumnDefinition({ column, infoColumns, selectOptions, isInitializat
         });
       }
 
-      console.log('Final column data:', columnNewDetails)
-    } catch (error) {
+      } catch (error) {
       console.error('Error saving column settings:', error);
       toast.error('שגיאה בשמירת הגדרות העמודה');
     }
@@ -167,9 +159,7 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
     type: z.string().min(1, "סוג נתונים נדרש"),
     options: z.array(z.object({
       value: z.string().min(1, "ערך האפשרות נדרש"),
-      label: z.string().min(1, "תווית האפשרות נדרשת"),
-    })).optional(),
-    hidden: z.boolean().optional(),
+    })).optional()
   });
 
   const fileds = [
@@ -199,13 +189,6 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
         )
       ),
       component: Field.Select
-    },
-    {
-      step: 1,
-      name: 'hidden',
-      label: 'העמודה מוסתרת',
-      icon: 'mdi:eye-off-outline',
-      component: Field.Switch
     },
     {
       step: 2,
@@ -240,7 +223,6 @@ export function ColumnDefinitionStep({ tableColumns = [], onComplete, column, in
   const [steps, setSteps] = useState(stepsSelect(false))
 
   const addSelectOptionsStep = useCallback((data) => {
-    console.log('data: ', data)
     setSteps(stepsSelect(data.type === 'select'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

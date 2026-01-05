@@ -12,7 +12,6 @@ export function findInternalDuplicates(table, columns) {
   
   table.forEach((record, index) => {
     const key = createKey(record, columns);
-    console.log('Checking record:', record, 'with key:', key);
     if (seen.includes(key)) {
       duplicates.push(
         `ישנה כפילות של הערך: ${JSON.stringify(columns.map(col => record[col]))} בשורה ${index + 1}`

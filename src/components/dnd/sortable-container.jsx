@@ -40,8 +40,16 @@ const dropAnimationConfig = {
 
 // ----------------------------------------------------------------------
 
-export function SortableContainer({ itemCount = 12, swap = false, layout = 'grid' }) {
-  const createItems = [...Array(itemCount)].map((_, index) => index + 1);
+export function SortableContainer({ 
+  itemCount = 12, 
+  swap = false, 
+  layout = 'grid', 
+  items: initialItems = null, 
+  onItemsChange = null,
+  showAddButton = true,
+  size = 'medium'
+}) {
+  const createItems = initialItems || [...Array(itemCount)].map((_, index) => index + 1);
 
   const [items, setItems] = useState(createItems);
 
@@ -76,19 +84,24 @@ export function SortableContainer({ itemCount = 12, swap = false, layout = 'grid
   }, [activeId]);
 
   const handleAdd = () => {
-    setItems([...items, randomId]);
+    const newItems = [...items, randomId];
+    setItems(newItems);
+    onItemsChange?.(newItems);
   };
 
   const handleRemove = (id) => {
     const updatedItems = items.filter((item) => item !== id);
     setItems(updatedItems);
+    onItemsChange?.(updatedItems);
   };
 
   return (
     <Stack alignItems="flex-end">
-      <Button variant="contained" onClick={handleAdd}>
-        + Add item
-      </Button>
+      {showAddButton && (
+        <Button variant="contained" onClick={handleAdd}>
+          + Add item
+        </Button>
+      )}
 
       <DndContext
         id="dnd-grid"
@@ -108,7 +121,11 @@ export function SortableContainer({ itemCount = 12, swap = false, layout = 'grid
           if (over) {
             const overIndex = getIndex(over.id);
             if (activeIndex !== overIndex) {
-              setItems((prev) => reorderItems(prev, activeIndex, overIndex));
+              setItems((prev) => {
+                const reordered = reorderItems(prev, activeIndex, overIndex);
+                onItemsChange?.(reordered);
+                return reordered;
+              });
             }
           }
         }}
@@ -131,6 +148,19 @@ export function SortableContainer({ itemCount = 12, swap = false, layout = 'grid
                 flexDirection: 'row',
                 [`& .${itemClasses.itemWrap}`]: { maxWidth: 180 },
               }),
+              // Size variants
+              ...(size === 'small' && {
+                py: 1,
+                gap: 1,
+                [`& .${itemClasses.item}`]: {
+                  padding: 2,
+                  fontSize: '0.875rem',
+                },
+              }),
+              ...(size === 'large' && {
+                py: 4,
+                gap: 3,
+              }),
             }}
           >
             {items.map((item, index) => (
@@ -140,6 +170,7 @@ export function SortableContainer({ itemCount = 12, swap = false, layout = 'grid
                 index={index}
                 getNewIndex={getNewIndex}
                 onRemove={() => handleRemove(item)}
+                size={size}
               />
             ))}
           </Box>
@@ -163,7 +194,7 @@ const animateLayoutChanges = (args) => defaultAnimateLayoutChanges({ ...args, wa
 
 // ----------------------------------------------------------------------
 
-export function SortableGridItem({ id, index, onRemove, getNewIndex }) {
+export function SortableGridItem({ id, index, onRemove, getNewIndex, size = 'medium' }) {
   const {
     isSorting,
     transform,
@@ -182,6 +213,7 @@ export function SortableGridItem({ id, index, onRemove, getNewIndex }) {
       data-id={id}
       data-index={index}
       onRemove={onRemove}
+      size={size}
       stateProps={{
         listeners,
         transform,

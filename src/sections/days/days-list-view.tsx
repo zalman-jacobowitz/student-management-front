@@ -9,6 +9,7 @@ import { apiTemplates } from "src/actions/templates";
 import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { DayDialog } from "./days-edit-steps";
 import { INFO_DAYS } from "./columns";
@@ -78,11 +79,18 @@ function DaysMainView() {
   return (<FullTableWrapper config={tableColumnsConfig} /> )
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
 
 export function DaysViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DaysMainView/>
+      <>
+        <DaysMainView/>
+        {walktour}
+      </>
     </Suspense>
   );
 }

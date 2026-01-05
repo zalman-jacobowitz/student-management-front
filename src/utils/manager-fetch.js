@@ -36,13 +36,21 @@ api.interceptors.request.use(async (config) => {
   return config
 }, (error) => Promise.reject(error))
 
-// Response interceptor to handle token expiration
+// Response interceptor to handle token expiration and JWT errors
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      console.error('Unauthorized request - token may be expired')
-      // Optionally redirect to login or refresh token
+      console.error('Unauthorized request - token may be expired or JWT sub claim user does not exist')
+      // Check if the error message contains JWT user not found
+      const errorMessage = error.response?.data?.message || '';
+      if (
+        errorMessage.includes('User from sub claim') ||
+        errorMessage.includes('does not exist')
+      ) {
+        console.warn('User session invalid: User from JWT sub claim does not exist. Signing out...');
+        await supabase.auth.signOut().catch(e => console.error('Sign out error:', e));
+      }
     }
     return Promise.reject(error)
   }
@@ -54,6 +62,16 @@ export async function apiFetch(router, postData = {}) {
     const { data: { user }, error } = await supabase.auth.getUser()
 
     if (error) {
+      // Check if the error is due to user from JWT sub claim not existing
+      if (
+        error.message.includes('User from sub claim') ||
+        error.message.includes('does not exist') ||
+        error.code === 'invalid_jwt' ||
+        error.status === 401
+      ) {
+        console.warn('User session invalid: User from JWT sub claim does not exist. Signing out...');
+        await supabase.auth.signOut().catch(e => console.error('Sign out error:', e));
+      }
       console.error('Error getting user:', error)
       throw new Error("Authentication error")
     }

@@ -60,7 +60,6 @@ function mergeSummaryData(infoStudents, summaryData, infoColumns) {
   const { primary, secondary } = descriptionColumns(infoColumns);
   const mergedData = summaryData.map(summary => {
     const student = infoStudents.find(item => item.student_id === summary.student_id);
-    console.log('summary', summary);
     // delete summary.student_id;
     return {
       'primary': getDesc(student, primary),

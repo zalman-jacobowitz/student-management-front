@@ -15,7 +15,7 @@ export const CONFIG = {
    */
   auth: {
     method: 'supabase',
-    skip: true, // For demo purposes only. In production, set this to false.
+    skip: false, // For demo purposes only. In production, set this to false.
     redirectPath: paths.dashboard.root,
   },
   /**

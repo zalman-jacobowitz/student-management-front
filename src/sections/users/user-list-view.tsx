@@ -10,12 +10,15 @@ import { apiUsers } from "src/actions/users";
 import { LoadingScreen } from "src/components/loading-screen";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { USERS_COLUMNS } from "src/utils/uinqe_usege/users-columns";
 import { TableConfig } from "src/components/full-table/types";
 
 import { UserPermissionsForm } from "./user-permissions-form";
 import { UsersRowDetails } from "./users-details";
+
+import { NewList } from "./new-list";
 
 
 const LINKS = [
@@ -43,7 +46,6 @@ function UserMainDynamicView() {
       rowId: 'user_id',
       DetailsComponent: (props) => {
         const { open, onClose, column } = props
-        console.log('column: ', column)
         return (
           <UsersRowDetails
             student={column}
@@ -57,13 +59,7 @@ function UserMainDynamicView() {
         const { open, onClose, column } = props
 
         return (
-          <ConfirmDialog
-            mode="full"
-            maxWidth="sm"
-            open={open}
-            onClose={onClose}
-            content={<UserPermissionsForm existingUser={column.details} />}
-          />
+          <></>
         )
       },
       
@@ -78,14 +74,22 @@ function UserMainDynamicView() {
 
 
 
+  const walktourSteps = [
+    // TODO: Add walktour steps here
+  ];
+
   
   /* ----------------------------
    | Public wrapper: <Suspense>  |
    ----------------------------*/
    export function UserViewWrapper() {
+    const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
     return (
       <Suspense fallback={<LoadingScreen />}> {/* fallback until all queries resolve */}
-        <UserMainDynamicView/>
+        <>
+          <NewList />
+          {walktour}
+        </>
       </Suspense>
     );
   }

@@ -1,0 +1,17 @@
+{
+  "app": "אפליקציה",
+  "job": "עבודה",
+  "user": "משתמש",
+  "travel": "נסיעה",
+  "invoice": "חשבונית",
+  "blog": {
+    "title": "בלוג",
+    "caption": "קיצורי מקלדת מותאמים אישית."
+  },
+  "subheader": "כותרת משנה",
+  "groups": {
+    "attendance": "ניהול נוכחות",
+    "dataManagement": "ניהול נתונים",
+    "timeManagement": "ניהול זמנים"
+  }
+}

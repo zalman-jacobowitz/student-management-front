@@ -5,6 +5,7 @@ import { Box, Typography, Chip } from "@mui/material";
 import { apiDays } from "src/actions/days";
 import { apiTemplates } from "src/actions/templates";
 import { LoadingScreen } from "src/components/loading-screen";
+import { useWalktour, Walktour } from "src/components/walktour";
 import { HebrewCalendarView } from "src/components/hebrew-calendar/hebrew-calendar-view";
 import { DayDialog } from "./days-edit-steps";
 import { apiListEvents } from "src/actions/list_of_events";
@@ -117,10 +118,18 @@ function DaysCalendarMainView() {
   );
 }
 
+const walktourSteps = [
+  // TODO: Add walktour steps here
+];
+
 export function DaysCalendarViewWrapper() {
+  const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DaysCalendarMainView />
+      <>
+        <DaysCalendarMainView />
+        {walktour}
+      </>
     </Suspense>
   );
 }

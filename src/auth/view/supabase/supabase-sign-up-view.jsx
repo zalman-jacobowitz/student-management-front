@@ -29,6 +29,7 @@ export const SignUpSchema = zod.object({
   firstName: zod.string().min(1, { message: 'שם פרטי נדרש!' }),
   lastName: zod.string().min(1, { message: 'שם משפחה נדרש!' }),
   org: zod.string(),
+  phone: zod.string(),
   email: zod
     .string()
     .min(1, { message: 'דוא"ל נדרש!' })
@@ -53,7 +54,8 @@ export function SupabaseSignUpView() {
     lastName: '',
     email: '',
     password: '',
-    org: ''
+    org: '',
+    phone: '',
   };
 
   const methods = useForm({
@@ -74,6 +76,7 @@ export function SupabaseSignUpView() {
         firstName: data.firstName,
         lastName: data.lastName,
         org: data.org,
+        phone: data.phone,
         client: data.email.toLocaleLowerCase()
       });
 
@@ -91,6 +94,8 @@ export function SupabaseSignUpView() {
         <Field.Text name="lastName" label="שם משפחה" InputLabelProps={{ shrink: true }} />
       </Box>
       <Field.Text name="org" label="שם מוסד" InputLabelProps={{ shrink: true }} />
+      <Field.Phone name="phone" label="טלפון" InputLabelProps={{ shrink: true }} />
+      
       <Field.Text name="email" label="כתובת דוא״ל" InputLabelProps={{ shrink: true }} />
       <Field.Text
         name="password"

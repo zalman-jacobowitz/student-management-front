@@ -5,7 +5,7 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { LoadingButton } from '@mui/lab';
-import { Card, Stack, Button, MenuItem, CardHeader, Typography, CardActions, CardContent } from '@mui/material';
+import { Card, Stack, Button, MenuItem, CardHeader, Typography, CardActions, CardContent, Alert } from '@mui/material';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -20,6 +20,8 @@ import useInsertStore from '../insert-state';
 
 import { InsertFormPastEvents } from './insert-form-past-events';
 import { apiListEvents } from 'src/actions/list_of_events';
+import { inHebrew } from 'src/utils/hebrew/getter';
+import { useTranslate } from 'src/locales/use-locales';
 
 
 
@@ -44,9 +46,15 @@ function mergeCurrentWithPastEvents(currentData, pastEvent, today) {
 
 function useInsertForm() {
 
-  const { setEventDetails } = useInsertStore();
+  const { t } = useTranslate();
+  const { setEventDetails, setAllEvents } = useInsertStore();
   
   // טופס לבחירה של סדר מסויים לביצוע רישום
+  const EventSchema = zod.object({
+    event: zod.string().min(1, { message: t('insertForm.eventRequired') }),
+    day: zod.string().min(1, { message: t('insertForm.dayRequired') })
+  });
+  
   const methods = useForm({
     mode: 'onChange',
     resolver: zodResolver(EventSchema),
@@ -66,12 +74,14 @@ function useInsertForm() {
   const currentEvent = useQuery(apiEventsToday(watch('day'))).data || [];
 
   const eventsToday = useMemo(() => mergeCurrentWithPastEvents(currentEvent, listOfTimes.data, watch('day')), [watch('day'), currentEvent, listOfTimes.data]);
-  console.log('eventsToday:', eventsToday)
+  
   const onSubmit = handleSubmit(async (data) => {
         // מוצא את פרטי ה event
         const moreDetails = eventsToday.find((option) => option.event_id === data.event)
+        setAllEvents(listOfTimes.data);
         setEventDetails( {...moreDetails, ...data})
-  })
+   })
+  
   useEffect(()=>{
     if (eventsToday.length > 0){
       // כאן צריך להיות חישוב של איזה סדר שייך לעכשיו
@@ -85,11 +95,13 @@ function useInsertForm() {
     eventsToday,
     isSubmitting,
     reset,
-    listOfTimes
+    listOfTimes,
+    t
   };
 }
 
 export function InsertForm() {
+  
   
   const {
     methods,
@@ -97,16 +109,22 @@ export function InsertForm() {
     reset,
     eventsToday,
     isSubmitting,
-    listOfTimes
+    listOfTimes,
+    t
   } = useInsertForm();
 
   const dialogPrevEvents = useBoolean(false);
 
+
+  const selectedEvent = listOfTimes.data.find(event => event.event_id === methods.watch('event'));
+  const selectedDay = methods.watch('day');
+
   const renderSelectDay = (
     <Field.HebrewDatePicker
-      label="תאריך עברי"
+      label={t('insertForm.hebrewDate')}
       name="day"
       data-testid="hebrew-date-picker"
+      className="insert-form__date-picker"
     />
   )
 
@@ -115,7 +133,7 @@ export function InsertForm() {
       defaultValue={eventsToday.length? eventsToday[0].event_id: ''} 
       fullWidth
       name="event"
-      label="אירוע"
+      label={t('insertForm.event')}
       variant="filled"
       InputLabelProps={{ shrink: true }}
       data-testid="event-select"
@@ -123,57 +141,73 @@ export function InsertForm() {
       slotProps={{}}
       helperText=""
       inputProps={{}}
+      id="event-select"
+      className="insert-form__event-select"
     >
     {eventsToday.map((option) => (
       <MenuItem
         key={option.event_id}
         value={option.event_id}
-        sx={{ textTransform: 'capitalize' }}>  
-        <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-          {`${option.event_name}`}
-        </Typography>
+        sx={{ textTransform: 'capitalize' }}
+        className="insert-form__event-menu-item">  
+        <Stack direction="column" spacing={0.5} className="insert-form__event-details">
+          <Typography variant="subtitle2" sx={{ color: 'text.primary' }} className="insert-form__event-name">
+            {`${option.event_name}`}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }} className="insert-form__event-time">
+            {`${option.event_start} - ${option.event_end}`}
+          </Typography>
+        </Stack>
       </MenuItem>
     ))}
     </Field.Select>
   );
-
+  
 
   return (
-    <ComponentContainer sx={{}}>
-      <Card sx={{ p: 5, width: 1, mx: 'auto', maxWidth: 520 }}>
-        <Form methods={methods} onSubmit={onSubmit}>
+    <ComponentContainer sx={{}} className="insert-form__container">
+      <Card sx={{ p: 5, width: 1, mx: 'auto', maxWidth: 520 }} className="insert-form__card">
+
+        <Form methods={methods} onSubmit={onSubmit} className="insert-form__form">
           <CardHeader
-            title="רישום אירוע"
-            subheader="בחר אירוע לרישום"
+            title={t('insertForm.title')}
+            subheader={t('insertForm.subtitle')}
+            className="insert-form__header"
           />
-          <CardContent sx={{ mb: 3 }}>
-            <Stack direction="column" spacing={2}>
+
+          <CardContent sx={{ mb: 3 }} className="insert-form__content">
+            <Stack direction="column" spacing={2} className="insert-form__content-stack">
+                        <Alert severity="info" sx={{ mb: 2 }} className="insert-form__alert">
+            {t('insertForm.selectedEvent')}: {selectedEvent?.event_name} ({inHebrew(selectedDay, true, true, t)})
+          </Alert>
               {renderSelectDay}
               {renderSelectEvent}
             </Stack>
           </CardContent>
-          <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }} className="insert-form__actions">
             <Button 
               onClick={() => dialogPrevEvents.onTrue()} 
               variant="outlined" 
               color="inherit"
               data-testid="existing-events-button"
+              className="insert-form__prev-events-button"
             >
-              בחר אירוע קיים
+              {t('insertForm.chooseExisting')}
             </Button>
             <LoadingButton
               type="submit"
               variant="contained"
               loading={isSubmitting}
               data-testid="start-registration"
+              className="insert-form__submit-button"
             >
-              התחל רישום
+              {t('insertForm.startRegistration')}
             </LoadingButton>
           </CardActions>
           <ConfirmDialog
             open={dialogPrevEvents.value}
-            title="עריכת אירועים קודמים"
-
+            title={t('insertForm.editPastEvents')}
+            className="insert-form__confirm-dialog"
            content={
             <InsertFormPastEvents
                 listOfTimes={listOfTimes}

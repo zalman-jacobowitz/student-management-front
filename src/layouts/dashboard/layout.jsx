@@ -22,31 +22,67 @@ import { HeaderSection } from '../core/header-section';
 import { StyledDivider, useNavColorVars } from './styles';
 import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
+import { HelpButton } from 'src/components/walktour';
+
+import { useAuthContext } from 'src/auth/hooks';
+
 import { screenOptions, navData as dashboardNavData } from '../config-nav-dashboard';
+import { allLangs, useTranslate } from 'src/locales';
+import { LanguagePopover } from '../components/language-popover';
 
 // ----------------------------------------------------------------------
 
-const groups = {
-  'ניהול נתונים': ['info', 'users'],
-  'ניהול נוכחות': ['manager', 'export', 'scan', 'download','exceptions'],
-  'ניהול זמנים': ['templates', 'days'],
-  'מבחנים': ['tests'],
-  'סיכומים': ['profile', 'insert', 'summary', 'details', 'overview'],
-  'הגדרות': ['settings', 'inialize', 'userPermissions', 'initialization'],
+const groupKeys = {
+  attendance: ['overview', 'insert', 'exceptions', 'users'],
+  dataManagement: ['info', 'profile', 'scan'],
+  timeManagement: ['templates', 'days'],
 };
 
-function screensFormat(data) {
-  // const listScreens =  Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
-  const listScreens = Object.keys(screenOptions).map(screen => screen) // Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
+function screensFormat(data, isAdmin = false, groupNames = {}, translate = null) {
+  // If user is admin, show all available screens
+  if (isAdmin) {
+    const listScreens = Object.keys(screenOptions);
+    const screens = [];
+
+    Object.entries(groupKeys).forEach(([groupKey, screenIds]) => {
+      const g_scrns = listScreens
+        .filter((screen) => screenIds.includes(screen))
+        .map((screen) => {
+          const option = screenOptions[screen];
+          return {
+            ...option,
+            title: translate ? translate(option.titleKey) : option.title || option.titleKey,
+          };
+        });
+      const scrn = {
+        subheader: groupNames[groupKey] || groupKey,
+        items: g_scrns,
+      };
+      if (g_scrns.length > 0) {
+        screens.push(scrn);
+      }
+    });
+
+    return screens;
+  }
+
+  // Regular users see only their permitted screens
+  const listScreens = Object.keys(data.user_metadata.screens).filter(screen => data.user_metadata.screens[screen])
 
   const screens = []
 
-  Object.keys(groups).forEach((group) => {
+  Object.entries(groupKeys).forEach(([groupKey, screenIds]) => {
     const g_scrns = listScreens
-      .filter((screen) => groups[group].includes(screen))
-      .map((screen) => screenOptions[screen]);
+      .filter((screen) => screenIds.includes(screen))
+      .map((screen) => {
+        const option = screenOptions[screen];
+        return {
+          ...option,
+          title: translate ? translate(option.titleKey) : option.title || option.titleKey,
+        };
+      });
     const scrn = {
-      subheader: group,
+      subheader: groupNames[groupKey] || groupKey,
       items: g_scrns,
     };
     if (g_scrns.length > 0) {
@@ -68,9 +104,20 @@ export function DashboardLayout({ sx, children, header, data }) {
 
   const layoutQuery = 'lg';
 
+  const { user } = useAuthContext();
+  const isAdmin = user?.role === 'admin';
+
+  const { t } = useTranslate('common');
+
+  const groupNames = {
+    attendance: t('groups.attendance'),
+    dataManagement: t('groups.dataManagement'),
+    timeManagement: t('groups.timeManagement'),
+  };
+
   const userDetails = useUserDetails();
   const navData = userDetails.userDetails
-    ? screensFormat(userDetails.userDetails)
+    ? screensFormat(userDetails.userDetails, isAdmin, groupNames, t)
     : (data?.nav ?? dashboardNavData);
   const isNavMini = settings.navLayout === 'mini';
   const isNavHorizontal = settings.navLayout === 'horizontal';
@@ -168,7 +215,10 @@ export function DashboardLayout({ sx, children, header, data }) {
               <Box display="flex" alignItems="center" gap={{ xs: 0, sm: 0.75 }}>
                 {/* -- Searchbar -- */}
                 <Searchbar data={navData} />
-                {/* -- Language popover -- 
+
+                {/* -- Help button -- */}
+                <HelpButton />
+                {/* -- Language popover -- */} 
                 <LanguagePopover data={allLangs} />
                 {/* -- Notifications popover -- 
                 <NotificationsDrawer data={_notifications} />

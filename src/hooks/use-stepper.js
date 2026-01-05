@@ -17,8 +17,10 @@ export function useSteps(steps, defaultValues, WizardSchema){
     const handleNext = useCallback(async (type='') => {
       const step = steps[activeStep].name;
 
+      
 
       if (step && await trigger(step)) {
+
         setActiveStep(prev => prev + 1);
       }
     }, [trigger, activeStep, steps]);

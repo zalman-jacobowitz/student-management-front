@@ -17,6 +17,7 @@ import { TableConfig } from "src/components/full-table/types";
 
 
 import { StudentsNewEditFormDialog } from "./student-new-edit-form";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 
 // רשימת הלינקים לדף זה לצורך נגישות
@@ -27,7 +28,7 @@ const LINKS = [
 ]
 
 
-function StudentMainViewDynamic() {
+function StudentMainViewDynamic({walktour}: {walktour: React.ReactNode}) {
   // המידע על העמודות
   const infoColumns = useInfoColumns('info_students')
   const queryClient = useQueryClient();
@@ -107,7 +108,7 @@ function StudentMainViewDynamic() {
     specialRow: ['checkbox', 'avatar', 'edit'],
     // העמודה שהיא מזהה רשומה:
     rowId: 'student_id',
-    Cell: ({children})=><>{children}</>,
+    Cell: ({children})=><div id="cell">{children}</div>,
     // הקומפוננטה שתוצג בעת אפשרות של עריכת רשומה
     EditComponent: (props) => {
       // אפשרות פתיחה של הדיאלוג לעריכה, והנתונים עצמם של הרשומה
@@ -116,6 +117,7 @@ function StudentMainViewDynamic() {
       // והאם מדובר במצב עריכה או הוספה
       return (
         <StudentsNewEditFormDialog
+          className="student-form-dialog"
           columns={infoColumns.newData}
           student={column}
           open={open}
@@ -136,14 +138,61 @@ function StudentMainViewDynamic() {
   }), [infoColumns.newData, infoStudents.data, submitDelete, listActionsMap])
   
   // קומפוננטת הטבלה עצמה
-  return (<FullTableWrapper config={configStudents} /> )
+  return (
+<>
+    <FullTableWrapper config={configStudents} />
+{walktour}
+</>
+)
 }
 
+  const walktourSteps = [
+      {
+        target: '.import-button',
+        title: 'לחץ על אחד הכפתורים להורדה של דוגמא לקובץ פרטי תלמידים',
+        content: 'בחר כאן את העמודה המכילה את השמות הפרטיים של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
+        placement: 'bottom',
+        disableBeacon: true
+      },
+      {
+        target: '.row',
+        title: 'לחץ על כפתור הייצוא כדי להוריד את רשימת התלמידים שלך',
+        content: 'בחר כאן את העמודה המכילה את שמות המשפחה של התלמידים. זה יעזור למערכת לזהות נכון כל תלמיד.',
+        placement: 'bottom',
+      },
+      {
+        target: '[data-testid="add-button"]',
+        title: 'לחץ על כפתור ההוספה כדי להוסיף תלמיד חדש',
+        content: 'כפתור זה יפתח טופס שבו תוכל להזין את פרטי התלמיד החדש ולהוסיף אותו למערכת.',
+        placement: 'left',
+        
+      },
+      {
+        target: '.student-form-dialog',
+        title: 'מלא את פרטי התלמיד',
+        content: 'בטופס זה, הזן את כל הפרטים הדרושים של התלמיד החדש או את השינויים שברצונך לבצע בתלמיד הקיים.',
+        placement: 'top',
+      },
+      {
+        target: '.student-form-submit',
+        title: 'שמור את התלמיד',
+        content: 'לחץ על כפתור זה כדי לשמור את התלמיד החדש או לעדכן את פרטי התלמיד הקיים.',
+        placement: 'bottom',
+      },
+      {
+        target: '.student-form-cancel',
+        title: 'ביטול השינויים',
+        content: 'אם תרצה לבטל את השינויים שלך, לחץ על כפתור זה.',
+        placement: 'bottom',
+      }
+    ];
 
 export function StudentsViewWrapper() {
+    const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
+ 
     return (
       <Suspense fallback={<LoadingScreen />}>
-        <StudentMainViewDynamic/>
-      </Suspense>
+        <StudentMainViewDynamic walktour={walktour} />
+     </Suspense>
     );
   }

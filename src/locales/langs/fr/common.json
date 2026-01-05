@@ -1,0 +1,212 @@
+{
+  "demo": {
+    "lang": "Français",
+    "selectLang": "Choisir la langue",
+    "description": "Le point de départ de votre prochain projet est basé sur MUI. La personnalisation facile vous aide à créer des applications plus rapidement et mieux."
+  },
+  "screens": {
+    "overview": "Aperçu",
+    "insert": "Données de présence",
+    "profile": "Profil personnel",
+    "info": "Liste des étudiants",
+    "users": "Utilisateurs",
+    "templates": "Modèles",
+    "days": "Jours",
+    "exceptions": "Approbations",
+    "details": "Registres",
+    "scan": "Numériser les documents",
+    "download": "Télécharger le modèle",
+    "summary": "Résumé de présence",
+    "tests": "Tests",
+    "initialization": "Initialisation"
+  },
+  "groups": {
+    "attendance": "Gestion de la présence",
+    "dataManagement": "Gestion des données",
+    "timeManagement": "Gestion du temps"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Recherche",
+    "filter": "Filtre",
+    "export": "Exporter",
+    "import": "Importer",
+    "noData": "Aucune donnée",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "required": "Ce champ est obligatoire",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "finish": "Terminer"
+  },
+  "attendance": {
+    "present": "Présent",
+    "absent": "Absent",
+    "delayed": "En retard",
+    "exceptional": "Absence justifiée",
+    "presentTooltip": "L'étudiant était présent",
+    "absentTooltip": "L'étudiant était absent",
+    "delayedTooltip": "L'étudiant était en retard",
+    "exceptionalTooltip": "L'étudiant était absent avec justification"
+  },
+  "time": {
+    "hours": "heures",
+    "hour": "heure",
+    "minutes": "minutes",
+    "minutes_short": "min"
+  },
+  "exceptions": {
+    "startDate": "Date de début",
+    "startTime": "Heure de début",
+    "endDate": "Date de fin",
+    "endTime": "Heure de fin",
+    "reason": "Raison",
+    "students": "Étudiants"
+  },
+  "users": {
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "country": "Pays",
+    "username": "Nom d'utilisateur",
+    "role": "Rôle",
+    "admin": "Administrateur"
+  },
+  "errors": {
+    "forbidden": "Accès interdit",
+    "forbiddenMessage": "La page à laquelle vous essayez d'accéder est restreinte. Veuillez contacter votre administrateur système.",
+    "notFound": "Page non trouvée",
+    "serverError": "Erreur du serveur",
+    "goHome": "Aller à l'accueil"
+  },
+  "initialization": {
+    "welcome": "Bienvenue dans l'initialisation du système!",
+    "enterEventName": "Entrez le nom de l'événement",
+    "enterEventNamePlaceholder": "Par exemple: Événement A, Événement du matin, etc.",
+    "enterEventStart": "Entrez l'heure de début de l'événement",
+    "selectColumnForNames": "Sélectionnez ici la colonne contenant les prénoms des étudiants. Cela aidera le système à identifier correctement chaque étudiant."
+  },
+  "columns": {
+    "table": "Tableau",
+    "columnName": "Nom de la colonne",
+    "columnDescription": "Description de la colonne",
+    "columnType": "Type de colonne",
+    "filterType": "Type de filtre",
+    "hidden": "Caché",
+    "required": "Obligatoire",
+    "order": "Ordre",
+    "description": "Description",
+    "typeText": "Texte libre",
+    "typeNumber": "Nombre",
+    "typeSelect": "Sélection",
+    "typeRelationship": "Relation",
+    "typeDate": "Date",
+    "typeHidden": "Caché",
+    "typeAddress": "Adresse",
+    "typeCheckbox": "Case à cocher",
+    "access": "Accessible",
+    "regular": "Régulier",
+    "visible": "Visible",
+    "mandatory": "Obligatoire",
+    "notMandatory": "Non obligatoire",
+    "primary": "Principal",
+    "secondary": "Secondaire"
+  },
+  "templates": {
+    "name": "Nom",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "gender": "Genre",
+    "yearOfBirth": "Année de naissance",
+    "required": "Ce champ est obligatoire"
+  },
+  "upload": {
+    "templateExample": "Fichier modèle",
+    "beforeUpload": "Avant de télécharger un fichier, vous pouvez télécharger un modèle vide qui contient toutes les colonnes requises pour le système.",
+    "fillTemplate": "Remplissez le modèle avec les données, puis téléchargez-le dans le formulaire ci-dessous."
+  },
+  "nav": {
+    "loading": "Chargement...",
+    "user": "Utilisateur",
+    "update": "Mettre à jour"
+  },
+  "overview": {
+    "goodMorning": "Bonjour",
+    "goodAfternoon": "Bon après-midi",
+    "goodEvening": "Bonsoir",
+    "welcomeDescription": "Bienvenue dans le système! Vous pouvez gérer les données, créer des rapports personnalisés, et bien plus.",
+    "start": "Commencer"
+  },
+  "insertForm": {
+    "title": "Enregistrement d'événement",
+    "subtitle": "Choisissez un événement à enregistrer",
+    "hebrewDate": "Date hébraïque",
+    "event": "Événement",
+    "selectedEvent": "Événement sélectionné",
+    "chooseExisting": "Choisir un événement existant",
+    "startRegistration": "Commencer l'enregistrement",
+    "editPastEvents": "Modifier les événements passés",
+    "eventRequired": "Vous devez choisir un événement!",
+    "dayRequired": "Vous devez entrer un jour"
+  },
+  "dateRelative": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "twoDaysAgo": "Il y a 2 jours",
+    "inTwoDays": "Dans 2 jours",
+    "lastWeek": "La semaine dernière",
+    "nextWeek": "La semaine prochaine",
+    "daysAgo": "jours",
+    "inDays": "dans jours",
+    "twoWeeksAgo": "Il y a 2 semaines",
+    "inTwoWeeks": "Dans 2 semaines",
+    "weeksAgo": "semaines",
+    "inWeeks": "dans semaines",
+    "monthAgo": "Il y a 1 mois",
+    "inMonth": "Dans 1 mois",
+    "twoMonthsAgo": "Il y a 2 mois",
+    "inTwoMonths": "Dans 2 mois",
+    "lastYear": "L'année dernière",
+    "nextYear": "L'année prochaine",
+    "monthsAgo": "mois",
+    "inMonths": "dans mois"
+  },
+  "calendar": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "month": "Mois",
+    "sunday": "Dimanche",
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi",
+    "dayOfWeek": "Jour de la semaine",
+    "dayNumber": "Jour",
+    "monthName": "Mois",
+    "year": "Année"
+  },
+  "hebrewMonths": {
+    "תשרי": "Tishri",
+    "חשוון": "Heshvan",
+    "כסלו": "Kislev",
+    "טבת": "Tevet",
+    "שבט": "Shevat",
+    "אדר": "Adar",
+    "ניסן": "Nisan",
+    "אייר": "Iyar",
+    "Sivan": "Sivan",
+    "Tammuz": "Tammuz",
+    "Av": "Av",
+    "Elul": "Elul"
+  }
+}

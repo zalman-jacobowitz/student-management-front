@@ -17,6 +17,7 @@ import { Snackbar } from 'src/components/snackbar';
 import { ProgressBar } from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsDrawer, defaultSettings, SettingsProvider } from 'src/components/settings';
+import { MobileBlockedScreen, useMobileDetection } from 'src/components/mobile-blocked';
 
 import { AuthProvider as SupabaseAuthProvider } from 'src/auth/context/supabase';
 
@@ -31,6 +32,17 @@ const queryClient = new QueryClient();
 
 export default function App() {
   useScrollToTop();
+  const isMobile = useMobileDetection();
+
+  if (isMobile) {
+    return (
+      <SettingsProvider settings={defaultSettings}>
+          <ThemeProvider>
+              <MobileBlockedScreen />
+          </ThemeProvider>
+      </SettingsProvider>
+    );
+  }
 
   return (
     <I18nProvider>

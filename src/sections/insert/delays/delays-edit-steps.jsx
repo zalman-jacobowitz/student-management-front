@@ -62,7 +62,7 @@ function useDelayDefinition(delay) {
     try {
       const delayData = delayDataServerFormat(data, eventDetails, delay)
       const promise = mutate.mutateAsync({data: {eventDetails, delayData}, mode})
-      console.log('eventDetails: ', {eventDetails, delayData})
+
 
       toast.promise(promise, {
         loading: 'עידכון איחורים...',
@@ -151,18 +151,17 @@ export function DelayDefinitionStep({ onComplete, delay }) {
     <Box sx={{ p: 3 }}>
       <FormProvider {...methods}>
         <Stack spacing={3}>
+          
           <Typography variant="h6" gutterBottom>
             הגדרת איחור
           </Typography>
-
-          <Alert severity="info">
-            <Typography variant="body2">
-              בחר את התלמידים להם יחול האיחור והזן את זמן ההגעה שלהם.
-              <br />
-              זמן הגעה מותר: {eventDetails.event_start} - {eventDetails.event_end}
-            </Typography>
-          </Alert>
-
+                    {delayInfo.latenessMinutes > 0 && (
+            <Alert severity="warning">
+              <Typography variant="body2">
+                התלמידים יסומנו כמאחרים ב-{delayInfo.latenessMinutes} דקות
+              </Typography>
+            </Alert>
+          )}
           <SelectStudents
             infoStudents={students}
             infoColumns={columns}
@@ -182,35 +181,18 @@ export function DelayDefinitionStep({ onComplete, delay }) {
             fullWidth
           />
 
-          {delayInfo.latenessMinutes > 0 && (
-            <Alert severity="warning">
-              <Typography variant="body2">
-                התלמידים יסומנו כמאחרים ב-{delayInfo.latenessMinutes} דקות
-                <br />
-                אחוז נוכחות: {delayInfo.attendancePercentage}%
-              </Typography>
-            </Alert>
-          )}
-
-          {delayInfo.latenessMinutes <= 0 && (
-            <Alert severity="success">
-              <Typography variant="body2">
-                התלמידים יסומנו כנוכחים במלואם (אחוז נוכחות: {delayInfo.attendancePercentage}%)
-              </Typography>
-            </Alert>
-          )}
 
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button
-              variant="contained"
+              variant="soft"
               color="error"
               onClick={handleSubmit((data) => onSubmit(data, 'delete'))}
             >
               מחק
             </Button>
             <Button
-              variant="contained"
-              color="primary"
+              variant="soft"
+              color="warning"
               onClick={handleSubmit((data) => onSubmit(data, 'update'))}
             >
               שמירת איחור

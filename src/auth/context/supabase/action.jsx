@@ -5,9 +5,11 @@ import { supabase } from 'src/auth/supabase';
 
 
 const adminUserBlank = (data) => {
-  const {email, country, lastName, firstName, client, org} = data
+  console.log(data)
+  const {email, country, lastName, firstName, client, org, phone} = data
   return {
     client,
+    phone,
     user: {
         email,
         country,
@@ -41,7 +43,7 @@ export const signInWithPassword = async ({ email, password }) => {
 /** **************************************
  * Sign up
  *************************************** */
-export const signUp = async (userData) => {
+export const signUp = async (userData, firstUser=true) => {
   const {
     email,
     password,
@@ -49,10 +51,11 @@ export const signUp = async (userData) => {
     lastName,
     country,
     client,
-    org
+    org,
+    phone
   } = userData
-
-  const blankData = adminUserBlank(userData)
+  console.log({userData})
+  const blankData = firstUser ? adminUserBlank(userData) : {...userData.data, client}
   
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -70,12 +73,7 @@ export const signUp = async (userData) => {
     throw error;
   }
 
-  if (!data?.user?.identities?.length) {
-    throw new Error('This user already exists');
-  }
-
-  return { data, error };
-};
+}
 
 /** **************************************
  * Sign out

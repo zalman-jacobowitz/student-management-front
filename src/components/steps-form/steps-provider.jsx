@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { Card, Container } from "@mui/material";
+import { Box, Card, Container } from "@mui/material";
 
 import { useSteps } from "src/hooks/use-stepper";
 
@@ -9,7 +9,7 @@ import { Form } from "src/components/hook-form";
 import { InitStepper, StepperActions } from "./header-steps";
 import { StepProvider } from "./style";
 
-export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onClose=()=>{}, watch=()=>{}, watchName=''}){
+export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onClose=()=>{}, watch=()=>{}, watchName='', hasSpecialButtonDesign=false}){
     const {
         activeStep,
         handleNext,
@@ -39,7 +39,7 @@ export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onC
     }
     );
     return (
-    <Card sx={{ p: 5, width: 1, mx: 'auto' }}>
+    <Box sx={{ p: 0, width: 1, mx: 'auto'}} >
       <Form methods={methods} onSubmit={submit}>
         <InitStepper steps={steps} activeStep={activeStep} />
         
@@ -55,8 +55,9 @@ export function StepsProvider({steps, defaultValues, WizardSchema, onSubmit, onC
           handleNext={handleNext}
           handleBack={handleBack}
           isSubmitting={isSubmitting}
+          hasSpecialButtonDesign={hasSpecialButtonDesign}
         />
       </Form>
-    </Card>
+    </Box>
   );
 }

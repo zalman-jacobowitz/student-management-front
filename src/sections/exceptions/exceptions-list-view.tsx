@@ -8,6 +8,7 @@ import { apiExceptions, exceptionsUpdate } from "src/actions/exceptions";
 import { LoadingScreen } from "src/components/loading-screen";
 import { TableConfig } from "src/components/full-table/types";
 import { FullTableWrapper } from "src/components/full-table/view";
+import { useWalktour, Walktour } from "src/components/walktour";
 
 import { ExceptionDialog } from "./exceptions-edit-steps";
 import { INFO_EXCEPTIONS } from "./columns";
@@ -52,10 +53,18 @@ const LINKS = [
     return (<FullTableWrapper config={tableColumnsConfig} />)
   }
 
+  const walktourSteps = [
+    // TODO: Add walktour steps here
+  ];
+
   export function ExceptionsViewWrapper() {
+    const walktour = <Walktour {...useWalktour({steps: walktourSteps})} />
     return (
       <Suspense fallback={<LoadingScreen />}>
-        <ExceptionsMainView />
+        <>
+          <ExceptionsMainView />
+          {walktour}
+        </>
       </Suspense>
     );
   }
